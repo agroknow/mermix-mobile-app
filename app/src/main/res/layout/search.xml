@@ -1,0 +1,495 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@color/mermix_bg_color">
+
+    <!--<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_smoke_dk"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/tab1"
+            style="@style/tab_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:enabled="false"
+            android:text="@string/buy" />
+
+        <View
+            android:id="@+id/view1"
+            style="@style/tab_divider"
+            android:layout_width="@dimen/divider"
+            android:layout_height="match_parent" />
+
+        <Button
+            android:id="@+id/tab2"
+            style="@style/tab_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rent" />
+    </LinearLayout>-->
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/location_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/location_lbl"
+                    style="@style/lbl_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+					android:layout_weight="1"
+                    android:text="@string/location"/>
+                <Spinner
+                    android:id="@+id/location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/location"
+                    style="android:Widget.Holo.Light.TextView.SpinnerItem"/>
+
+            </LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+            <LinearLayout
+                android:id="@+id/machine_type_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/pad_10dp" >
+
+				<TextView
+					android:id="@+id/machine_type_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/machine_type"/>
+                <Spinner
+                    android:id="@+id/machine_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:prompt="@string/machine_type"/>
+            </LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+			<LinearLayout
+				android:id="@+id/cultivation_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+
+				<TextView
+					android:id="@+id/cultivation_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/cultivation"/>
+				<Spinner
+					android:id="@+id/cultivation"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/cultivation"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+			<LinearLayout
+				android:id="@+id/contract_type_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+
+				<TextView
+					android:id="@+id/contract_type_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/contract_type"/>
+				<Spinner
+					android:id="@+id/contract_type"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/contract_type"/>
+			</LinearLayout>
+			<!--<LinearLayout
+				android:id="@+id/rent1"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/lbl"
+					style="@style/lbl_search1"
+					android:layout_width="0dp"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/price_range" />
+
+				<TextView
+					android:id="@+id/lbl"
+					style="@style/lbl_search1"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="$900K to $1.5M" />
+			</LinearLayout>
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+		<LinearLayout
+			android:id="@+id/rent1"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal"
+			android:padding="@dimen/pad_10dp" >
+			<TextView
+				android:id="@+id/lbl"
+				style="@style/lbl_search1"
+				android:layout_width="0dp"
+				android:layout_height="wrap_content"
+				android:layout_weight="1"
+				android:text="@string/rante_range" />
+
+			<TextView
+				android:id="@+id/lbl"
+				style="@style/lbl_search1"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="$250 to $750" />
+			</LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/property_type" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Any" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bedrooms" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 to 5" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/bathrooms" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2+" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/parking_spaces" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="1+" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/sort" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Most Relevant" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/min_land" />
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Any" />
+            </LinearLayout>-->
+
+            <!--<View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/pad_10dp" >
+
+                <TextView
+                    android:id="@+id/lbl"
+                    style="@style/lbl_search1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/surroun_sberb" />
+
+                <CheckBox
+                    android:id="@+id/checkBox1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/checkbox"
+                    android:checked="true" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light" />
+
+            <LinearLayout
+                android:id="@+id/rent2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/pad_10dp" >
+
+                    <TextView
+                        android:id="@+id/lbl"
+                        style="@style/lbl_search1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/furnished" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbox"
+                        android:checked="true" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider"
+                    android:background="@color/gray_light" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/pad_10dp" >
+
+                    <TextView
+                        android:id="@+id/lbl"
+                        style="@style/lbl_search1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/pets_allow" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbox" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider"
+                    android:background="@color/gray_light" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/pad_10dp" >
+
+                    <TextView
+                        android:id="@+id/lbl"
+                        style="@style/lbl_search1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/smoke_permit" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@drawable/checkbox" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/view2"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/divider"
+                    android:background="@color/gray_light" />
+            </LinearLayout>-->
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnSearch"
+        style="@style/green_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/search_now" />
+
+</LinearLayout>

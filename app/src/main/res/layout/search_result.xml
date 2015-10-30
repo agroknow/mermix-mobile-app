@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@color/mermix_bg_color">
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/map"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/pad_125dp" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:cacheColorHint="@color/transparent"
+        android:divider="@color/gray_light"
+        android:dividerHeight="@dimen/divider"
+        tools:listitem="@layout/buy_item" 
+        android:footerDividersEnabled="true">
+    </ListView>
+	<TextView
+		android:id="@+id/no_results"
+		style="@style/lbl_spinner"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+        android:textColor="@color/mermix_font_color"
+		android:text="@string/no_results"
+		android:visibility="gone"
+		android:gravity="center_horizontal"/>
+
+</LinearLayout>
