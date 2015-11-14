@@ -248,21 +248,23 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("SearchResult updateUI");
 		progress.dismiss();
-
-		ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
-		List<Equipment> equipments = equipmentsList.getEquipments();
-		adapter.clear();
-		int idx = 0;
-		while(idx < equipments.size()){
-			//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
-			//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
-			adapter.addItem(equipments.get(idx));
-			idx++;
+		try {
+			ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
+			List<Equipment> equipments = equipmentsList.getEquipments();
+			adapter.clear();
+			int idx = 0;
+			while(idx < equipments.size()){
+				adapter.addItem(equipments.get(idx));
+				idx++;
+			}
+			adapter.notifyDataSetChanged();
+			int visibility = (idx == 0) ? View.VISIBLE : View.GONE;
+			getActivity().findViewById(R.id.no_results).setVisibility(visibility);
+			setupMarkers(equipments);
 		}
-		adapter.notifyDataSetChanged();
-		int visibility = (idx == 0) ? View.VISIBLE : View.GONE;
-		getActivity().findViewById(R.id.no_results).setVisibility(visibility);
-		setupMarkers(equipments);
+		catch (ClassCastException e){
+			Common.logError("ClassCastException @ SearchResult updateUI:" + e.getMessage());
+		}
 	}
 
 	private void setupMarkers(List<Equipment> equipments) {

@@ -118,17 +118,22 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	@Override
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("FeedList updateUI");
-		ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
-		List<Equipment> equipments = equipmentsList.getEquipments();
-		adapter.clear();
-		int idx = 0;
-		while(idx < equipments.size()){
-			//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
-			//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
-			adapter.addItem(equipments.get(idx));
-			idx++;
+		try {
+			ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
+			List<Equipment> equipments = equipmentsList.getEquipments();
+			adapter.clear();
+			int idx = 0;
+			while(idx < equipments.size()){
+				//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
+				//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
+				adapter.addItem(equipments.get(idx));
+				idx++;
+			}
+			adapter.notifyDataSetChanged();
 		}
-		adapter.notifyDataSetChanged();
+		catch (ClassCastException e){
+			Common.logError("ClassCastException @ FeedList updateUI:" + e.getMessage());
+		}
 	}
 
 	/* (non-Javadoc)

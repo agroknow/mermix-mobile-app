@@ -55,15 +55,20 @@ public class Search extends CustomFragment implements DataRetrieve
 	 */
 	@Override
 	public void updateUI(Pojo apiResponseData) {
-		Common.log("FeedList updateUI");
-		ListOfTerms termsList = (ListOfTerms) apiResponseData;
-		List<PojoTerm> terms = termsList.getTerms();
-		String vocabulary;
-		if(terms.size() > 0) {
-			vocabulary = terms.get(0).getVocabulary();
-			ApplicationVars.updateTermsCache(terms, getActivity().getApplicationContext());
-			ApplicationVars.dataRetrieved.put(vocabulary, true);
-			updateSpinnerWithVocabularyTerms(vocabulary, spinners.get(vocabulary));
+		Common.log("Search updateUI");
+		try {
+			ListOfTerms termsList = (ListOfTerms) apiResponseData;
+			List<PojoTerm> terms = termsList.getTerms();
+			String vocabulary;
+			if (terms.size() > 0) {
+				vocabulary = terms.get(0).getVocabulary();
+				ApplicationVars.updateTermsCache(terms, getActivity().getApplicationContext());
+				ApplicationVars.dataRetrieved.put(vocabulary, true);
+				updateSpinnerWithVocabularyTerms(vocabulary, spinners.get(vocabulary));
+			}
+		}
+		catch (ClassCastException e){
+			Common.logError("ClassCastException @ Search updateUI:" + e.getMessage());
 		}
 	}
 
