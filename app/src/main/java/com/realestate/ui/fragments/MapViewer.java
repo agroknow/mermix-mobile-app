@@ -1,6 +1,8 @@
 package com.realestate.ui.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Criteria;
@@ -9,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,7 +65,6 @@ import java.util.List;
  * 	if location provider is enabled then onLocationChanged invoke REST API
  *
  * TODO
- * prompt user to enable device's location provider with message in greek
  * to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them
  * on GMap Marker click, display equipment's title & image
  * on GMap Marker's title/image click, start EquipmentDetail activity
@@ -102,6 +104,37 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		return v;
 	}
 
+	private void checkDeviceLocationService() {
+		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		if(!isGPSEnabled && !isNetworkEnabled){
+			/*
+			display dialog to prompt user to enable location detection services
+			 */
+			AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+			dialog.setMessage(getResources().getString(R.string.enable_location_detect_service));
+			dialog.setPositiveButton(getResources().getString(R.string.enable),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+							// TODO Auto-generated method stub
+							startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							invokeAPIOnLocationChange = true;
+						}
+					}
+			);
+			dialog.setNegativeButton(getString(R.string.cancel),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+							// TODO Auto-generated method stub
+						}
+					}
+			);
+			dialog.show();
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see com.realestate.custom.CustomFragment#onClick(android.view.View)
 	 */
@@ -139,14 +172,8 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	public void onCreate(Bundle savedInstanceState) {
 		Common.log("MapViewer onCreate");
 		super.onCreate(savedInstanceState);
-
 		locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
-
-		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-		if(!isGPSEnabled && !isNetworkEnabled){
-		}
+		checkDeviceLocationService();
 	}
 
 	private String detectLocationProvider() {
@@ -156,8 +183,8 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		criteria.setPowerRequirement(Criteria.POWER_LOW);
 		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 		Boolean getEnabledProvider = true;
-		//with default criteria, provider 'gps' is selected
-		//with criteria: POWER_LOW & ACCURACY_COARSE, provider 'network' is selected
+		//with criteria ACCURACY_COARSE, provider 'network' is selected
+		//with default criteria or ACCURACY_FINE, provider 'gps' is selected
 		provider = locationManager.getBestProvider(criteria, getEnabledProvider);
 		Common.log("locationProvider " + provider);
 		return provider;
@@ -191,8 +218,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	 * @see android.support.v4.app.Fragment#onResume()
 	 */
 	@Override
-	public void onResume()
-	{
+	public void onResume() {
 		Common.log("MapViewer onResume");
 		super.onResume();
 		mMapView.onResume();
@@ -295,9 +321,15 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	 */
 	@Override
 	public void updateUI(Pojo apiResponseData) {
+		Common.log("MapViewer updateUI");
 		progress.dismiss();
 		if(apiResponseData != null) {
-			setupMarker((EquipmentInView) apiResponseData);
+			try {
+				setupMarker((EquipmentInView) apiResponseData);
+			}
+			catch (ClassCastException e){
+				Common.logError("ClassCastException @ MapViewer updateUI:" + e.getMessage());
+			}
 		}
 		else{
 			focusOnCoordArgs();
