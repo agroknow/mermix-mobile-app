@@ -36,16 +36,19 @@
     <string name="desc">Description</string>
     <string name="temp_txt">Mermix is "property consisting of land and the buildings on it, along with its natural resources such as crops, minerals, or water; immovable property of this nature; an interest vested in this; (also) an item of real property; (more generally) buildings or housing in general. Also: the business of real estate; the profession of buying, selling, or renting land, buildings or housing."</string>
     <string name="inspections">Inspections/Auctions</string>
-    <string name="search_area">Search near location</string>
+    <string name="search_area">Search in location</string>
 
     <string name="location">Location</string>
     <string name="machine_type">Machine type</string>
     <string name="cultivation">Cultivation</string>
     <string name="contract_type">Contract type</string>
     <string name="no_results">No Results</string>
-    <string name="progress_dialog_title">Loading</string>
+    <string name="progress_dialog_title"></string>
     <string name="progress_dialog_search_msg">Retrieving search results</string>
     <string name="progress_dialog_search_map_msg">Searching ....</string>
+    <string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
+    <string name="enable">Enable</string>
+    <string name="cancel">Cancel</string>
 
 
 </resources>

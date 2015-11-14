@@ -224,7 +224,13 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 
     @Override
     public void updateUI(Pojo apiResponseData) {
-        Equipment equipment = (Equipment) apiResponseData;
+		Common.log("EquipmentDetail updateUI");
+		try {
+			Equipment equipment = (Equipment) apiResponseData;
+		}
+		catch (ClassCastException e){
+			Common.logError("ClassCastException @ EquipmentDetail updateUI:" + e.getMessage());
+		}
 
 		//TODO
 		//ImageDownload implementation like FeedAdapter
