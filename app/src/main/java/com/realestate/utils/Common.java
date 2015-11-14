@@ -1,7 +1,9 @@
 package com.realestate.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 /**
@@ -21,7 +23,13 @@ public class Common {
 	public static void displayToast(String s, Context context) {
 		Toast.makeText(context,
 				s,
-				Toast.LENGTH_SHORT).show();
+				Toast.LENGTH_LONG).show();
 
 	}
+
+	public static void hideSoftKeyboard(Activity activity) {
+		InputMethodManager inputMethodManager = (InputMethodManager)  activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+		inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+	}
+
 }

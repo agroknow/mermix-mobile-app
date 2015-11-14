@@ -27,12 +27,12 @@ import com.realestate.model.Equipment;
 import com.realestate.model.ListOfEquipments;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Pojo;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
 import com.realestate.ui.activities.MapViewActivity;
 import com.realestate.ui.adapters.FeedAdapter;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
-import com.realestate.utils.DataRetrieveUI;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.SearchArgs;
 import com.realestate.utils.net.args.UrlArgs;
@@ -46,7 +46,7 @@ import java.util.List;
  * Search results with a MapView that shows dummy locations for properties. You
  * can customize this to load and display actual search result listing.
  */
-public class SearchResult extends CustomFragment implements DataRetrieveUI
+public class SearchResult extends CustomFragment implements DataRetrieve
 {
 
 	/** The search result list. */

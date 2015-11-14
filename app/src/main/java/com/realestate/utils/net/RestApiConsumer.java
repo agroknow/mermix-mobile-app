@@ -1,30 +1,18 @@
 package com.realestate.utils.net;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.JacksonObjectMapper;
 import com.realestate.utils.MainService;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.protocol.HTTP;
-
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -40,7 +28,7 @@ import java.net.URL;
  * @ onPostExecute method Object's CallBack method is invoked,
  * onPostExecute is invoked by UI thread so that it can make changes to UI
  */
-public class RestApiConsumer extends AsyncTask<String, Void, ObjectNode>{
+public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 
 	private MainService service;
 	private String requestCharset = Constants.CharSets.UTF8;
@@ -50,7 +38,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, ObjectNode>{
 	}
 
 	@Override
-	protected ObjectNode doInBackground(String... strings) {
+	protected JsonNode doInBackground(String... strings) {
 		Common.log("RestApiConsumer doInBackground");
 
 		String restApiUrl;
@@ -58,7 +46,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, ObjectNode>{
 		String requestParams;
 		OutputStream output;
 		InputStream bufferedInput = null;
-		ObjectNode rootNode = null;
+		JsonNode rootNode = null;
 
 		String[] url = strings[0].split("\\?");
 		restApiUrl = url.length > 0 ? url[0] : "";
@@ -110,7 +98,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, ObjectNode>{
 	}
 
 	@Override
-	protected void onPostExecute(ObjectNode o) {
+	protected void onPostExecute(JsonNode o) {
 		super.onPostExecute(o);
 		this.service.asyncTaskCB(o);
 	}
@@ -173,10 +161,10 @@ public class RestApiConsumer extends AsyncTask<String, Void, ObjectNode>{
 	/**
 	 *
 	 * @param bufferedInput
-	 * @return ObjectNode
+	 * @return JsonNode
 	 */
-	private ObjectNode jacksonParse(InputStream bufferedInput){
-		ObjectNode rootNode = null;
+	private JsonNode jacksonParse(InputStream bufferedInput){
+		JsonNode rootNode = null;
 		try {
 			JsonFactory jsonF = JacksonObjectMapper.getInstance().getFactory();
 			JsonParser jsonP = jsonF.createParser(bufferedInput);

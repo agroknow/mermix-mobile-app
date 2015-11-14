@@ -16,7 +16,7 @@
         android:paddingTop="@dimen/pad_5dp" >
 
         <EditText
-            android:id="@+id/txt"
+            android:id="@+id/address"
             style="@style/edittext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,6 +24,7 @@
             android:ems="10"
             android:hint="@string/enter_address"
             android:inputType="textPersonName" >
+            <requestFocus/>
         </EditText>
     </LinearLayout>
 

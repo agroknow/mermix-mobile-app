@@ -10,13 +10,13 @@ import java.util.List;
  * Description:
  */
 public class ListOfNearbyEquipments extends Pojo implements Serializable {
-	private List<EquipmentInView> equipments;
+	private EquipmentInView[] equipments;
 
-	public List<EquipmentInView> getEquipments() {
+	public EquipmentInView[] getEquipments() {
 		return equipments;
 	}
 
-	public void setEquipments(List<EquipmentInView> equipments) {
+	public void setEquipments(EquipmentInView[] equipments) {
 		this.equipments = equipments;
 	}
 }

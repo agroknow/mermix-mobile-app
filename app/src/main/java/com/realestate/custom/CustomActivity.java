@@ -14,8 +14,8 @@ import android.view.View.OnClickListener;
 
 import com.realestate.R;
 import com.realestate.model.common.Pojo;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.Common;
-import com.realestate.utils.DataRetrieveUI;
 import com.realestate.utils.MainService;
 import com.realestate.utils.TouchEffect;
 
@@ -44,8 +44,8 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 			FragmentManager fragManager = CustomActivity.this.getSupportFragmentManager();
 			int count = CustomActivity.this.getSupportFragmentManager().getBackStackEntryCount();
 			Fragment frag = fragManager.getFragments().get(count>0?count-1:count);
-			//INVOKE fragment's updateUI implemented by interface DataRetrieveUI
-			DataRetrieveUI customFragment = (DataRetrieveUI) frag;
+			//INVOKE fragment's updateUI implemented by interface DataRetrieve
+			DataRetrieve customFragment = (DataRetrieve) frag;
 			customFragment.updateUI(apiResponseData);
 		}
 	}

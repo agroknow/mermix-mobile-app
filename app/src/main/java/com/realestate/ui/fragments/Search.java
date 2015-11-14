@@ -21,7 +21,7 @@ import com.realestate.custom.CustomFragment;
 import com.realestate.ui.adapters.SpinnerTermAdapter;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
-import com.realestate.utils.DataRetrieveUI;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.TermArgs;
 import com.realestate.utils.net.args.UrlArgs;
@@ -37,7 +37,7 @@ import java.util.Map;
  * options for Search property with options for Searching property for Buy and
  * Rent. You can customize this to display actual contents.
  */
-public class Search extends CustomFragment implements DataRetrieveUI
+public class Search extends CustomFragment implements DataRetrieve
 {
 
 	/** Flag to hold whether to search properties for buy or for rent. */

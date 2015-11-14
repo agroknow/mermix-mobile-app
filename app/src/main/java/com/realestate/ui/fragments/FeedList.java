@@ -19,13 +19,13 @@ import com.realestate.custom.CustomFragment;
 import com.realestate.model.Equipment;
 import com.realestate.model.ListOfEquipments;
 import com.realestate.model.common.Pojo;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
 import com.realestate.ui.activities.MainActivity;
 import com.realestate.ui.activities.MapViewActivity;
 import com.realestate.ui.adapters.FeedAdapter;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
-import com.realestate.utils.DataRetrieveUI;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.FeedListArgs;
 import com.realestate.utils.net.args.UrlArgs;
@@ -39,7 +39,7 @@ import java.util.List;
  * default fragment for MainActivity. It simply shows a dummy list of Property
  * Feeds. You can customize this class to display actual Feed listing.
  */
-public class FeedList extends CustomFragment implements DataRetrieveUI
+public class FeedList extends CustomFragment implements DataRetrieve
 {
 
 	private FeedAdapter adapter = new FeedAdapter();

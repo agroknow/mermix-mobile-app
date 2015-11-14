@@ -10,13 +10,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.realestate.model.EquipmentInView;
 import com.realestate.model.common.Pojo;
 import com.realestate.utils.net.RestApiConsumer;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 
 /**
@@ -28,6 +28,7 @@ import java.io.Serializable;
  */
 public class MainService extends Service {
 	private Class<? extends Pojo> pojoClass;
+	private Class<? extends Pojo[]> pojoArrayClass;
 	private String pojoClassName;
 	public static final String SERVICEACTION = "ServiceAction";
 	@Override
@@ -59,7 +60,7 @@ public class MainService extends Service {
 		return null;
 	}
 
-	public void asyncTaskCB(ObjectNode asyncTaskResult){
+	public void asyncTaskCB(JsonNode asyncTaskResult){
 		Common.log("MainService asyncTaskCB");
 		ObjectMapper mapper = JacksonObjectMapper.getInstance();
 		Pojo apiResponseData = null;
@@ -71,13 +72,21 @@ public class MainService extends Service {
 				 * NO re-parsing possible
 				 */
 				JsonParser parserResult = mapper.treeAsTokens(asyncTaskResult);
-				if (parserResult.nextToken() != JsonToken.START_OBJECT) {
+				JsonToken nextToken = parserResult.nextToken();
+				if (nextToken != JsonToken.START_OBJECT && nextToken != JsonToken.START_ARRAY) {
 					Common.logError(Constants.ErrorMessages.NO_OBJECT_IN_DATA);
-					throw new IOException(Constants.ErrorMessages.NO_OBJECT_IN_DATA);
 				}
-				this.pojoClass = (Class<? extends Pojo>) Class.forName(this.pojoClassName);
-				apiResponseData = mapper.readValue(parserResult, this.pojoClass);
-				broadCastData(apiResponseData);
+				else if(nextToken.equals(JsonToken.START_OBJECT)){
+					this.pojoClass = (Class<? extends Pojo>) Class.forName(this.pojoClassName);
+					apiResponseData = mapper.readValue(parserResult, this.pojoClass);
+					broadCastData(apiResponseData);
+				}
+				else if(nextToken.equals(JsonToken.START_ARRAY)){
+					this.pojoArrayClass = (Class<? extends Pojo[]>) Class.forName("[L"+this.pojoClassName+";");
+					Pojo[] apiResponseArrayData = mapper.readValue(parserResult, this.pojoArrayClass);
+					//Pojo[] apiResponseArrayData = mapper.readValue(parserResult, EquipmentInView[].class);
+					broadCastArrayData(apiResponseArrayData);
+				}
 				parserResult.close();
 			}
 			else{
@@ -100,6 +109,26 @@ public class MainService extends Service {
 			//e.printStackTrace();
 		}
 
+	}
+
+	private void broadCastArrayData(Pojo[] pojoData) {
+		Common.log("MainService broadCastArrayData");
+		Intent intentBroadCast = new Intent();
+		intentBroadCast.setAction(SERVICEACTION);
+		if(pojoData.length == 0){
+			Bundle mBundle = new Bundle();
+			mBundle.putSerializable("APIRESPONSEDATA", (Serializable) null);
+			intentBroadCast.putExtras(mBundle);
+			sendBroadcast(intentBroadCast);
+		}
+		else{
+			for(int idx=0;idx<pojoData.length;idx++){
+				Bundle mBundle = new Bundle();
+				mBundle.putSerializable("APIRESPONSEDATA", (Serializable) pojoData[idx]);
+				intentBroadCast.putExtras(mBundle);
+				sendBroadcast(intentBroadCast);
+			}
+		}
 	}
 
 	private void broadCastData(Pojo pojoData){

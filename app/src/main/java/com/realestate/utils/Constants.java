@@ -63,7 +63,7 @@ public class Constants {
 	public class ErrorMessages{
 		public static final String NO_ERROR = "No Error Detected";
 		public static final String NO_DATA = "No Data Found";
-		public static final String NO_OBJECT_IN_DATA = "Expected data to start with an Object";
+		public static final String NO_OBJECT_IN_DATA = "Expected data to start with an Object or an Array";
 		public static final String NO_CONNECTION = "No connection to remote server";
 		public static final String AUTH_FAIL = "authentication failed";
 	}
@@ -76,7 +76,7 @@ public class Constants {
 		public static final String LISTOFEQUIPMENTS = "com.realestate.model.ListOfEquipments";
 		public static final String EQUIPMENT = "com.realestate.model.Equipment";
 		public static final String LISTOFTERMS = "com.realestate.model.ListOfTerms";
-		public static final String LISTOFNEARBYEQUIPMENTS = "com.realestate.model.ListOfNearbyEquipments";
+		public static final String EQUIPMENTINVIEW = "com.realestate.model.EquipmentInView";
 	}
 
 	public class FRAGMENTS {

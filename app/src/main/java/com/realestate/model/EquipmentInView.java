@@ -1,7 +1,9 @@
 package com.realestate.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.realestate.model.common.Pojo;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  * equipment structure in drupal view: mobile_app_machine_results
  *
  */
-public class EquipmentInView {
+public class EquipmentInView extends Pojo implements Serializable{
 	@JsonProperty("node_title")
 	private String title;
 	private String nid;

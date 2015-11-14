@@ -1,12 +1,20 @@
 package com.realestate.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,16 +26,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.EquipmentInView;
-import com.realestate.model.ListOfNearbyEquipments;
 import com.realestate.model.common.Pojo;
-import com.realestate.ui.activities.SearchResultActivity;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
-import com.realestate.utils.DataRetrieveUI;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.MapViewArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -36,11 +43,31 @@ import java.util.List;
  * icon in action bar. It simply shows a Map View with a few dummy location
  * markers on map. You can customize this class to load and display actual
  * locations on map.
- * TODO on MapViewer load, display 10 equipments in nearby location
- * TODO on GMap Marker click, display equipment's title & image
- * TODO on GMap Marker's title/image click, start EquipmentDetail activity
+ *
+ * FEATURES
+ * Allows user to insert address and search for equipments near current address
+ * (convert address to coordinates and invoke REST API).
+ * Get current location coordinates (from GPS or network locationProvider) and invoke REST API
+ *
+ * WORKFLOW
+ * onCreate
+ * 	if device's location provider is disabled then prompt user to enable it
+ * onResume
+ * 	get device's enabled location provider and retrieve device's location (set coordsArgs)
+ *	if coordsArgs not set then zoom map on Greece
+ *	if coordsArgs set then invoke REST API
+ * onClick (btn 'search near location')
+ * 	set coordsArgs from inserted location and invoke REST API
+ * onProviderEnabled
+ * 	if location provider is enabled then onLocationChanged invoke REST API
+ *
+ * TODO
+ * prompt user to enable device's location provider with message in greek
+ * to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them
+ * on GMap Marker click, display equipment's title & image
+ * on GMap Marker's title/image click, start EquipmentDetail activity
  */
-public class MapViewer extends CustomFragment implements DataRetrieveUI
+public class MapViewer extends CustomFragment implements DataRetrieve, LocationListener
 {
 
 	/** The map view. */
@@ -49,6 +76,13 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	/** The Google map. */
 	private GoogleMap mMap;
 
+	private int MapZoom = 6;
+	private ProgressDialog progress;
+	private String[] coordsArgs = {"", ""};
+	private double commonCoordsOffset = 0.04;
+	private LocationManager locationManager;
+	private boolean invokeAPIOnLocationChange = false;
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -56,12 +90,15 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
+		Common.log("MapViewer onCreateView");
 		View v = inflater.inflate(R.layout.map, null);
 		setHasOptionsMenu(true);
 
+		progress = new ProgressDialog(getActivity());
+		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
+		progress.setMessage(getResources().getString(R.string.progress_dialog_search_map_msg));
 		setTouchNClick(v.findViewById(R.id.btnSearch));
-		//setupMap(v, savedInstanceState);
-		startRequestService(new MapViewArgs("", ""));
+		setupMap(v, savedInstanceState);
 		return v;
 	}
 
@@ -71,9 +108,17 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	@Override
 	public void onClick(View v)
 	{
+		Common.log("MapViewer onClick");
 		super.onClick(v);
-		if (v.getId() == R.id.btnSearch)
-			startActivity(new Intent(getActivity(), SearchResultActivity.class));
+		if (v.getId() == R.id.btnSearch){
+			String location;
+			EditText addressTxtBox = (EditText) getActivity().findViewById(R.id.address);
+			location = addressTxtBox.getText().toString();
+			findCoordArgs(location);
+			MapZoom = 10;
+			Common.hideSoftKeyboard(getActivity());
+			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+		}
 	}
 
 	/**
@@ -92,7 +137,30 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
+		Common.log("MapViewer onCreate");
 		super.onCreate(savedInstanceState);
+
+		locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
+
+		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+		if(!isGPSEnabled && !isNetworkEnabled){
+		}
+	}
+
+	private String detectLocationProvider() {
+		Common.log("MapViewer detectLocationProvider");
+		String provider;
+		Criteria criteria = new Criteria();
+		criteria.setPowerRequirement(Criteria.POWER_LOW);
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		Boolean getEnabledProvider = true;
+		//with default criteria, provider 'gps' is selected
+		//with criteria: POWER_LOW & ACCURACY_COARSE, provider 'network' is selected
+		provider = locationManager.getBestProvider(criteria, getEnabledProvider);
+		Common.log("locationProvider " + provider);
+		return provider;
 	}
 
 	/* (non-Javadoc)
@@ -101,9 +169,11 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	@Override
 	public void onPause()
 	{
-		Common.log("MainActivity onPause");
+		Common.log("MapViewer onPause");
 		mMapView.onPause();
 		super.onPause();
+
+		locationManager.removeUpdates(this);
 	}
 
 	/* (non-Javadoc)
@@ -112,6 +182,7 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	@Override
 	public void onDestroy()
 	{
+		Common.log("MapViewer onDestroy");
 		mMapView.onDestroy();
 		super.onDestroy();
 	}
@@ -122,16 +193,63 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	@Override
 	public void onResume()
 	{
+		Common.log("MapViewer onResume");
 		super.onResume();
 		mMapView.onResume();
-
 		mMap = mMapView.getMap();
-		if (mMap != null)
-		{
-			mMap.setMyLocationEnabled(true);
+		if (mMap != null){
+			//mMap.setMyLocationEnabled(true);
 			mMap.setInfoWindowAdapter(null);
-			setupMarker();
+
+			//getLastKnownLocation returns null for provider 'gps' if device in a building
+			Location loc = locationManager.getLastKnownLocation(detectLocationProvider());
+			if(loc != null){
+				onLocationChanged(loc);
+			}
+			if(coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()){
+				MapZoom = 6;
+				findCoordArgs("greece");
+				focusOnCoordArgs();
+				resetCoordArgs();
+			}
+			else{
+				MapZoom = 10;
+				startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+			}
+			long minTime = 60 * 1000;	//ms
+			float minDistance = 100;    //meters
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
+			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, this);
 		}
+	}
+
+	private void findCoordArgs(String loc){
+		Geocoder gc = new Geocoder(getActivity().getApplicationContext());
+		List<Address> list = null;
+		Address addressLocation;
+		try {
+			list = gc.getFromLocationName(loc, 1);
+		} catch (IOException e) {
+			Common.logError("MapViewer findCoordArgs IOException: "+e.getMessage());
+			//e.printStackTrace();
+		}
+		for(int idx=0;idx<list.size();idx++){
+			addressLocation = list.get(idx);
+			coordsArgs[0] = String.valueOf(addressLocation.getLatitude());
+			coordsArgs[1] = String.valueOf(addressLocation.getLongitude());
+		}
+	}
+
+	private void focusOnCoordArgs() {
+		if(!coordsArgs[0].isEmpty() && !coordsArgs[1].isEmpty()) {
+			LatLng l = new LatLng(Double.parseDouble(coordsArgs[0]), Double.parseDouble(coordsArgs[1]));
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, MapZoom));
+		}
+	}
+
+	private void resetCoordArgs(){
+		coordsArgs[0] = "";
+		coordsArgs[1] = "";
 	}
 
 	/**
@@ -157,40 +275,6 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 		MapsInitializer.initialize(getActivity());
 		mMapView = (MapView) v.findViewById(R.id.map);
 		mMapView.onCreate(savedInstanceState);
-
-	}
-
-	/**
-	 * This method simply place a few dummy location markers on Map View. You can
-	 * write your own logic for loading the locations and placing the marker for
-	 * each location as per your need.
-	 */
-	private void setupMarker()
-	{
-		mMap.clear();
-		LatLng l[] = { new LatLng(-33.89159150356934, 151.21157605201006),
-				new LatLng(-33.89021413257428, 151.21306367218494),
-				new LatLng(-33.89021413257428, 151.21709771454334),
-				new LatLng(-33.890261446151726, 151.21967263519764) };
-		for (LatLng ll : l)
-		{
-			MarkerOptions opt = new MarkerOptions();
-			opt.position(ll).title("South Extenstion 324")
-					.snippet("Sydney, Australia");
-			opt.icon(BitmapDescriptorFactory
-					.fromResource(R.drawable.map_marker));
-
-			mMap.addMarker(opt);
-		}
-		mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l[2], 15));
-		/*mMap.setOnMapClickListener(new OnMapClickListener() {
-			
-			@Override
-			public void onMapClick(LatLng l)
-			{
-				Log.e("LAT", l.latitude+","+l.longitude);
-			}
-		});*/
 	}
 
 	/* (non-Javadoc)
@@ -211,13 +295,20 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 	 */
 	@Override
 	public void updateUI(Pojo apiResponseData) {
-		ListOfNearbyEquipments equipmentsList = (ListOfNearbyEquipments) apiResponseData;
-		List<EquipmentInView> equipments = equipmentsList.getEquipments();
+		progress.dismiss();
+		if(apiResponseData != null) {
+			setupMarker((EquipmentInView) apiResponseData);
+		}
+		else{
+			focusOnCoordArgs();
+			resetCoordArgs();
+			Common.displayToast(getResources().getString(R.string.no_results), getActivity().getApplicationContext());
+		}
 	}
 
 	/**
 	 * method
-	 * to generate REST API url and
+	 * to generate REST API urlimplements Location and
 	 * to invoke startService
 	 *
 	 * @param urlArgs
@@ -228,11 +319,64 @@ public class MapViewer extends CustomFragment implements DataRetrieveUI
 		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFNEARBYEQUIPMENTS +
 				"?" + args.getUrlArgs() +
 				"";
-		String pojoClass = Constants.PojoClass.LISTOFNEARBYEQUIPMENTS;
-
+		String pojoClass = Constants.PojoClass.EQUIPMENTINVIEW;
+		progress.show();
+//		mMap.clear();
 		Intent i = new Intent(this.getActivity(), MainService.class);
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, pojoClass);
 		this.getActivity().startService(i);
+	}
+
+	private void setupMarker(EquipmentInView equipment) {
+		String[] coordinates;
+		MarkerOptions opt;
+		LatLng l = null;
+		coordinates = equipment.getCoordinates().split(",");
+		opt = new MarkerOptions();
+		//Double.parseDouble(coordinates[1]) + commonCoordsOffset
+		l = new LatLng(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]));
+		opt.position(l);
+		opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+		mMap.addMarker(opt);
+		if(l != null)
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, MapZoom));
+//		mMap.setOnMapClickListener(new OnMapClickListener() {
+//
+//			@Override
+//			public void onMapClick(LatLng l)
+//			{
+//				Log.e("LAT", l.latitude+","+l.longitude);
+//			}
+//		});
+	}
+
+	@Override
+	public void onLocationChanged(Location loc) {
+		Common.log("MapViewer onLocationChanged");
+		coordsArgs[0] = String.valueOf(loc.getLatitude());
+		coordsArgs[1] = String.valueOf(loc.getLongitude());
+		if(invokeAPIOnLocationChange){
+			Common.log("invokeAPIOnLocationChange");
+			MapZoom = 10;
+			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+			invokeAPIOnLocationChange = false;
+		}
+	}
+
+	@Override
+	public void onStatusChanged(String s, int i, Bundle bundle) {
+		Common.log("MapViewer onStatusChanged");
+	}
+
+	@Override
+	public void onProviderEnabled(String s) {
+		Common.log("MapViewer onProviderEnabled "+s);
+		invokeAPIOnLocationChange = true;
+	}
+
+	@Override
+	public void onProviderDisabled(String s) {
+		Common.log("MapViewer onProviderDisabled "+s);
 	}
 }

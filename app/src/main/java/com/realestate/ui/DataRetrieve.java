@@ -1,4 +1,4 @@
-package com.realestate.utils;
+package com.realestate.ui;
 
 import com.realestate.model.common.Pojo;
 import com.realestate.utils.net.args.UrlArgs;
@@ -7,7 +7,7 @@ import com.realestate.utils.net.args.UrlArgs;
  * Created on 09/08/2015
  * Description:
  */
-public interface DataRetrieveUI {
+public interface DataRetrieve {
 	/**
 	 * method
 	 * to update UI with the REST API's retrieved data

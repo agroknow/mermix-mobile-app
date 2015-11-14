@@ -50,7 +50,7 @@ public class MainActivity extends CustomActivity
 
 	/** The left navigation list adapter. */
 	private LeftNavAdapter adapter;
-	private int fragment2Launch = 0;
+	private int fragment2Launch = 2;
 
 	/**
 	 * Dispatch onPause() to fragments.

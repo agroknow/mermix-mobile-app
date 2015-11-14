@@ -23,10 +23,10 @@ import com.realestate.model.common.Address;
 import com.realestate.model.common.Availability;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.Pojo;
+import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.ImageBitmapCacheMap;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
-import com.realestate.utils.DataRetrieveUI;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.UrlArgs;
 
@@ -40,7 +40,7 @@ import java.util.List;
  * either invoke REST API's request node/NID.json (invokeRestApi = true)
  * or get equipment object from intent parameters (invokeRestApi = false)
  */
-public class EquipmentDetail extends CustomActivity implements DataRetrieveUI{
+public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	/** The map view. */
 	private MapView mMapView;
 

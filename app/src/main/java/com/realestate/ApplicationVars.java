@@ -17,6 +17,21 @@ import java.util.Map;
  * Created on 06/10/2015
  * Description:
  * class containing application's global scope variables
+ * TODO
+ * consider implementation using SharedPreferences instead, http://developer.android.com/guide/topics/data/data-storage.html#pref
+ *
+ * do not clear terms cache until new terms are retrieved from REST API
+ * in case NO internet connection available OR implement in memory sqlite db for terms
+ *
+ * create in memory sqlite db for retrieved equipment (neccessary in MapViewer)
+ * consider converting terms sqlite database from persistent to in memory
+ * however in memory sqlite may slow down app and eventually crash if large amount of data are kept in
+ *
+ * check
+ * https://attakornw.wordpress.com/2012/02/25/using-in-memory-sqlite-database-in-android-tests/
+ * http://stackoverflow.com/a/12470494, (data in Application & data in memory SQLite)
+ * http://stackoverflow.com/a/9286006, (SQLiteOpenHelper a static data member & abstract SQLite with ContentProvider)
+ * http://stackoverflow.com/a/22642516, (general information)
  */
 public class ApplicationVars {
 	/**
