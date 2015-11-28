@@ -8,12 +8,18 @@ import java.util.Map;
  * Constants used in the application
  */
 public class Constants {
-	public static final Boolean debugMode = true;
+	public static final Boolean devMode = true;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
 	public static final String APIENDPOINT = "http://dev.mermix.gr/el/";
+	public static final String CONCATDELIMETER = ",";
 	//public static final String APIENDPOINT = "http://192.168.1.64/";
 
 	public static final String APICREDENTIALS = "restws:r3stw5!";
+
+	public class MAPZOOMS {
+		public static final int COUNTY = 11;
+		public static final int COUNTRY = 6;
+	}
 
 	public class URI {
 		public static final String SINGLEEQUIPMENT = "node/NID.json";
@@ -117,14 +123,20 @@ public class Constants {
 
 	public class SQLITE{
 		public static final String DBNAME = "mermix";
-		public static final int DBVERSION = 1;
+		public static final int DBVERSION = 4;
 		public class TABLES {
 			public static final String TERMS = "terms";
+			public static final String NODES = "nodes";
 		}
 		public class COLUMNS {
 			public static final String TID = "tid";
 			public static final String NAME = "name";
 			public static final String VOCABULARY= "vocabulary";
+			public static final String NID = "nid";
+			public static final String TITLE = "title";
+			public static final String BODY = "body";
+			public static final String COORDINATES = "coordinates";
+			public static final String IMAGES = "images";
 		}
 	}
 

@@ -19,10 +19,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
 import com.realestate.model.Equipment;
+import com.realestate.model.SQLiteNode;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Availability;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.Pojo;
+import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.ImageBitmapCacheMap;
 import com.realestate.utils.Common;
@@ -30,6 +32,7 @@ import com.realestate.utils.Constants;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.UrlArgs;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +51,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	private GoogleMap mMap;
 
     private int equipmentId = -1;
-    private Equipment equipment;
+    private Equipment equipment = null;
     private final int defaultEquipmentId = -1;
     private Boolean invokeRestApi = false;
 
@@ -65,12 +68,24 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 		setContentView(R.layout.property_detail);
 		setupMap(savedInstanceState);
 		this.invokeRestApi = getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
+		this.equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
+
+		if(this.equipmentId > defaultEquipmentId){
+			DrupalNodes drupalNodes = new DrupalNodes(getApplicationContext());
+			SQLiteNode node = drupalNodes.getNode(equipmentId);
+			if(node == null)
+				invokeRestApi = true;
+			else{
+				equipment = node.toEquipment();
+			}
+		}
 
 		if(invokeRestApi){
-			//startRequestService();
+			//TODO startRequestService();
 		}
 		else{
-			equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
+			if(equipment == null)
+				equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
 
 			ImageView img = (ImageView) findViewById(R.id.img1);
 			img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
@@ -231,9 +246,6 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 		catch (ClassCastException e){
 			Common.logError("ClassCastException @ EquipmentDetail updateUI:" + e.getMessage());
 		}
-
-		//TODO
-		//ImageDownload implementation like FeedAdapter
 	}
 
 	@Override
@@ -245,6 +257,4 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, Constants.PojoClass.EQUIPMENT);
 		this.startService(i);
 	}
-	//TODO
-	//BroadcastReceiver implementation like MainActivity
 }

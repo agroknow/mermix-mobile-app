@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,12 +26,16 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.EquipmentInView;
+import com.realestate.model.SQLiteNode;
 import com.realestate.model.common.Pojo;
+import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.ui.DataRetrieve;
+import com.realestate.ui.activities.EquipmentDetail;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.MainService;
@@ -38,6 +43,9 @@ import com.realestate.utils.net.args.MapViewArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,7 +58,8 @@ import java.util.List;
  * FEATURES
  * Allows user to insert address and search for equipments near current address
  * (convert address to coordinates and invoke REST API).
- * Get current location coordinates (from GPS or network locationProvider) and invoke REST API
+ * Get current location coordinates (from GPS or network locationProvider) and invoke REST API.
+ * In order to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them.
  *
  * WORKFLOW
  * onCreate
@@ -65,11 +74,11 @@ import java.util.List;
  * 	if location provider is enabled then onLocationChanged invoke REST API
  *
  * TODO
- * to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them
- * on GMap Marker click, display equipment's title & image
- * on GMap Marker's title/image click, start EquipmentDetail activity
+ * implement markers clustering
+ * on marker click, display equipment's title & image
+ * on marker's title/image click, start EquipmentDetail activity
  */
-public class MapViewer extends CustomFragment implements DataRetrieve, LocationListener
+public class MapViewer extends CustomFragment implements DataRetrieve, LocationListener, GoogleMap.OnMarkerClickListener
 {
 
 	/** The map view. */
@@ -78,12 +87,13 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	/** The Google map. */
 	private GoogleMap mMap;
 
-	private int MapZoom = 6;
+	private int MapZoom;
 	private ProgressDialog progress;
 	private String[] coordsArgs = {"", ""};
-	private double commonCoordsOffset = 0.04;
+	private double commonCoordsOffset = 0.02;
 	private LocationManager locationManager;
 	private boolean invokeAPIOnLocationChange = false;
+	private HashMap<String, String> markersOnMap;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -101,6 +111,14 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		progress.setMessage(getResources().getString(R.string.progress_dialog_search_map_msg));
 		setTouchNClick(v.findViewById(R.id.btnSearch));
 		setupMap(v, savedInstanceState);
+
+		if(!Constants.devMode)
+			checkDeviceLocationService();
+		else{
+			EditText addressText = (EditText) v.findViewById(R.id.address);
+			addressText.setText("larisa");
+		}
+
 		return v;
 	}
 
@@ -147,10 +165,15 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			String location;
 			EditText addressTxtBox = (EditText) getActivity().findViewById(R.id.address);
 			location = addressTxtBox.getText().toString();
-			findCoordArgs(location);
-			MapZoom = 10;
-			Common.hideSoftKeyboard(getActivity());
-			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+			if(!location.isEmpty()) {
+				findCoordArgs(location);
+				MapZoom = Constants.MAPZOOMS.COUNTY;
+				Common.hideSoftKeyboard(getActivity());
+				startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+			}
+			else{
+				Common.displayToast(getResources().getString(R.string.enter_address), getActivity().getApplicationContext());
+			}
 		}
 	}
 
@@ -173,7 +196,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		Common.log("MapViewer onCreate");
 		super.onCreate(savedInstanceState);
 		locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
-		checkDeviceLocationService();
 	}
 
 	private String detectLocationProvider() {
@@ -226,22 +248,50 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		if (mMap != null){
 			//mMap.setMyLocationEnabled(true);
 			mMap.setInfoWindowAdapter(null);
+//		mMap.setOnMapClickListener(new OnMapClickListener() {
+//			@Override
+//			public void onMapClick(LatLng l){
+//				Log.e("LAT", l.latitude+","+l.longitude);
+//			}
+//		});
+			mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+				@Override
+				public void onInfoWindowClick(Marker marker) {
+					Common.log("MapViewer onInfoWindowClick");
+					Double[] dblCoords = {marker.getPosition().latitude, marker.getPosition().longitude};
+					String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+					if(markersOnMap.containsKey(coordinatesKey)) {
+						String nid = markersOnMap.get(coordinatesKey);
+						Intent i = new Intent(getActivity(), EquipmentDetail.class);
+						i.putExtra(Constants.INTENTVARS.EQUIPMENTID, Integer.parseInt(nid));
+						startActivity(i);
+					}
+					else
+						Common.logError("coordinates "+coordinatesKey+" DO NOT exist in HashMap markersOnMap");
+				}
+			});
 
-			//getLastKnownLocation returns null for provider 'gps' if device in a building
-			Location loc = locationManager.getLastKnownLocation(detectLocationProvider());
-			if(loc != null){
-				onLocationChanged(loc);
+			if(Constants.devMode){
+				Button btnSearch = (Button) getActivity().findViewById(R.id.btnSearch);
+				btnSearch.performClick();
 			}
-			if(coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()){
-				MapZoom = 6;
-				findCoordArgs("greece");
-				focusOnCoordArgs();
-				resetCoordArgs();
+			else {
+				//getLastKnownLocation returns null for provider 'gps' if device in a building
+				Location loc = locationManager.getLastKnownLocation(detectLocationProvider());
+				if (loc != null) {
+					onLocationChanged(loc);
+				}
+				if (coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()) {
+					MapZoom = Constants.MAPZOOMS.COUNTRY;
+					findCoordArgs("greece");
+					focusOnCoordArgs();
+					resetCoordArgs();
+				} else {
+					MapZoom = Constants.MAPZOOMS.COUNTY;
+					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+				}
 			}
-			else{
-				MapZoom = 10;
-				startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
-			}
+
 			long minTime = 60 * 1000;	//ms
 			float minDistance = 100;    //meters
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
@@ -288,19 +338,10 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	 */
 	private void setupMap(View v, Bundle savedInstanceState)
 	{
-		/*
-		//new api of google play services has changed and method MapsInitializer.initialize
-		//no longer throws the exception GooglePlayServicesNotAvailableException
-		try
-		{
-			MapsInitializer.initialize(getActivity());
-		} catch (GooglePlayServicesNotAvailableException e)
-		{
-			e.printStackTrace();
-		}*/
 		MapsInitializer.initialize(getActivity());
 		mMapView = (MapView) v.findViewById(R.id.map);
 		mMapView.onCreate(savedInstanceState);
+		markersOnMap = new HashMap<String, String>();
 	}
 
 	/* (non-Javadoc)
@@ -325,7 +366,21 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		progress.dismiss();
 		if(apiResponseData != null) {
 			try {
-				setupMarker((EquipmentInView) apiResponseData);
+				EquipmentInView equipment = (EquipmentInView) apiResponseData;
+				setupMarker(equipment);
+				DrupalNodes drupalNodes = new DrupalNodes(getActivity().getApplicationContext());
+				if(drupalNodes.getNode(Integer.parseInt(equipment.getNid())) == null) {
+					Double[] dblCoords = equipment.getCoordinates();
+					drupalNodes.insertNode(
+							new SQLiteNode(Integer.parseInt(equipment.getNid()),
+									equipment.getTitle(),
+									equipment.getBody(),
+									dblCoords,
+									Common.concatString(equipment.getImages(), Constants.CONCATDELIMETER),
+									(float) -1));
+				}
+				else
+					Common.log("equipment "+equipment.getNid()+" already exists in sqlite");
 			}
 			catch (ClassCastException e){
 				Common.logError("ClassCastException @ MapViewer updateUI:" + e.getMessage());
@@ -360,27 +415,78 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		this.getActivity().startService(i);
 	}
 
+	/**
+	 * Add marker on Map.
+	 * If equipment already exists in HashMap markersOnMap, then no new marker is added and map focuses on existent marker.
+	 * If another equipment with identical coordinates exists in HashMap markersOnMap, then offset is added to longitude value of current equipment's coordinates
+	 * before adding marker to map.
+	 *
+	 * @param equipment
+	 */
 	private void setupMarker(EquipmentInView equipment) {
-		String[] coordinates;
-		MarkerOptions opt;
-		LatLng l = null;
-		coordinates = equipment.getCoordinates().split(",");
-		opt = new MarkerOptions();
-		//Double.parseDouble(coordinates[1]) + commonCoordsOffset
-		l = new LatLng(Double.parseDouble(coordinates[0]), Double.parseDouble(coordinates[1]));
-		opt.position(l);
-		opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
-		mMap.addMarker(opt);
+		MarkerOptions opt =  new MarkerOptions();
+		String equipmentNid = equipment.getNid();
+		Double[] dblCoords = equipment.getCoordinates();
+		Boolean addMarker = true;
+		String coords = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+		LatLng l = new LatLng(dblCoords[0], dblCoords[1]);
+
+		if(markersOnMap.containsKey(coords)){
+			if(markersOnMap.get(coords).equals(equipmentNid)) {
+				addMarker = false;
+			}
+			else{
+				Common.log("MapViewer setupMarker for equipments with identical coordinates, "+ markersOnMap.get(coords) +" & "+ equipmentNid +" , add offset in lng value");
+				dblCoords = calcNewCoordinates(dblCoords);
+				coords = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+				l = new LatLng(dblCoords[0], dblCoords[1]);
+			}
+		}
+		else if(isEquipmentOnMap(equipmentNid)){
+			addMarker = false;
+		}
+
+		if(addMarker){
+			Common.log("MapViewer setupMarker add marker with coordinates: "+coords+" of equipment: "+equipmentNid);
+			opt.position(l);
+			opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+			opt.title(equipment.getTitle());
+			opt.snippet(equipment.getBody());
+			markersOnMap.put(coords, equipmentNid);
+			mMap.setOnMarkerClickListener(this);
+			mMap.addMarker(opt);
+		}
+		else{
+			Common.log("MapViewer setupMarker marker of equipment " + equipmentNid + " already exists in map");
+		}
 		if(l != null)
 			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, MapZoom));
-//		mMap.setOnMapClickListener(new OnMapClickListener() {
-//
-//			@Override
-//			public void onMapClick(LatLng l)
-//			{
-//				Log.e("LAT", l.latitude+","+l.longitude);
-//			}
-//		});
+	}
+
+	private boolean isEquipmentOnMap(String equipmentNid) {
+		Iterator it = markersOnMap.entrySet().iterator();
+		while (it.hasNext()) {
+			HashMap.Entry pair = (HashMap.Entry)it.next();
+			if(pair.getValue().equals(equipmentNid))
+				return true;
+		}
+		return false;
+	}
+
+	/**custom
+	 * Calculates new coordinates if equipments with identical ones exist.
+	 * If new coordinates already exist in HashMap, then new calculation is executed with recursive call.
+	 * @param dblCoords
+	 * @return
+	 */
+	private Double[] calcNewCoordinates(Double[] dblCoords) {
+		String coordinates;
+		dblCoords[1] = Common.addDoubleValues(dblCoords[1], commonCoordsOffset);
+		coordinates = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+		if(markersOnMap.containsKey(coordinates)){
+			dblCoords = calcNewCoordinates(dblCoords);
+		}
+		return dblCoords;
 	}
 
 	@Override
@@ -390,7 +496,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		coordsArgs[1] = String.valueOf(loc.getLongitude());
 		if(invokeAPIOnLocationChange){
 			Common.log("invokeAPIOnLocationChange");
-			MapZoom = 10;
+			MapZoom = Constants.MAPZOOMS.COUNTY;
 			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
 			invokeAPIOnLocationChange = false;
 		}
@@ -410,5 +516,17 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	@Override
 	public void onProviderDisabled(String s) {
 		Common.log("MapViewer onProviderDisabled "+s);
+	}
+
+	@Override
+	/**
+	 * implements custom behaviour on marker click
+	 * the default behaviour is to display title & snippet which are set when adding the marker
+	 */
+	public boolean onMarkerClick(Marker marker) {
+		//Common.displayToast("click marker on position " + marker.getPosition(), getActivity().getApplicationContext());
+		//marker.getPosition().latitude
+		//marker.getPosition().longitude
+		return false;
 	}
 }

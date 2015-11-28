@@ -10,23 +10,23 @@ import java.io.Serializable;
  */
 public class Address implements Serializable{
 	@JsonProperty("lon")
-	private float longitude;
+	private double longitude;
 	@JsonProperty("lat")
-	private float latitude;
+	private double latitude;
 
-	public float getLongitude() {
+	public double getLongitude() {
 		return longitude;
 	}
 
-	public void setLongitude(float longitude) {
+	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
 
-	public float getLatitude() {
+	public double getLatitude() {
 		return latitude;
 	}
 
-	public void setLatitude(float latitude) {
+	public void setLatitude(double latitude) {
 		this.latitude = latitude;
 	}
 }

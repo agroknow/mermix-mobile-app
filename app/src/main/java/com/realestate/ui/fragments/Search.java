@@ -122,7 +122,6 @@ public class Search extends CustomFragment implements DataRetrieve
 		Common.log("Search onStart");
 		super.onStart();
 		if(!spinnersInitialized) {
-			ApplicationVars.initialize(getActivity().getApplicationContext());
 			spinners.put(Constants.VOCABULARYNAMES.LOCATION, (Spinner) getActivity().findViewById(R.id.location));
 			spinners.put(Constants.VOCABULARYNAMES.MACHINETYPE, (Spinner) getActivity().findViewById(R.id.machine_type));
 			spinners.put(Constants.VOCABULARYNAMES.CULTIVATION, (Spinner) getActivity().findViewById(R.id.cultivation));

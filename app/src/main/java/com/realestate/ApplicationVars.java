@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.realestate.model.PojoTerm;
 import com.realestate.model.SQLiteTerm;
+import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.model.sqlite.DrupalTerms;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
@@ -46,8 +47,15 @@ public class ApplicationVars {
 		if(!varsInitialized) {
 			initDataRetrievedFlags();
 			clearTermsCache(context);
+			clearNodesCache(context);
 			varsInitialized = true;
 		}
+	}
+
+	private static void clearNodesCache(Context context) {
+		Common.log("ApplicationVars clearNodesCache");
+		DrupalNodes drupalNodes = new DrupalNodes(context);
+		drupalNodes.clearNodes();
 	}
 
 	public static void updateTermsCache(List<PojoTerm> terms, Context context){

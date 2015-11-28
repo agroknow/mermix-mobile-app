@@ -2,6 +2,8 @@ package com.realestate.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.realestate.model.common.Pojo;
+import com.realestate.utils.Common;
+import com.realestate.utils.Constants;
 
 import java.io.Serializable;
 import java.util.List;
@@ -46,8 +48,8 @@ public class EquipmentInView extends Pojo implements Serializable{
 		this.body = body;
 	}
 
-	public String getCoordinates() {
-		return coordinates;
+	public Double[] getCoordinates() {
+		return Common.stringToDoubleArr(coordinates, Constants.CONCATDELIMETER);
 	}
 
 	public void setCoordinates(String coordinates) {

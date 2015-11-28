@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.realestate.model.SQLiteTerm;
@@ -74,14 +75,19 @@ public class DrupalTerms {
 		Common.log("DrupalTerms getVocabularyTerms of "+vocabulary);
 		ArrayList<SQLiteTerm> SQLiteTerms = new ArrayList<SQLiteTerm>();
 		String[] args = {vocabulary};
-		Cursor cur = this.dbInstance.rawQuery(""+
-				" SELECT " + Constants.SQLITE.COLUMNS.TID + "," + Constants.SQLITE.COLUMNS.NAME +
-				" FROM " + Constants.SQLITE.TABLES.TERMS +
-				" WHERE " + Constants.SQLITE.COLUMNS.VOCABULARY + " = ? ", args);
-		while(cur.moveToNext()){
-			SQLiteTerms.add(new SQLiteTerm(cur.getInt(0), cur.getString(1), vocabulary));
+		try {
+			Cursor cur = this.dbInstance.rawQuery(""+
+					" SELECT " + Constants.SQLITE.COLUMNS.TID + "," + Constants.SQLITE.COLUMNS.NAME +
+					" FROM " + Constants.SQLITE.TABLES.TERMS +
+					" WHERE " + Constants.SQLITE.COLUMNS.VOCABULARY + " = ? ", args);
+			while(cur.moveToNext()){
+				SQLiteTerms.add(new SQLiteTerm(cur.getInt(0), cur.getString(1), vocabulary));
+			}
+			cur.close();
 		}
-		cur.close();
+		catch(SQLiteException e){
+			Common.logError("SQLiteException @ DrupalTerms getVocabularyTerms:" + e.getMessage());
+		}
 		return SQLiteTerms;
 	}
 

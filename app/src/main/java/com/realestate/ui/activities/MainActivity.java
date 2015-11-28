@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
 import com.realestate.model.Data;
@@ -102,6 +103,7 @@ public class MainActivity extends CustomActivity
 	protected void onStart() {
 		Common.log("MainActivity onStart");
 		super.onStart();
+		ApplicationVars.initialize(getApplicationContext());
 	}
 
 	/* (non-Javadoc)
