@@ -34,6 +34,7 @@ public class DrupalNodes {
 			content.put(Constants.SQLITE.COLUMNS.TITLE, node.getTitle());
 			content.put(Constants.SQLITE.COLUMNS.BODY, node.getBody());
 			content.put(Constants.SQLITE.COLUMNS.COORDINATES, Common.doubleArr2String(node.getCoordinates(), Constants.CONCATDELIMETER));
+			content.put(Constants.SQLITE.COLUMNS.IMAGES, node.getImages());
 			this.dbInstance.insert(Constants.SQLITE.TABLES.NODES, null, content);
 			this.dbInstance.close();
 		}
@@ -53,7 +54,8 @@ public class DrupalNodes {
 							Constants.SQLITE.COLUMNS.NID,
 							Constants.SQLITE.COLUMNS.TITLE,
 							Constants.SQLITE.COLUMNS.BODY,
-							Constants.SQLITE.COLUMNS.COORDINATES
+							Constants.SQLITE.COLUMNS.COORDINATES,
+							Constants.SQLITE.COLUMNS.IMAGES
 					},
 					Constants.SQLITE.COLUMNS.NID + "=?",
 					new String[]{String.valueOf(nid)},
@@ -64,7 +66,7 @@ public class DrupalNodes {
 						cur.getString(1),
 						cur.getString(2),
 						Common.stringToDoubleArr(cur.getString(3), Constants.CONCATDELIMETER),
-						"",
+						cur.getString(4),
 						(float) -1);
 			}
 			cur.close();

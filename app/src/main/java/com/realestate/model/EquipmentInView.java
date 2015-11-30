@@ -7,6 +7,8 @@ import com.realestate.utils.Constants;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created on 29/10/2015
@@ -57,6 +59,13 @@ public class EquipmentInView extends Pojo implements Serializable{
 	}
 
 	public List<String> getImages() {
+		//get url from <img src="
+		Pattern p = Pattern.compile("src=\"(.*?)\"");
+		for(int i = 0; i < images.size(); i++){
+			Matcher m = p.matcher(images.get(i));
+			if(m.find())
+				images.set(i, m.group(1));
+		}
 		return images;
 	}
 

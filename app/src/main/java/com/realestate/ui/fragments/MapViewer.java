@@ -2,8 +2,10 @@ package com.realestate.ui.fragments;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -19,6 +21,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,12 +42,13 @@ import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
+import com.realestate.utils.ImageBitmapCacheMap;
 import com.realestate.utils.MainService;
+import com.realestate.utils.net.InfoWindowImageDownload;
 import com.realestate.utils.net.args.MapViewArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -247,7 +252,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		mMap = mMapView.getMap();
 		if (mMap != null){
 			//mMap.setMyLocationEnabled(true);
-			mMap.setInfoWindowAdapter(null);
+			mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(getActivity().getApplicationContext()));
 //		mMap.setOnMapClickListener(new OnMapClickListener() {
 //			@Override
 //			public void onMapClick(LatLng l){
@@ -432,7 +437,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		LatLng l = new LatLng(dblCoords[0], dblCoords[1]);
 
 		if(markersOnMap.containsKey(coords)){
-			if(markersOnMap.get(coords).equals(equipmentNid)) {
+			if(markersOnMap.get(coords).equals(equipmentNid) || isEquipmentOnMap(equipmentNid)) {
 				addMarker = false;
 			}
 			else{
@@ -529,4 +534,52 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		//marker.getPosition().longitude
 		return false;
 	}
+
+	public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
+
+		private Marker iwMarker;
+		private Context iwContext;
+
+		public MarkerInfoWindowAdapter(Context context) {
+			iwContext = context;
+		}
+
+		@Override
+		public View getInfoWindow(Marker marker) {
+			return null;
+		}
+
+		@Override
+		public View getInfoContents(Marker marker) {
+			iwMarker = marker;
+			LayoutInflater inflater = (LayoutInflater) iwContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+			// Getting view from the layout file info_window_layout
+			View popUp = inflater.inflate(R.layout.info_window, null);
+			TextView popUpTitle = (TextView) popUp.findViewById(R.id.iw_title);
+			//TextView popUpContent = (TextView) popUp.findViewById(R.id.popup_content);
+			ImageView popUpImage = (ImageView) popUp.findViewById(R.id.iw_img);
+
+			popUpTitle.setText(marker.getTitle());
+			//popUpContent.setText(marker.getSnippet());
+
+			Double[] dblCoords = {marker.getPosition().latitude, marker.getPosition().longitude};
+			String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+			int equipmentId = Integer.parseInt(markersOnMap.get(coordinatesKey));
+			DrupalNodes drupalNodes = new DrupalNodes(iwContext);
+			SQLiteNode node = drupalNodes.getNode(equipmentId);
+			String imageUrl = node.getImage(0);
+			Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl);
+			if (cachedBitmap == null) {
+				popUpImage.setImageDrawable(null);
+				new InfoWindowImageDownload(popUpImage, iwMarker).execute(imageUrl);
+			} else {
+				popUpImage.setImageBitmap(cachedBitmap);
+			}
+
+			return popUp;
+		}
+	}
+
+
 }
