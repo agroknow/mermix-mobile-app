@@ -30,8 +30,16 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;/*else {
+					MapZoom = Constants.MAPZOOMS.COUNTY;
+					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+				}*/
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterItem;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.EquipmentInView;
@@ -65,6 +73,9 @@ import java.util.List;
  * (convert address to coordinates and invoke REST API).
  * Get current location coordinates (from GPS or network locationProvider) and invoke REST API.
  * In order to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them.
+ * On marker click, display InfoWindow with equipment's title & image.
+ * On InfoWindow's click, start EquipmentDetail activity.
+ * Markers Clustering.
  *
  * WORKFLOW
  * onCreate
@@ -77,27 +88,23 @@ import java.util.List;
  * 	set coordsArgs from inserted location and invoke REST API
  * onProviderEnabled
  * 	if location provider is enabled then onLocationChanged invoke REST API
- *
- * TODO
- * implement markers clustering
- * on marker click, display equipment's title & image
- * on marker's title/image click, start EquipmentDetail activity
  */
-public class MapViewer extends CustomFragment implements DataRetrieve, LocationListener, GoogleMap.OnMarkerClickListener
-{
+public class MapViewer extends CustomFragment implements DataRetrieve, LocationListener, GoogleMap.OnInfoWindowClickListener, ClusterManager.OnClusterClickListener<MapViewer.MarkersClusterItem>, ClusterManager.OnClusterInfoWindowClickListener<MapViewer.MarkersClusterItem>, ClusterManager.OnClusterItemClickListener<MapViewer.MarkersClusterItem>, ClusterManager.OnClusterItemInfoWindowClickListener<MapViewer.MarkersClusterItem> {
 
 	/** The map view. */
 	private MapView mMapView;
-
 	/** The Google map. */
 	private GoogleMap mMap;
-
 	private int MapZoom;
 	private ProgressDialog progress;
 	private String[] coordsArgs = {"", ""};
-	private double commonCoordsOffset = 0.02;
+	private double commonCoordsOffset = 0.005;
 	private LocationManager locationManager;
-	private boolean invokeAPIOnLocationChange = false;
+	private boolean invokeAPIOnLocationChange;
+	private boolean integrateMarkersClustering = true;
+	private boolean equipmentDetailActivityStart;
+	private ClusterManager<MarkersClusterItem> mClusterManager;
+	private MarkersClusterItem currentMarkerClusterItem;
 	private HashMap<String, String> markersOnMap;
 
 	/* (non-Javadoc)
@@ -117,45 +124,13 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		setTouchNClick(v.findViewById(R.id.btnSearch));
 		setupMap(v, savedInstanceState);
 
-		if(!Constants.devMode)
-			checkDeviceLocationService();
-		else{
+		if(Constants.devMode){
 			EditText addressText = (EditText) v.findViewById(R.id.address);
-			addressText.setText("larisa");
+			addressText.setText("λαμία");
 		}
-
+		else
+			checkDeviceLocationService();
 		return v;
-	}
-
-	private void checkDeviceLocationService() {
-		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-		if(!isGPSEnabled && !isNetworkEnabled){
-			/*
-			display dialog to prompt user to enable location detection services
-			 */
-			AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-			dialog.setMessage(getResources().getString(R.string.enable_location_detect_service));
-			dialog.setPositiveButton(getResources().getString(R.string.enable),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-							// TODO Auto-generated method stub
-							startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-							invokeAPIOnLocationChange = true;
-						}
-					}
-			);
-			dialog.setNegativeButton(getString(R.string.cancel),
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-							// TODO Auto-generated method stub
-						}
-					}
-			);
-			dialog.show();
-		}
 	}
 
 	/* (non-Javadoc)
@@ -201,25 +176,14 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		Common.log("MapViewer onCreate");
 		super.onCreate(savedInstanceState);
 		locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
-	}
-
-	private String detectLocationProvider() {
-		Common.log("MapViewer detectLocationProvider");
-		String provider;
-		Criteria criteria = new Criteria();
-		criteria.setPowerRequirement(Criteria.POWER_LOW);
-		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		Boolean getEnabledProvider = true;
-		//with criteria ACCURACY_COARSE, provider 'network' is selected
-		//with default criteria or ACCURACY_FINE, provider 'gps' is selected
-		provider = locationManager.getBestProvider(criteria, getEnabledProvider);
-		Common.log("locationProvider " + provider);
-		return provider;
+		invokeAPIOnLocationChange = false;
+		equipmentDetailActivityStart = false;
+		mMap = null;
 	}
 
 	/* (non-Javadoc)
-		 * @see android.support.v4.app.Fragment#onPause()
-		 */
+	 * @see android.support.v4.app.Fragment#onPause()
+	 */
 	@Override
 	public void onPause()
 	{
@@ -249,104 +213,61 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		Common.log("MapViewer onResume");
 		super.onResume();
 		mMapView.onResume();
-		mMap = mMapView.getMap();
-		if (mMap != null){
-			//mMap.setMyLocationEnabled(true);
-			mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(getActivity().getApplicationContext()));
-//		mMap.setOnMapClickListener(new OnMapClickListener() {
-//			@Override
-//			public void onMapClick(LatLng l){
-//				Log.e("LAT", l.latitude+","+l.longitude);
-//			}
-//		});
-			mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
-				@Override
-				public void onInfoWindowClick(Marker marker) {
-					Common.log("MapViewer onInfoWindowClick");
-					Double[] dblCoords = {marker.getPosition().latitude, marker.getPosition().longitude};
-					String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
-					if(markersOnMap.containsKey(coordinatesKey)) {
-						String nid = markersOnMap.get(coordinatesKey);
-						Intent i = new Intent(getActivity(), EquipmentDetail.class);
-						i.putExtra(Constants.INTENTVARS.EQUIPMENTID, Integer.parseInt(nid));
-						startActivity(i);
-					}
-					else
-						Common.logError("coordinates "+coordinatesKey+" DO NOT exist in HashMap markersOnMap");
-				}
-			});
+		if(mMap == null) {
+			mMap = mMapView.getMap();
+			if (integrateMarkersClustering) {
+				mClusterManager = new ClusterManager<MarkersClusterItem>(getActivity().getApplicationContext(), mMap);
+				mMap.setOnCameraChangeListener(mClusterManager);
+				mMap.setOnMarkerClickListener(mClusterManager);
+				mMap.setOnInfoWindowClickListener(mClusterManager);
+				mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
 
-			if(Constants.devMode){
+				mClusterManager.setOnClusterClickListener(this);
+				mClusterManager.setOnClusterInfoWindowClickListener(this);
+				mClusterManager.setOnClusterItemClickListener(this);
+				mClusterManager.setOnClusterItemInfoWindowClickListener(this);
+
+				mClusterManager.setRenderer(new MarkersClusterRenderer<MarkersClusterItem>(getActivity().getApplicationContext(), mMap, mClusterManager));
+				mClusterManager.getMarkerCollection().setOnInfoWindowAdapter(new MarkerInfoWindowAdapter(getActivity().getApplicationContext()));
+				//mClusterManager.getClusterMarkerCollection().setOnInfoWindowAdapter(new MarkerInfoWindowAdapter(getActivity().getApplicationContext()));
+			} else {
+//			mMap.setMyLocationEnabled(true);
+				mMap.setOnInfoWindowClickListener(this);
+				mMap.setInfoWindowAdapter(new MarkerInfoWindowAdapter(getActivity().getApplicationContext()));
+			}
+		}
+
+		if(equipmentDetailActivityStart)
+			equipmentDetailActivityStart = false;
+		else{
+			if (Constants.devMode) {
 				Button btnSearch = (Button) getActivity().findViewById(R.id.btnSearch);
 				btnSearch.performClick();
-			}
-			else {
+			} else {
 				//getLastKnownLocation returns null for provider 'gps' if device in a building
 				Location loc = locationManager.getLastKnownLocation(detectLocationProvider());
 				if (loc != null) {
 					onLocationChanged(loc);
+					MapZoom = Constants.MAPZOOMS.COUNTY;
+					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
 				}
-				if (coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()) {
+				else if (coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()) {
 					MapZoom = Constants.MAPZOOMS.COUNTRY;
 					findCoordArgs("greece");
 					focusOnCoordArgs();
 					resetCoordArgs();
-				} else {
+				} /*else {
 					MapZoom = Constants.MAPZOOMS.COUNTY;
 					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
-				}
+				}*/
 			}
-
-			long minTime = 60 * 1000;	//ms
-			float minDistance = 100;    //meters
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
-			locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, this);
 		}
-	}
 
-	private void findCoordArgs(String loc){
-		Geocoder gc = new Geocoder(getActivity().getApplicationContext());
-		List<Address> list = null;
-		Address addressLocation;
-		try {
-			list = gc.getFromLocationName(loc, 1);
-		} catch (IOException e) {
-			Common.logError("MapViewer findCoordArgs IOException: "+e.getMessage());
-			//e.printStackTrace();
-		}
-		for(int idx=0;idx<list.size();idx++){
-			addressLocation = list.get(idx);
-			coordsArgs[0] = String.valueOf(addressLocation.getLatitude());
-			coordsArgs[1] = String.valueOf(addressLocation.getLongitude());
-		}
-	}
+		long minTime = 60 * 1000;	//ms
+		float minDistance = 100;    //meters
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, this);
 
-	private void focusOnCoordArgs() {
-		if(!coordsArgs[0].isEmpty() && !coordsArgs[1].isEmpty()) {
-			LatLng l = new LatLng(Double.parseDouble(coordsArgs[0]), Double.parseDouble(coordsArgs[1]));
-			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, MapZoom));
-		}
-	}
-
-	private void resetCoordArgs(){
-		coordsArgs[0] = "";
-		coordsArgs[1] = "";
-	}
-
-	/**
-	 * Setup and initialize the Google map view.
-	 * 
-	 * @param v
-	 *            the root view
-	 * @param savedInstanceState
-	 *            the saved instance state
-	 */
-	private void setupMap(View v, Bundle savedInstanceState)
-	{
-		MapsInitializer.initialize(getActivity());
-		mMapView = (MapView) v.findViewById(R.id.map);
-		mMapView.onCreate(savedInstanceState);
-		markersOnMap = new HashMap<String, String>();
 	}
 
 	/* (non-Javadoc)
@@ -412,6 +333,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 				"?" + args.getUrlArgs() +
 				"";
 		String pojoClass = Constants.PojoClass.EQUIPMENTINVIEW;
+		invokeAPIOnLocationChange = false;
 		progress.show();
 //		mMap.clear();
 		Intent i = new Intent(this.getActivity(), MainService.class);
@@ -419,6 +341,179 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, pojoClass);
 		this.getActivity().startService(i);
 	}
+
+	@Override
+	public void onLocationChanged(Location loc) {
+		Common.log("MapViewer onLocationChanged");
+		coordsArgs[0] = String.valueOf(loc.getLatitude());
+		coordsArgs[1] = String.valueOf(loc.getLongitude());
+		if(invokeAPIOnLocationChange){
+			Common.log("invokeAPIOnLocationChange");
+			MapZoom = Constants.MAPZOOMS.COUNTY;
+			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
+		}
+	}
+
+	@Override
+	public void onStatusChanged(String s, int i, Bundle bundle) {
+		Common.log("MapViewer onStatusChanged");
+	}
+
+	@Override
+	public void onProviderEnabled(String s) {
+		Common.log("MapViewer onProviderEnabled " + s);
+		invokeAPIOnLocationChange = true;
+	}
+
+	@Override
+	public void onProviderDisabled(String s) {
+		Common.log("MapViewer onProviderDisabled " + s);
+	}
+
+	@Override
+	public void onInfoWindowClick(Marker marker) {
+		Common.log("MapViewer onInfoWindowClick");
+		Double[] dblCoords = {marker.getPosition().latitude, marker.getPosition().longitude};
+		String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+		startEquipmentDetailView(coordinatesKey);
+	}
+
+	@Override
+	public boolean onClusterClick(Cluster<MarkersClusterItem> cluster) {
+		Common.log("MapViewer onClusterClick");
+		//mMap.animateCamera(CameraUpdateFactory.zoomTo(mMap.getCameraPosition().zoom + 2f));
+
+		LatLngBounds.Builder builder = LatLngBounds.builder();
+		for (ClusterItem item : cluster.getItems()) {
+			builder.include(item.getPosition());
+		}
+		final LatLngBounds bounds = builder.build();
+		mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+		return true;
+	}
+
+	@Override
+	public void onClusterInfoWindowClick(Cluster<MarkersClusterItem> cluster) {
+		Common.log("MapViewer onClusterInfoWindowClick");
+	}
+
+	@Override
+	public boolean onClusterItemClick(MarkersClusterItem markersClusterItem) {
+		Common.log("MapViewer onClusterItemClick");
+		currentMarkerClusterItem = markersClusterItem;
+		return false;
+	}
+
+	@Override
+	public void onClusterItemInfoWindowClick(MarkersClusterItem markersClusterItem) {
+		Common.log("MapViewer onClusterItemInfoWindowClick");
+		Double[] dblCoords = {markersClusterItem.getPosition().latitude, markersClusterItem.getPosition().longitude};
+		String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
+		startEquipmentDetailView(coordinatesKey);
+	}
+
+	private void startEquipmentDetailView(String coordinatesKey) {
+		if (markersOnMap.containsKey(coordinatesKey)) {
+			String nid = markersOnMap.get(coordinatesKey);
+			equipmentDetailActivityStart = true;
+			Intent i = new Intent(getActivity(), EquipmentDetail.class);
+			i.putExtra(Constants.INTENTVARS.EQUIPMENTID, Integer.parseInt(nid));
+			startActivity(i);
+		} else
+			Common.logError("EquipmentDetail failed to start because coordinates " + coordinatesKey + " DO NOT exist in HashMap markersOnMap");
+	}
+
+	private void checkDeviceLocationService() {
+		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+		if(!isGPSEnabled && !isNetworkEnabled){
+			/*
+			display dialog to prompt user to enable location detection services
+			 */
+			AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+			dialog.setMessage(getResources().getString(R.string.enable_location_detect_service));
+			dialog.setPositiveButton(getResources().getString(R.string.enable),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+							// TODO Auto-generated method stub
+							startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+							invokeAPIOnLocationChange = true;
+						}
+					}
+			);
+			dialog.setNegativeButton(getString(R.string.cancel),
+					new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+							// TODO Auto-generated method stub
+						}
+					}
+			);
+			dialog.show();
+		}
+	}
+
+	private String detectLocationProvider() {
+		Common.log("MapViewer detectLocationProvider");
+		String provider;
+		Criteria criteria = new Criteria();
+		criteria.setPowerRequirement(Criteria.POWER_LOW);
+		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+		Boolean getEnabledProvider = true;
+		//with criteria ACCURACY_COARSE, provider 'network' is selected
+		//with default criteria or ACCURACY_FINE, provider 'gps' is selected
+		provider = locationManager.getBestProvider(criteria, getEnabledProvider);
+		Common.log("locationProvider " + provider);
+		return provider;
+	}
+
+	private void findCoordArgs(String loc){
+		Geocoder gc = new Geocoder(getActivity().getApplicationContext());
+		List<Address> list = null;
+		Address addressLocation;
+		try {
+			list = gc.getFromLocationName(loc, 1);
+		} catch (IOException e) {
+			Common.logError("MapViewer findCoordArgs IOException: "+e.getMessage());
+			//e.printStackTrace();
+		}
+		for(int idx=0;idx<list.size();idx++){
+			addressLocation = list.get(idx);
+			coordsArgs[0] = String.valueOf(addressLocation.getLatitude());
+			coordsArgs[1] = String.valueOf(addressLocation.getLongitude());
+		}
+	}
+
+	private void focusOnCoordArgs() {
+		if(!coordsArgs[0].isEmpty() && !coordsArgs[1].isEmpty()) {
+			LatLng l = new LatLng(Double.parseDouble(coordsArgs[0]), Double.parseDouble(coordsArgs[1]));
+			mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, MapZoom));
+		}
+	}
+
+	private void resetCoordArgs(){
+		coordsArgs[0] = "";
+		coordsArgs[1] = "";
+	}
+
+	/**
+	 * Setup and initialize the Google map view.
+	 * 
+	 * @param v
+	 *            the root view
+	 * @param savedInstanceState
+	 *            the saved instance state
+	 */
+	private void setupMap(View v, Bundle savedInstanceState)
+	{
+		MapsInitializer.initialize(getActivity());
+		mMapView = (MapView) v.findViewById(R.id.map);
+		mMapView.onCreate(savedInstanceState);
+		markersOnMap = new HashMap<String, String>();
+	}
+
+
 
 	/**
 	 * Add marker on Map.
@@ -429,7 +524,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	 * @param equipment
 	 */
 	private void setupMarker(EquipmentInView equipment) {
-		MarkerOptions opt =  new MarkerOptions();
 		String equipmentNid = equipment.getNid();
 		Double[] dblCoords = equipment.getCoordinates();
 		Boolean addMarker = true;
@@ -452,14 +546,21 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		}
 
 		if(addMarker){
-			Common.log("MapViewer setupMarker add marker with coordinates: "+coords+" of equipment: "+equipmentNid);
-			opt.position(l);
-			opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
-			opt.title(equipment.getTitle());
-			opt.snippet(equipment.getBody());
+			Common.log("MapViewer setupMarker add marker with coordinates: " + coords + " of equipment: " + equipmentNid);
 			markersOnMap.put(coords, equipmentNid);
-			mMap.setOnMarkerClickListener(this);
-			mMap.addMarker(opt);
+			if(integrateMarkersClustering){
+				MarkersClusterItem offsetItem = new MarkersClusterItem(l, equipment.getTitle());
+				this.mClusterManager.addItem(offsetItem);
+				this.mClusterManager.cluster();
+			} else {
+				MarkerOptions opt = new MarkerOptions();
+				opt.position(l);
+				opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+				opt.title(equipment.getTitle());
+				//opt.snippet(equipment.getBody());
+				mMap.addMarker(opt);
+				//mMap.setOnMarkerClickListener(this);
+			}
 		}
 		else{
 			Common.log("MapViewer setupMarker marker of equipment " + equipmentNid + " already exists in map");
@@ -494,47 +595,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		return dblCoords;
 	}
 
-	@Override
-	public void onLocationChanged(Location loc) {
-		Common.log("MapViewer onLocationChanged");
-		coordsArgs[0] = String.valueOf(loc.getLatitude());
-		coordsArgs[1] = String.valueOf(loc.getLongitude());
-		if(invokeAPIOnLocationChange){
-			Common.log("invokeAPIOnLocationChange");
-			MapZoom = Constants.MAPZOOMS.COUNTY;
-			startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
-			invokeAPIOnLocationChange = false;
-		}
-	}
-
-	@Override
-	public void onStatusChanged(String s, int i, Bundle bundle) {
-		Common.log("MapViewer onStatusChanged");
-	}
-
-	@Override
-	public void onProviderEnabled(String s) {
-		Common.log("MapViewer onProviderEnabled "+s);
-		invokeAPIOnLocationChange = true;
-	}
-
-	@Override
-	public void onProviderDisabled(String s) {
-		Common.log("MapViewer onProviderDisabled "+s);
-	}
-
-	@Override
-	/**
-	 * implements custom behaviour on marker click
-	 * the default behaviour is to display title & snippet which are set when adding the marker
-	 */
-	public boolean onMarkerClick(Marker marker) {
-		//Common.displayToast("click marker on position " + marker.getPosition(), getActivity().getApplicationContext());
-		//marker.getPosition().latitude
-		//marker.getPosition().longitude
-		return false;
-	}
-
 	public class MarkerInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 		private Marker iwMarker;
@@ -560,8 +620,13 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			//TextView popUpContent = (TextView) popUp.findViewById(R.id.popup_content);
 			ImageView popUpImage = (ImageView) popUp.findViewById(R.id.iw_img);
 
-			popUpTitle.setText(marker.getTitle());
-			//popUpContent.setText(marker.getSnippet());
+			if(integrateMarkersClustering) {
+				popUpTitle.setText(currentMarkerClusterItem.getTitle());
+			}
+			else {
+				popUpTitle.setText(marker.getTitle());
+				//popUpContent.setText(marker.getSnippet());
+			}
 
 			Double[] dblCoords = {marker.getPosition().latitude, marker.getPosition().longitude};
 			String coordinatesKey = Common.doubleArr2String(dblCoords, Constants.CONCATDELIMETER);
@@ -578,6 +643,37 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			}
 
 			return popUp;
+		}
+	}
+
+	public class MarkersClusterItem implements ClusterItem{
+		private final LatLng mPosition;
+		private final String title;
+
+		public MarkersClusterItem(LatLng l, String title) {
+			mPosition = l;
+			this.title = title;
+		}
+		public String getTitle(){
+			return this.title;
+		}
+
+		@Override
+		public LatLng getPosition() {
+			return mPosition;
+		}
+	}
+
+	public class MarkersClusterRenderer<T extends ClusterItem> extends DefaultClusterRenderer<T>{
+
+		public MarkersClusterRenderer(Context context, GoogleMap map, ClusterManager<T> clusterManager) {
+			super(context, map, clusterManager);
+		}
+
+		@Override
+		protected boolean shouldRenderAsCluster(Cluster<T> cluster) {
+			//return super.shouldRenderAsCluster(cluster);
+			return cluster.getSize() > 1;
 		}
 	}
 

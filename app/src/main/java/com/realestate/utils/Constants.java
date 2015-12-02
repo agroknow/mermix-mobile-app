@@ -8,7 +8,7 @@ import java.util.Map;
  * Constants used in the application
  */
 public class Constants {
-	public static final Boolean devMode = true;
+	public static final Boolean devMode = false;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
 	public static final String APIENDPOINT = "http://dev.mermix.gr/el/";
 	public static final String CONCATDELIMETER = ",";
