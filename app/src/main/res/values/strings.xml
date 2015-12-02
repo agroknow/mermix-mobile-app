@@ -49,6 +49,7 @@
     <string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
     <string name="enable">Enable</string>
     <string name="cancel">Cancel</string>
+    <string name="later">Later</string>
 
 
 </resources>

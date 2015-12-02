@@ -30,10 +30,7 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;/*else {
-					MapZoom = Constants.MAPZOOMS.COUNTY;
-					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
-				}*/
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.Cluster;
@@ -81,9 +78,9 @@ import java.util.List;
  * onCreate
  * 	if device's location provider is disabled then prompt user to enable it
  * onResume
- * 	get device's enabled location provider and retrieve device's location (set coordsArgs)
- *	if coordsArgs not set then zoom map on Greece
- *	if coordsArgs set then invoke REST API
+ * 	if flag equipmentDetailActivityStart NOT SET
+ * 		get device's enabled location provider and retrieve device's location, set coordsArgs and invoke REST API
+ *		if coordsArgs not set (location provider is disabled) then zoom map on Greece
  * onClick (btn 'search near location')
  * 	set coordsArgs from inserted location and invoke REST API
  * onProviderEnabled
@@ -98,7 +95,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	private int MapZoom;
 	private ProgressDialog progress;
 	private String[] coordsArgs = {"", ""};
-	private double commonCoordsOffset = 0.005;
+	private double commonCoordsOffset = 0.01;
 	private LocationManager locationManager;
 	private boolean invokeAPIOnLocationChange;
 	private boolean integrateMarkersClustering = true;
@@ -442,7 +439,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 						}
 					}
 			);
-			dialog.setNegativeButton(getString(R.string.cancel),
+			dialog.setNegativeButton(getString(R.string.later),
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface paramDialogInterface, int paramInt) {

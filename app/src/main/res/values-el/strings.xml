@@ -46,4 +46,5 @@
 	<string name="enable_location_detect_service">Ενεργοποιήστε την υπηρεσία εντοπισμού θέσης στη συσκευή σας για να βρείτε μηχανήματα κοντά σας.</string>
 	<string name="enable">Ενεργοποίηση</string>
 	<string name="cancel">Ακύρωση</string>
+	<string name="later">Aργότερα</string>
 </resources>
