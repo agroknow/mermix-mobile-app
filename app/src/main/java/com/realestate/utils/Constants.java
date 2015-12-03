@@ -123,7 +123,7 @@ public class Constants {
 
 	public class SQLITE{
 		public static final String DBNAME = "mermix";
-		public static final int DBVERSION = 4;
+		public static final int DBVERSION = 7;
 		public class TABLES {
 			public static final String TERMS = "terms";
 			public static final String NODES = "nodes";

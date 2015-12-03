@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import com.realestate.model.SQLiteNode;
-import com.realestate.model.sqlite.openhelper.NodesOpenHelper;
+import com.realestate.model.sqlite.AppOpenHelper;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 
@@ -18,11 +18,12 @@ import com.realestate.utils.Constants;
  */
 public class DrupalNodes {
 
-	private NodesOpenHelper openHelper;
+	private AppOpenHelper openHelper;
 	private SQLiteDatabase dbInstance;
 
 	public DrupalNodes(Context context) {
-		this.openHelper = NodesOpenHelper.getInstance(context);
+		//this.openHelper = new AppOpenHelper(context, Constants.SQLITE.DBNAME, null, Constants.SQLITE.DBVERSION);
+		this.openHelper = AppOpenHelper.getInstance(context);
 	}
 
 	public void insertNode(SQLiteNode node){

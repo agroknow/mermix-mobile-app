@@ -22,12 +22,13 @@ import java.util.List;
  */
 public class DrupalTerms {
 
-	private TermsOpenHelper openHelper;
+	private AppOpenHelper openHelper;
 	private SQLiteDatabase dbInstance;
 
 	public DrupalTerms(Context context) {
 		Common.log("DrupalTerms constructor");
-		this.openHelper = new TermsOpenHelper(context, Constants.SQLITE.DBNAME, null, Constants.SQLITE.DBVERSION);
+		//this.openHelper = new AppOpenHelper(context, Constants.SQLITE.DBNAME, null, Constants.SQLITE.DBVERSION);
+		this.openHelper = AppOpenHelper.getInstance(context);
 		this.dbInstance = this.openHelper.getWritableDatabase();
 	}
 
@@ -71,46 +72,22 @@ public class DrupalTerms {
 		this.dbInstance.insert(Constants.SQLITE.TABLES.TERMS, null, content);
 	}
 
-	public List<SQLiteTerm> getVocabularyTerms(String vocabulary){
-		Common.log("DrupalTerms getVocabularyTerms of "+vocabulary);
+	public List<SQLiteTerm> getVocabularyTerms(String vocabulary) {
+		Common.log("DrupalTerms getVocabularyTerms of " + vocabulary);
 		ArrayList<SQLiteTerm> SQLiteTerms = new ArrayList<SQLiteTerm>();
 		String[] args = {vocabulary};
 		try {
-			Cursor cur = this.dbInstance.rawQuery(""+
+			Cursor cur = this.dbInstance.rawQuery("" +
 					" SELECT " + Constants.SQLITE.COLUMNS.TID + "," + Constants.SQLITE.COLUMNS.NAME +
 					" FROM " + Constants.SQLITE.TABLES.TERMS +
 					" WHERE " + Constants.SQLITE.COLUMNS.VOCABULARY + " = ? ", args);
-			while(cur.moveToNext()){
+			while (cur.moveToNext()) {
 				SQLiteTerms.add(new SQLiteTerm(cur.getInt(0), cur.getString(1), vocabulary));
 			}
 			cur.close();
-		}
-		catch(SQLiteException e){
+		} catch (SQLiteException e) {
 			Common.logError("SQLiteException @ DrupalTerms getVocabularyTerms:" + e.getMessage());
 		}
 		return SQLiteTerms;
-	}
-
-	private class TermsOpenHelper extends SQLiteOpenHelper{
-		public TermsOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
-			super(context, name, factory, version);
-			Common.log("TermsOpenHelper constructor");
-		}
-
-		@Override
-		public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-			Common.log("TermsOpenHelper onUpgrade");
-			sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+Constants.SQLITE.TABLES.TERMS);
-			onCreate(sqLiteDatabase);
-		}
-
-		@Override
-		public void onCreate(SQLiteDatabase sqLiteDatabase) {
-			Common.log("TermsOpenHelper onCreate");
-			sqLiteDatabase.execSQL("CREATE TABLE "+ Constants.SQLITE.TABLES.TERMS+" "
-					+"("+Constants.SQLITE.COLUMNS.VOCABULARY+" TEXT NOT NULL, "
-					+Constants.SQLITE.COLUMNS.NAME+" TEXT NOT NULL, "
-					+Constants.SQLITE.COLUMNS.TID+" INTEGER PRIMARY KEY)");
-		}
 	}
 }
