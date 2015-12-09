@@ -44,6 +44,7 @@
 	<string name="progress_dialog_search_map_msg">Αναζήτηση μηχανημάτων....</string>
 
 	<string name="enable_location_detect_service">Ενεργοποιήστε την υπηρεσία εντοπισμού θέσης στη συσκευή σας για να βρείτε μηχανήματα κοντά σας.</string>
+	<string name="rest_api_connection_error">Δεν είναι εφικτή η λήψη δεδομένων από τους εξυπηρετητές του mermix</string>
 	<string name="enable">Ενεργοποίηση</string>
 	<string name="cancel">Ακύρωση</string>
 	<string name="later">Aργότερα</string>

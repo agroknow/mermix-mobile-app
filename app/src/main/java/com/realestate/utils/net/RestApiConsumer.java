@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 
 /**
@@ -63,8 +64,11 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 				bufferedInput = new BufferedInputStream(urlConnection.getInputStream());
 				rootNode = jacksonParse(bufferedInput);
 				bufferedInput.close();
+			} catch (UnknownHostException e){
+				Common.logError("UnknownHostException @ execRequest:" + e.getMessage());
 			} catch (IOException e) {
-				e.printStackTrace();
+				Common.logError("IOException @ execRequest:" + e.getMessage());
+				//e.printStackTrace();
 			} finally {
 				urlConnection.disconnect();
 			}

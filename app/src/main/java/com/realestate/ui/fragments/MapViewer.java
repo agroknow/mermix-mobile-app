@@ -471,14 +471,14 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		Address addressLocation;
 		try {
 			list = gc.getFromLocationName(loc, 1);
+			for(int idx=0;idx<list.size();idx++){
+				addressLocation = list.get(idx);
+				coordsArgs[0] = String.valueOf(addressLocation.getLatitude());
+				coordsArgs[1] = String.valueOf(addressLocation.getLongitude());
+			}
 		} catch (IOException e) {
 			Common.logError("MapViewer findCoordArgs IOException: "+e.getMessage());
 			//e.printStackTrace();
-		}
-		for(int idx=0;idx<list.size();idx++){
-			addressLocation = list.get(idx);
-			coordsArgs[0] = String.valueOf(addressLocation.getLatitude());
-			coordsArgs[1] = String.valueOf(addressLocation.getLongitude());
 		}
 	}
 

@@ -18,6 +18,7 @@ import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.Common;
 import com.realestate.utils.MainService;
 import com.realestate.utils.TouchEffect;
+import com.realestate.utils.net.CheckConnectivityWithRestApi;
 
 /**
  * This is a common activity that all other activities of the app can extend to
@@ -63,6 +64,7 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 		IntentFilter intentFilter = new IntentFilter();
 		intentFilter.addAction(MainService.SERVICEACTION);
 		registerReceiver(mainBroadCastReceiver, intentFilter);
+		new CheckConnectivityWithRestApi(this).execute();
 	}
 
 	/**
@@ -147,5 +149,10 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 	public void onClick(View v)
 	{
 
+	}
+
+	public void onRestApiConnectionError(){
+		Common.log("CustomActivity onRestApiConnectionError");
+		Common.displayToast(getResources().getString(R.string.rest_api_connection_error), getApplicationContext());
 	}
 }

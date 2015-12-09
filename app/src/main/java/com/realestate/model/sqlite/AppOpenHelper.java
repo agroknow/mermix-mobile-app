@@ -14,7 +14,7 @@ import com.realestate.utils.Constants;
  * check why here: http://blog.foxxtrot.net/2009/01/a-sqliteopenhelper-is-not-a-sqlitetablehelper.html
  *
  * Singleton pattern implementation.
- * Instantiate NodesOpenHelper using Application's context instead of Activity's one,
+ * Instantiate AppOpenHelper using Application's context instead of Activity's one,
  * in order to avoid context leaks when Activity is destroyed.
  * check:
  * singleton pattern, http://stackoverflow.com/a/9286006

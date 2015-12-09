@@ -47,6 +47,7 @@
     <string name="progress_dialog_search_msg">Retrieving search results</string>
     <string name="progress_dialog_search_map_msg">Searching ....</string>
     <string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
+    <string name="rest_api_connection_error">Unable to connect to mermix data servers</string>
     <string name="enable">Enable</string>
     <string name="cancel">Cancel</string>
     <string name="later">Later</string>
