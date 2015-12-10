@@ -34,6 +34,7 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 	 */
 	public static final TouchEffect TOUCH = new TouchEffect();
 	public MainBroadCastReceiver mainBroadCastReceiver ;
+	private Boolean restApiAccessible = false;
 
 	private class MainBroadCastReceiver extends BroadcastReceiver {
 
@@ -151,8 +152,14 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 
 	}
 
-	public void onRestApiConnectionError(){
-		Common.log("CustomActivity onRestApiConnectionError");
-		Common.displayToast(getResources().getString(R.string.rest_api_connection_error), getApplicationContext());
+	public void onRestApiConnectionDetect(Boolean restApiAccessible){
+		Common.log("CustomActivity onRestApiConnectionStatus");
+		this.restApiAccessible = restApiAccessible;
+		if(!restApiAccessible)
+			Common.displayToast(getResources().getString(R.string.rest_api_connection_error), getApplicationContext());
+	}
+
+	public Boolean isRestApiAccessible(){
+		return this.restApiAccessible;
 	}
 }

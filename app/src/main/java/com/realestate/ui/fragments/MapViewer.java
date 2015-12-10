@@ -38,6 +38,7 @@ import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.realestate.R;
+import com.realestate.custom.CustomActivity;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.EquipmentInView;
 import com.realestate.model.SQLiteNode;
@@ -45,6 +46,7 @@ import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
+import com.realestate.ui.activities.MainActivity;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageBitmapCacheMap;
@@ -248,7 +250,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 					MapZoom = Constants.MAPZOOMS.COUNTY;
 					startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
 				}
-				else if (coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty()) {
+				else if (coordsArgs[0].isEmpty() && coordsArgs[1].isEmpty() && ((CustomActivity) getActivity()).isRestApiAccessible()) {
 					MapZoom = Constants.MAPZOOMS.COUNTRY;
 					findCoordArgs("greece");
 					focusOnCoordArgs();
@@ -421,6 +423,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	}
 
 	private void checkDeviceLocationService() {
+		Common.log("MapViewer checkDeviceLocationService");
 		Boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
 		Boolean isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		if(!isGPSEnabled && !isNetworkEnabled){
@@ -433,7 +436,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-							// TODO Auto-generated method stub
 							startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
 							invokeAPIOnLocationChange = true;
 						}
@@ -443,7 +445,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 					new DialogInterface.OnClickListener() {
 						@Override
 						public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-							// TODO Auto-generated method stub
 						}
 					}
 			);
@@ -466,6 +467,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	}
 
 	private void findCoordArgs(String loc){
+		Common.log("MapViewer findCoordArgs");
 		Geocoder gc = new Geocoder(getActivity().getApplicationContext());
 		List<Address> list = null;
 		Address addressLocation;
@@ -504,8 +506,10 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	 */
 	private void setupMap(View v, Bundle savedInstanceState)
 	{
+		Common.log("MapViewer setupMap");
 		MapsInitializer.initialize(getActivity());
 		mMapView = (MapView) v.findViewById(R.id.map);
+		//TODO mMapView.onCreate causes APP to freeze for about a second
 		mMapView.onCreate(savedInstanceState);
 		markersOnMap = new HashMap<String, String>();
 	}

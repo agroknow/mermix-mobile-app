@@ -51,9 +51,8 @@ public class CheckConnectivityWithRestApi extends AsyncTask<Void, Void, Boolean>
 	}
 
 	@Override
-	protected void onPostExecute(Boolean aBoolean) {
-		super.onPostExecute(aBoolean);
-		if(!aBoolean)
-			this.activityOrigin.onRestApiConnectionError();
+	protected void onPostExecute(Boolean restApiAccessible) {
+		super.onPostExecute(restApiAccessible);
+		this.activityOrigin.onRestApiConnectionDetect(restApiAccessible);
 	}
 }
