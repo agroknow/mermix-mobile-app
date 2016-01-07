@@ -28,7 +28,7 @@
     <string name="min_land">Minimum land size</string>
     <string name="surroun_sberb">Surrounding suberbs</string>
     <string name="furnished">Furnished only</string>
-    <string name="pets_allow">Pets allowed</string>
+    <string name="pets_allow">Petsprogress_dialog_title allowed</string>
     <string name="smoke_permit">Smoke Permitted</string>
     <string name="rante_range">Ranting Range</string>
     <string name="search_now">Search Now</string>
@@ -51,6 +51,11 @@
     <string name="enable">Enable</string>
     <string name="cancel">Cancel</string>
     <string name="later">Later</string>
-
+    <string name="submit">Submit</string>
+    <string name="equipment">Equipment</string>
+    <string name="map">Map</string>
+	<string name="add_new_equipment">Add</string>
+    <string name="openCamera">Camera</string>
+    <string name="selectImageFile">Select Image</string>
 
 </resources>

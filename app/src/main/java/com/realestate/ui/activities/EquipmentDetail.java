@@ -40,8 +40,9 @@ import java.util.List;
  *
  * display equipment node in detail
  * to retrieve equipment details
- * either invoke REST API's request node/NID.json (invokeRestApi = true)
- * or get equipment object from intent parameters (invokeRestApi = false)
+ * either invoke REST API's request node/NID.json	(invokeRestApi = true, equipmentId != defaultEquipmentId)
+ * or get equipment object from intent parameters	(invokeRestApi = false, equipmentId == defaultEquipmentId)
+ * or get equipment object from SQLite				(invokeRestApi = false, equipmentId != defaultEquipmentId)
  */
 public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	/** The map view. */
@@ -76,16 +77,20 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 			if(node == null)
 				invokeRestApi = true;
 			else{
+				//equipment from SQLite
 				equipment = node.toEquipment();
 			}
 		}
 
 		if(invokeRestApi){
+			//invoke REST API
 			//TODO startRequestService();
 		}
 		else{
-			if(equipment == null)
+			if(equipment == null) {
+				//equipment from intent parameters
 				equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
+			}
 
 			ImageView img = (ImageView) findViewById(R.id.img1);
 			img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));

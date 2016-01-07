@@ -36,12 +36,12 @@ public class CheckConnectivityWithRestApi extends AsyncTask<Void, Void, Boolean>
 			if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK)
 				restApiAccessible = true;
 		} catch (MalformedURLException e) {
-			Common.logError("MalformedURLException @ execRequest:"+e.getMessage());
+			Common.logError("MalformedURLException @ CheckConnectivityWithRestApi.doInBackground:"+e.getMessage());
 			//e.printStackTrace();
 		}  catch (UnknownHostException e){
-			Common.logError("UnknownHostException @ execRequest:" + e.getMessage());
+			Common.logError("UnknownHostException @ CheckConnectivityWithRestApi.doInBackground:" + e.getMessage());
 		} catch (IOException e) {
-			Common.logError("IOException @ execRequest:" + e.getMessage());
+			Common.logError("IOException @ CheckConnectivityWithRestApi.doInBackground:" + e.getMessage());
 			//e.printStackTrace();
 		} finally {
 			urlConnection.disconnect();

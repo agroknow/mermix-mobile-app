@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import com.realestate.R;
 import com.realestate.model.common.Pojo;
 import com.realestate.ui.DataRetrieve;
+import com.realestate.ui.fragments.NewEquipment;
 import com.realestate.utils.Common;
 import com.realestate.utils.MainService;
 import com.realestate.utils.TouchEffect;
@@ -42,12 +43,9 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 		public void onReceive(Context context, Intent intent) {
 			Common.log("CustomActivity MainBroadCastReceiver onReceive");
 			Pojo apiResponseData = (Pojo) intent.getSerializableExtra("APIRESPONSEDATA");
-			//GET ACTIVE FRAGMENT
-			FragmentManager fragManager = CustomActivity.this.getSupportFragmentManager();
-			int count = CustomActivity.this.getSupportFragmentManager().getBackStackEntryCount();
-			Fragment frag = fragManager.getFragments().get(count>0?count-1:count);
+			Fragment fragment = getActiveFragment();
 			//INVOKE fragment's updateUI implemented by interface DataRetrieve
-			DataRetrieve customFragment = (DataRetrieve) frag;
+			DataRetrieve customFragment = (DataRetrieve) fragment;
 			customFragment.updateUI(apiResponseData);
 		}
 	}
@@ -161,5 +159,12 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 
 	public Boolean isRestApiAccessible(){
 		return this.restApiAccessible;
+	}
+
+	public Fragment getActiveFragment(){
+		FragmentManager fragManager = CustomActivity.this.getSupportFragmentManager();
+		int count = CustomActivity.this.getSupportFragmentManager().getBackStackEntryCount();
+		Fragment frag = fragManager.getFragments().get(count>0?count-1:count);
+		return frag;
 	}
 }

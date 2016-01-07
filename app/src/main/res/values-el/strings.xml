@@ -27,8 +27,8 @@
 	<string name="pets_allow">Pets allowed</string>
 	<string name="smoke_permit">Smoke Permitted</string>
 	<string name="rante_range">Ranting Range</string>
-	<string name="search_now">Search Now</string>
-	<string name="contact_agent">Contact Agent</string>
+	<string name="search_now">Αναζήτηση</string>
+	<string name="contact_agent">Επικοινωνία</string>
 	<string name="desc">Περιγραφή</string>
 	<string name="temp_txt">Mermix is "property consisting of land and the buildings on it, along with its natural resources such as crops, minerals, or water; immovable property of this nature; an interest vested in this; (also) an item of real property; (more generally) buildings or housing in general. Also: the business of real estate; the profession of buying, selling, or renting land, buildings or housing."</string>
 	<string name="inspections">Inspections/Auctions</string>
@@ -37,7 +37,7 @@
 	<string name="location">Τοποθεσία</string>
 	<string name="machine_type">Τύπος μηχανήματος</string>
 	<string name="cultivation">Είδος καλλιέργειας</string>
-	<string name="contract_type">Αγορά/Ενοικίαση</string>
+	<string name="contract_type">Πώληση/Ενοικίαση</string>
 	<string name="no_results">Δε βρέθηκαν μηχανήματα</string>
 	<string name="progress_dialog_title"></string>
 	<string name="progress_dialog_search_msg">Φόρτωση μηχανημάτων</string>
@@ -48,4 +48,10 @@
 	<string name="enable">Ενεργοποίηση</string>
 	<string name="cancel">Ακύρωση</string>
 	<string name="later">Aργότερα</string>
+	<string name="submit">Υποβολή</string>
+	<string name="equipment">Μηχανήματα</string>
+	<string name="map">Χάρτης</string>
+	<string name="add_new_equipment">Προσθήκη</string>
+	<string name="openCamera">Κάμερα</string>
+	<string name="selectImageFile">Επιλογή Εικόνας</string>
 </resources>

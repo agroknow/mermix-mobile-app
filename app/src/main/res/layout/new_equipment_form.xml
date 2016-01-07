@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			  android:layout_width="match_parent"
+			  android:layout_height="match_parent"
+			  android:gravity="center_horizontal"
+			  android:orientation="vertical"
+			  android:background="@color/mermix_bg_color">
+	<ImageView
+		android:id="@+id/img2Submit"
+		android:layout_width="200dp"
+		android:layout_height="wrap_content"
+		android:adjustViewBounds="true"
+		android:cropToPadding="false"
+		android:src="@drawable/tab_bg"/>
+	<Button
+		android:id="@+id/btnSubmit"
+		style="@style/green_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/submit" />
+	<Button
+		android:id="@+id/openCamera"
+		style="@style/green_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/openCamera" />
+	<Button
+		android:id="@+id/selectImageFile"
+		style="@style/green_btn"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="@string/selectImageFile" />
+</LinearLayout>

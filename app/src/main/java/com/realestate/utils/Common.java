@@ -2,10 +2,22 @@ package com.realestate.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Base64;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.realestate.model.common.Pojo;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -71,4 +83,78 @@ public class Common {
 		return newLng.doubleValue();
 	}
 
+	public static Boolean isInArrayInteger(int[] arr, int targetValue){
+		for(int s: arr){
+			if(s == targetValue)
+				return true;
+		}
+		return false;
+	}
+
+	public static Boolean isInArrayString(String[] arr, String targetValue) {
+		for(String s: arr){
+			if(s.equals(targetValue))
+				return true;
+		}
+		return false;
+	}
+
+	public static String bitmap2Base64(Bitmap bitmap) {
+		String base64String = "";
+		if(bitmap != null){
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
+//			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, output);
+			byte[] byteArray = output.toByteArray();
+			base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
+		}
+		return base64String;
+	}
+
+	public static String getImageBase64(String imagePath) {
+		String base64String = "";
+		byte[] bytes;
+		byte[] buffer = new byte[8192];
+		int bytesRead;
+		ByteArrayOutputStream output = new ByteArrayOutputStream();
+		try {
+			InputStream inputStream = new FileInputStream(imagePath);
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				output.write(buffer, 0, bytesRead);
+			}
+			bytes = output.toByteArray();
+			base64String = Base64.encodeToString(bytes, Base64.DEFAULT);
+		} catch (IOException e) {
+			Common.logError("IOException @ Common getImageBase64:" + e.getMessage());
+		}
+		return base64String;
+	}
+
+	public static <T extends Pojo> String pojo2Json(T pojoObject){
+		String jsonString = "";
+
+		ObjectMapper mapper = JacksonObjectMapper.getInstance();
+		try {
+			jsonString = mapper.writeValueAsString(pojoObject);
+		} catch (JsonParseException e){
+			Common.logError("JsonParseException @ Common.pojo2Json:" + e.getMessage());
+			//e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			Common.logError("JsonProcessingException @ Common.pojo2Json:" + e.getMessage());
+			//e.printStackTrace();
+		}
+		return jsonString;
+	}
+
+	public static Pojo json2Pojo(String jsonString, String pojoClassName){
+		Pojo pojoObject = null;
+		try {
+			ObjectMapper mapper = JacksonObjectMapper.getInstance();
+			Class<? extends Pojo> pojoClass = (Class<? extends Pojo>) Class.forName(pojoClassName);
+			pojoObject = mapper.readValue(jsonString, pojoClass);
+		} catch (IOException|ClassNotFoundException e){
+			Common.logError("IOException|ClassNotFoundException @ Common.json2Pojo:" + e.getMessage());
+		}
+		return pojoObject;
+	}
 }

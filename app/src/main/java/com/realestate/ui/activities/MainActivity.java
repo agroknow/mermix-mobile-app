@@ -23,6 +23,7 @@ import com.realestate.model.sqlite.DrupalTerms;
 import com.realestate.ui.adapters.LeftNavAdapter;
 import com.realestate.ui.fragments.FeedList;
 import com.realestate.ui.fragments.MapViewer;
+import com.realestate.ui.fragments.NewEquipment;
 import com.realestate.ui.fragments.Search;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
@@ -51,7 +52,7 @@ public class MainActivity extends CustomActivity
 
 	/** The left navigation list adapter. */
 	private LeftNavAdapter adapter;
-	private int fragment2Launch = 0;
+	private int fragment2Launch = 3;
 
 	/**
 	 * Dispatch onPause() to fragments.
@@ -187,10 +188,10 @@ public class MainActivity extends CustomActivity
 	private ArrayList<Data> getLeftNavItems()
 	{
 		ArrayList<Data> al = new ArrayList<Data>();
-		al.add(new Data(Constants.TOPMENUITEMS.EQUIPMENT, R.drawable.ic_nav1, R.drawable.ic_nav1_sel));
-		al.add(new Data(Constants.TOPMENUITEMS.SEARCH, R.drawable.ic_nav2, R.drawable.ic_nav2_sel));
-		al.add(new Data(Constants.TOPMENUITEMS.MAP, R.drawable.ic_nav3, R.drawable.ic_nav3_sel));
-		//al.add(new Data(Constants.TOPMENUITEMS.SEARCHRESULTS, R.drawable.ic_nav4, R.drawable.ic_nav4_sel));
+		al.add(new Data(getResources().getString(R.string.equipment), R.drawable.ic_nav1, R.drawable.ic_nav1_sel));
+		al.add(new Data(getResources().getString(R.string.search), R.drawable.ic_nav2, R.drawable.ic_nav2_sel));
+		al.add(new Data(getResources().getString(R.string.map), R.drawable.ic_nav3, R.drawable.ic_nav3_sel));
+		al.add(new Data(getResources().getString(R.string.add_new_equipment), R.drawable.ic_plus, R.drawable.ic_plus));
 		return al;
 	}
 
@@ -207,24 +208,24 @@ public class MainActivity extends CustomActivity
 		String title = null;
 		if (pos == 0)
 		{
-			title = Constants.TOPMENUITEMS.EQUIPMENT;
+			title = getResources().getString(R.string.equipment);
 			f = new FeedList();
 		}
 		else if (pos == 1)
 		{
-			title = Constants.TOPMENUITEMS.SEARCH;
+			title = getResources().getString(R.string.search);
 			f = new Search();
 		}
 		else if (pos == 2)
 		{
-			title = Constants.TOPMENUITEMS.MAP;
+			title = getResources().getString(R.string.map);
 			f = new MapViewer();
 		}
-/*		else if (pos == 3)
+		else if (pos == 3)
 		{
-			title = Constants.TOPMENUITEMS.SEARCHRESULTS;
-			f = new SearchResult();
-		}*/
+			title = getResources().getString(R.string.add_new_equipment);
+			f = new NewEquipment();
+		}
 
 		if (f != null)
 		{

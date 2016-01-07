@@ -12,7 +12,6 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.realestate.model.EquipmentInView;
 import com.realestate.model.common.Pojo;
 import com.realestate.utils.net.RestApiConsumer;
 
@@ -84,7 +83,6 @@ public class MainService extends Service {
 				else if(nextToken.equals(JsonToken.START_ARRAY)){
 					this.pojoArrayClass = (Class<? extends Pojo[]>) Class.forName("[L"+this.pojoClassName+";");
 					Pojo[] apiResponseArrayData = mapper.readValue(parserResult, this.pojoArrayClass);
-					//Pojo[] apiResponseArrayData = mapper.readValue(parserResult, EquipmentInView[].class);
 					broadCastArrayData(apiResponseArrayData);
 				}
 				parserResult.close();
