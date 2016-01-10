@@ -42,6 +42,7 @@
 	<string name="progress_dialog_title"></string>
 	<string name="progress_dialog_search_msg">Φόρτωση μηχανημάτων</string>
 	<string name="progress_dialog_search_map_msg">Αναζήτηση μηχανημάτων....</string>
+	<string name="progress_dialog_upload_msg">Αποθήκευση μηχανήματος</string>
 
 	<string name="enable_location_detect_service">Ενεργοποιήστε την υπηρεσία εντοπισμού θέσης στη συσκευή σας για να βρείτε μηχανήματα κοντά σας.</string>
 	<string name="rest_api_connection_error">Δεν είναι εφικτή η λήψη δεδομένων από τους εξυπηρετητές του mermix</string>
@@ -49,6 +50,7 @@
 	<string name="cancel">Ακύρωση</string>
 	<string name="later">Aργότερα</string>
 	<string name="submit">Υποβολή</string>
+	<string name="save">Αποθήκευση</string>
 	<string name="equipment">Μηχανήματα</string>
 	<string name="map">Χάρτης</string>
 	<string name="add_new_equipment">Προσθήκη</string>

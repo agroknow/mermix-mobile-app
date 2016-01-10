@@ -1,61 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Mermix</string>
-    <string name="drawer_open">Open</string>
-    <string name="drawer_close">Close</string>
-    <string name="enter_address">Enter location...</string>
-    <string name="locate">Locate</string>
-    <string name="search">Search</string>
-    <string name="sort">Sort</string>
+	<string name="app_name">Mermix</string>
+	<string name="drawer_open">Open</string>
+	<string name="drawer_close">Close</string>
+	<string name="enter_address">Enter location...</string>
+	<string name="locate">Locate</string>
+	<string name="search">Search</string>
+	<string name="sort">Sort</string>
 
-    <string-array name="arr_sort">
-        <item>Default</item>
-        <item>Listing Date (Most Recent)</item>
-        <!--<item>Lowest Price first</item>-->
-        <!--<item>Highest Price first</item>-->
-        <!--<item>Earliest Inspection</item>-->
-    </string-array>
+	<string-array name="arr_sort">
+		<item>Default</item>
+		<item>Listing Date (Most Recent)</item>
+		<!--<item>Lowest Price first</item>-->
+		<!--<item>Highest Price first</item>-->
+		<!--<item>Earliest Inspection</item>-->
+	</string-array>
 
-    <string name="sort_list_by">Sort Listing by</string>
-    <string name="buy">Buy</string>
-    <string name="rent">Rent</string>
-    <string name="price_range">Price Range</string>
-    <string name="property_type">Property Type</string>
-    <string name="bedrooms">Bedrooms</string>
-    <string name="bathrooms">Bathrooms</string>
-    <string name="parking_spaces">Parking spaces</string>
-    <string name="min_land">Minimum land size</string>
-    <string name="surroun_sberb">Surrounding suberbs</string>
-    <string name="furnished">Furnished only</string>
-    <string name="pets_allow">Petsprogress_dialog_title allowed</string>
-    <string name="smoke_permit">Smoke Permitted</string>
-    <string name="rante_range">Ranting Range</string>
-    <string name="search_now">Search Now</string>
-    <string name="contact_agent">Contact Agent</string>
-    <string name="desc">Description</string>
-    <string name="temp_txt">Mermix is "property consisting of land and the buildings on it, along with its natural resources such as crops, minerals, or water; immovable property of this nature; an interest vested in this; (also) an item of real property; (more generally) buildings or housing in general. Also: the business of real estate; the profession of buying, selling, or renting land, buildings or housing."</string>
-    <string name="inspections">Inspections/Auctions</string>
-    <string name="search_area">Search in location</string>
+	<string name="sort_list_by">Sort Listing by</string>
+	<string name="buy">Buy</string>
+	<string name="rent">Rent</string>
+	<string name="price_range">Price Range</string>
+	<string name="property_type">Property Type</string>
+	<string name="bedrooms">Bedrooms</string>
+	<string name="bathrooms">Bathrooms</string>
+	<string name="parking_spaces">Parking spaces</string>
+	<string name="min_land">Minimum land size</string>
+	<string name="surroun_sberb">Surrounding suberbs</string>
+	<string name="furnished">Furnished only</string>
+	<string name="pets_allow">Petsprogress_dialog_title allowed</string>
+	<string name="smoke_permit">Smoke Permitted</string>
+	<string name="rante_range">Ranting Range</string>
+	<string name="search_now">Search Now</string>
+	<string name="contact_agent">Contact Agent</string>
+	<string name="desc">Description</string>
+	<string name="temp_txt">Mermix is "property consisting of land and the buildings on it, along with its natural resources such as crops, minerals, or water; immovable property of this nature; an interest vested in this; (also) an item of real property; (more generally) buildings or housing in general. Also: the business of real estate; the profession of buying, selling, or renting land, buildings or housing."</string>
+	<string name="inspections">Inspections/Auctions</string>
+	<string name="search_area">Search in location</string>
 
-    <string name="location">Location</string>
-    <string name="machine_type">Machine type</string>
-    <string name="cultivation">Cultivation</string>
-    <string name="contract_type">Contract type</string>
-    <string name="no_results">No Results</string>
-    <string name="progress_dialog_title"></string>
-    <string name="progress_dialog_search_msg">Retrieving search results</string>
-    <string name="progress_dialog_search_map_msg">Searching ....</string>
-    <string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
-    <string name="rest_api_connection_error">Unable to connect to mermix data servers</string>
-    <string name="enable">Enable</string>
-    <string name="cancel">Cancel</string>
-    <string name="later">Later</string>
-    <string name="submit">Submit</string>
-    <string name="equipment">Equipment</string>
-    <string name="map">Map</string>
+	<string name="location">Location</string>
+	<string name="machine_type">Machine type</string>
+	<string name="cultivation">Cultivation</string>
+	<string name="contract_type">Contract type</string>
+	<string name="no_results">No Results</string>
+	<string name="progress_dialog_title"></string>
+	<string name="progress_dialog_search_msg">Retrieving search results</string>
+	<string name="progress_dialog_search_map_msg">Searching ....</string>
+	<string name="progress_dialog_upload_msg">Uploading Equipment</string>
+	<string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
+	<string name="rest_api_connection_error">Unable to connect to mermix data servers</string>
+	<string name="enable">Enable</string>
+	<string name="cancel">Cancel</string>
+	<string name="later">Later</string>
+	<string name="submit">Submit</string>
+	<string name="save">Save</string>
+	<string name="equipment">Equipment</string>
+	<string name="map">Map</string>
 	<string name="add_new_equipment">Add</string>
-    <string name="openCamera">Camera</string>
-    <string name="selectImageFile">Select Image</string>
+	<string name="openCamera">Camera</string>
+	<string name="selectImageFile">Select Image</string>
 
 </resources>

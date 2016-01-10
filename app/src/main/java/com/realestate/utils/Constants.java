@@ -8,7 +8,7 @@ import java.util.Map;
  * Constants used in the application
  */
 public class Constants {
-	public static final String base64Prefix = "data:image\\/png;base64,";
+	public static final String base64Prefix = "data:image/jpeg;base64,";
 	public static final Boolean devMode = false;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
 	public static final String APIENDPOINT = "http://dev.mermix.gr/el/";
@@ -24,7 +24,7 @@ public class Constants {
 
 	public class ACTIVITYREQUESTCODES {
 		public static final int OPENDEVICECAMERA = 100;
-		public static final int SELECTFILEFROMCOLLECTION = 101;
+		public static final int SELECTFILEFROMGALLERY = 101;
 	}
 
 	public class URI {

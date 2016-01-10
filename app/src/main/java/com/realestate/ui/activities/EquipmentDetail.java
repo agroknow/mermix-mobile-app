@@ -29,17 +29,21 @@ import com.realestate.ui.DataRetrieve;
 import com.realestate.utils.ImageBitmapCacheMap;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
+import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.UrlArgs;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by teo on 7/9/2015.
  *
- * display equipment node in detail
- * to retrieve equipment details
+ * Display equipment node in detail.
+ * To retrieve equipment details
  * either invoke REST API's request node/NID.json	(invokeRestApi = true, equipmentId != defaultEquipmentId)
  * or get equipment object from intent parameters	(invokeRestApi = false, equipmentId == defaultEquipmentId)
  * or get equipment object from SQLite				(invokeRestApi = false, equipmentId != defaultEquipmentId)
@@ -56,12 +60,8 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
     private final int defaultEquipmentId = -1;
     private Boolean invokeRestApi = false;
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
-    @Override
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -92,8 +92,19 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 				equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
 			}
 
+			Pattern p = Pattern.compile("^http(s)?:\\/\\/(.*?)");
+			Matcher m = p.matcher(equipment.getImage());
 			ImageView img = (ImageView) findViewById(R.id.img1);
-			img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
+			if(m.find())
+				img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
+			else{
+				try {
+					img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
+				} catch (IOException e) {
+					//e.printStackTrace();
+					Common.logError("IOException @ EquipmentDetail.onCreate:" + e.getMessage());
+				}
+			}
 
 			TextView nid = (TextView) findViewById(R.id.nid);
 			nid.setText(Integer.toString(equipment.getNid()));
@@ -118,12 +129,24 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 		}
     }
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Common.log("EquipmentDetail onStart");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Common.log("EquipmentDetail onStop");
+	}
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onPause()
 	 */
 	@Override
 	public void onPause()
 	{
+		Common.log("EquipmentDetail onPause");
 		mMapView.onPause();
 		super.onPause();
 	}
@@ -134,6 +157,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	@Override
 	public void onDestroy()
 	{
+		Common.log("EquipmentDetail onDestroy");
 		mMapView.onDestroy();
 		super.onDestroy();
 	}
@@ -145,6 +169,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	public void onResume()
 	{
 		super.onResume();
+		Common.log("EquipmentDetail onResume");
 		mMapView.onResume();
 
 		mMap = mMapView.getMap();
@@ -255,6 +280,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
+		Common.log("EquipmentDetail startRequestService");
 		equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
 		String apiUrl = Constants.APIENDPOINT + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
 		Intent i = new Intent(this, MainService.class);

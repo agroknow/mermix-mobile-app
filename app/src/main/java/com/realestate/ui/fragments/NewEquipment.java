@@ -1,16 +1,16 @@
 package com.realestate.ui.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.content.CursorLoader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +29,16 @@ import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
+import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.NewEquipmentArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,18 +48,26 @@ import java.util.List;
  * on successful submit, store new equipment's data to SQLite & navigate to activity EquipmentDetail
  *
  * HELP
- * http://www.theappguruz.com/blog/android-take-photo-camera-gallery-code-sample
- * http://stackoverflow.com/a/21754321/3441616
+ * http://developer.android.com/guide/topics/media/camera.html
+ * http://developer.android.com/guide/topics/data/data-storage.html#filesExternal
+ * http://developer.android.com/training/basics/intents/result.html
  * http://developer.android.com/reference/android/graphics/BitmapFactory.Options.html
+ *
+ * ISSUE
+ * When camera causes orientation change in Activity then Activity is destroyed and recreated.
+ * SOLUTION
+ * http://stackoverflow.com/a/10411504
  */
 public class NewEquipment extends CustomFragment implements DataRetrieve {
-	private EquipmentPostPayload payload = null;
-	private Bitmap equipmentPhoto = null;
-	private String equipmentPhotoPath = "";
+	private EquipmentPostPayload payload;
+	private Bitmap equipmentPhoto;
+	private String equipmentPhotoPath;
+	private ProgressDialog progress;
 
 	@Override
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("NewEquipment updateUI");
+		progress.dismiss();
 		try {
 			com.realestate.model.NewEquipment equipment = (com.realestate.model.NewEquipment) apiResponseData;
 			int equipmentId = Integer.parseInt(equipment.getId());
@@ -89,6 +101,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, pojoClass);
 		this.getActivity().startService(i);
+		progress.show();
 	}
 
 	@Override
@@ -123,11 +136,8 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			Address address = new Address();
 			address.setLatitude(38.899583425983);
 			address.setLongitude(22.148437500000);
-			String imagePath = this.equipmentPhotoPath;
-			//String imagePath = Common.bitmap2Base64(this.equipmentPhoto);
-			//String imagePath = Common.getImageBase64(this.equipmentPhotoPath);
 			List<String> imageList = new ArrayList<>();
-			imageList.add(0, imagePath);
+			imageList.add(0, this.equipmentPhotoPath);
 
 			this.payload = new EquipmentPostPayload();
 			this.payload.setData(title, body, type, promote, lang, author, equipmentType, contract, cultivationsList, location, address, imageList);
@@ -136,13 +146,24 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			startRequestService(new NewEquipmentArgs(payloadStr));
 		}
 		else if(v.getId() == R.id.openCamera){
-			if (getActivity().getApplicationContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-				// Open device's camera, start the image capture Intent
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-				startActivityForResult(intent, Constants.ACTIVITYREQUESTCODES.OPENDEVICECAMERA);
-			}
-			else{
-				Common.displayToast("NO camera in device", getActivity().getApplicationContext());
+			this.equipmentPhotoPath = "";	//assigned value in createImageFile
+			Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			// Ensure that there's a camera activity to handle the intent
+			if (takePictureIntent.resolveActivity(getActivity().getApplicationContext().getPackageManager()) != null) {
+				// Create the File where the image should go
+				File imageFile = null;
+				try {
+					imageFile = createImageFile();
+				} catch (IOException ex) {
+					Common.logError("IOException @ NewEquipment.onClick :" + ex.getMessage());
+				}
+				if (imageFile != null) {
+					takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imageFile));
+					startActivityForResult(takePictureIntent, Constants.ACTIVITYREQUESTCODES.OPENDEVICECAMERA);
+				}
+				else{
+					Common.logError("image file creation failed");
+				}
 			}
 		}
 		else if(v.getId() == R.id.selectImageFile) {
@@ -150,60 +171,37 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			intent.setType("image/*");
 			startActivityForResult(
 					Intent.createChooser(intent, getResources().getString(R.string.selectImageFile)),
-					Constants.ACTIVITYREQUESTCODES.SELECTFILEFROMCOLLECTION);
+					Constants.ACTIVITYREQUESTCODES.SELECTFILEFROMGALLERY);
 		}
 	}
 
 	@Override
-	/**
-	 * http://developer.android.com/training/basics/intents/result.html
-	 */
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		Common.log("NewEquipment onActivityResult");
-
 		this.equipmentPhoto = null;
-		this.equipmentPhotoPath = "";
-		Uri selectedImageUri;
-		ImageView imageView = (ImageView) getActivity().findViewById(R.id.img2Submit);
 		if(resultCode == getActivity().RESULT_OK){
-			/*
-			 * Android saves the images in its own database,
-			 * and when we want to access that database,
-			 * we have to retrieve the content by URI.
-			 * Projection specifies how many columns do you want from the given data, http://developer.android.com/reference/android/provider/MediaStore.MediaColumns.html.
-			 * You can add all the columns you want in the projection
-			 * and data for all the records for those particular columns would be returned in a cursor.
-			 */
-			//this.equipmentPhoto = (Bitmap) data.getExtras().get("data");	//get image from intent data
-			selectedImageUri = data.getData();
-			String[] projection = {MediaStore.Images.Media.DATA};
-			int columnIndex = -1;
-			Cursor cursor = null;	//Cursor to get image uri to display
+			if(data == null){
+				Common.log("null intent returned in onActivityResult because of use of MediaStore.EXTRA_OUTPUT URI");
+			}
+			else{
+				//get image from intent data
+				//this.equipmentPhoto = (Bitmap) data.getExtras().get("data");
+			}
 			if(requestCode == Constants.ACTIVITYREQUESTCODES.OPENDEVICECAMERA){
-				cursor = getActivity().getContentResolver().query(selectedImageUri, projection, null, null, null);
-				if(cursor != null && cursor.moveToFirst()) {
-					do {
-						columnIndex = cursor.getColumnIndex(projection[0]);
-						this.equipmentPhotoPath = cursor.getString(columnIndex);
-					} while(cursor.moveToNext());
-					cursor.close();
-				}
+				addImage2Gallery();
 			}
-			if(requestCode == Constants.ACTIVITYREQUESTCODES.SELECTFILEFROMCOLLECTION){
-				CursorLoader cursorLoader = new CursorLoader(getActivity(), selectedImageUri, projection, null, null, null);
-				cursor = cursorLoader.loadInBackground();
-				if(cursor != null && cursor.moveToFirst()) {
-					do {
-						columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
-						this.equipmentPhotoPath = cursor.getString(columnIndex);
-					} while(cursor.moveToNext());
-					cursor.close();
-				}
+			if(requestCode == Constants.ACTIVITYREQUESTCODES.SELECTFILEFROMGALLERY){
+				Uri selectedImageUri = data.getData();
+				this.equipmentPhotoPath = Common.getGalleryImagePathFromUri(selectedImageUri, getActivity());
 			}
+			/**
+			 * equipmentPhotoPath value assigned in METHODS
+			 * Common.getGalleryImagePathFromUri OR createImageFile()
+			 */
 			if(!this.equipmentPhotoPath.isEmpty()){
 				try {
-					this.equipmentPhoto = configureBitmapSamplingRotation(this.equipmentPhotoPath);
+					this.equipmentPhoto = ImageUtils.configureBitmapSamplingRotation(this.equipmentPhotoPath);
 				} catch (IOException e) {
 					//e.printStackTrace();
 					Common.logError("IOException @ NewEquipment onActivityResult:" + e.getMessage());
@@ -212,6 +210,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			if(this.equipmentPhoto != null){
 				//display image in view
 				Common.log("equipment photo size, getByteCount: " + Integer.toString(this.equipmentPhoto.getByteCount()));
+				ImageView imageView = (ImageView) getActivity().findViewById(R.id.img2Submit);
 				imageView.setImageBitmap(this.equipmentPhoto);
 				imageView.invalidate();
 			}
@@ -222,6 +221,12 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Common.log("NewEquipment onCreate");
+		this.equipmentPhotoPath = "";
+		this.payload = null;
+		this.equipmentPhoto = null;
+		progress = new ProgressDialog(getActivity());
+		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
+		progress.setMessage(getResources().getString(R.string.progress_dialog_upload_msg));
 	}
 
 	@Override
@@ -267,109 +272,52 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		Common.log("NewEquipment onDestroy");
 	}
 
-	private Bitmap configureBitmapSamplingRotation(String selectedImagePath)throws IOException{
-		Common.log("NewEquipment configureBitmapSamplingRotation");
-		int MAX_HEIGHT = 256;
-		int MAX_WIDTH = 256;
-		Bitmap bitmap;
-		BitmapFactory.Options options = new BitmapFactory.Options();
-
-		// First decode with inJustDecodeBounds=true to check dimensions
-		options.inJustDecodeBounds = true;
-		BitmapFactory.decodeFile(selectedImagePath, options);
-
-		// Calculate inSampleSize
-		options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT);
-
-		// Decode bitmap with inSampleSize set
-		options.inJustDecodeBounds = false;
-		bitmap = BitmapFactory.decodeFile(selectedImagePath, options);
-		bitmap = rotateImageIfRequired(bitmap, selectedImagePath);
-
-		return bitmap;
-	}
-
-	/**
-	 *
-	 * @param img					the image bitmap
-	 * @param selectedImagePath 	the image path
-	 * @return						The resulted Bitmap after manipulation
-	 */
-	private Bitmap rotateImageIfRequired(Bitmap img, String selectedImagePath) throws IOException {
-		Common.log("NewEquipment rotateImageIfRequired");
-		ExifInterface ei = new ExifInterface(selectedImagePath);
-		int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-
-		Common.log("orientation: "+Integer.toString(orientation));
-		switch (orientation) {
-			case ExifInterface.ORIENTATION_ROTATE_90:
-				return rotateImage(img, 90);
-			case ExifInterface.ORIENTATION_ROTATE_180:
-				return rotateImage(img, 180);
-			case ExifInterface.ORIENTATION_ROTATE_270:
-				return rotateImage(img, 270);
-			default:
-				return img;
+	private File createImageFile()throws IOException {
+		// Create an image file name
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+		String appImageDir = getResources().getString(R.string.app_name)+"Images";
+		File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+				Environment.DIRECTORY_PICTURES), appImageDir);
+		// Create the storage directory if it does not exist
+		if(!Common.isExternalStorageWritable()){
+			Common.logError("device's external storage not writable");
+			return null;
 		}
-	}
-
-	private static Bitmap rotateImage(Bitmap img, int degree) {
-		Common.log("NewEquipment rotateImage");
-		Matrix matrix = new Matrix();
-		Common.log("degree: "+Integer.toString(degree));
-		matrix.postRotate(degree);
-		Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
-		img.recycle();
-		return rotatedImg;
-	}
-
-	/**
-	 * Calculate an inSampleSize for use in a {@link BitmapFactory.Options} object when decoding
-	 * bitmaps using the decode methods from {@link BitmapFactory}. This implementation calculates
-	 * the closest inSampleSize that will result in the final decoded bitmap having a width and
-	 * height equal to or larger than the requested width and height. This implementation does not
-	 * ensure a power of 2 is returned for inSampleSize which can be faster when decoding but
-	 * results in a larger bitmap which isn't as useful for caching purposes.
-	 *
-	 * @param options	An options object with out params already populated (run through a decode
-	 *                  method with inJustDecodeBounds==true
-	 * @param reqWidth	The requested width of the resulting bitmap
-	 * @param reqHeight	The requested height of the resulting bitmap
-	 * @return	The value to be used for inSampleSize
-	 */
-	private int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-		Common.log("NewEquipment calculateInSampleSize");
-		// Raw height and width of image
-		final int height = options.outHeight;
-		final int width = options.outWidth;
-		int inSampleSize = 1;
-
-		if (height > reqHeight || width > reqWidth) {
-
-			// Calculate ratios of height and width to requested height and width
-			final int heightRatio = Math.round((float) height / (float) reqHeight);
-			final int widthRatio = Math.round((float) width / (float) reqWidth);
-
-			// Choose the smallest ratio as inSampleSize value, this will guarantee a final image
-			// with both dimensions larger than or equal to the requested height and width.
-			inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
-
-			// This offers some additional logic in case the image has a strange
-			// aspect ratio. For example, a panorama may have a much larger
-			// width than height. In these cases the total pixels might still
-			// end up being too large to fit comfortably in memory, so we should
-			// be more aggressive with sample down the image (=larger inSampleSize).
-
-			final float totalPixels = width * height;
-
-			// Anything more than 2x the requested pixels we'll sample down further
-			final float totalReqPixelsCap = reqWidth * reqHeight * 2;
-
-			while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
-				inSampleSize++;
+		if (! mediaStorageDir.exists()){
+			if (! mediaStorageDir.mkdirs()){
+				Common.logError("failed to create directory " + appImageDir);
+				return null;
 			}
 		}
-		Common.log("inSampleSize: "+Integer.toString(inSampleSize));
-		return inSampleSize;
+		File image = new File(mediaStorageDir.getPath() + File.separator + "IMG_"+ timeStamp + ".jpg");
+		// Save a file: path for use with ACTION_VIEW intents
+		this.equipmentPhotoPath = image.getAbsolutePath();
+		Common.log("Current image path: " + this.equipmentPhotoPath);
+		return image;
+	}
+
+	private void addImage2Gallery() {
+		File f = new File(this.equipmentPhotoPath);
+		Uri contentUri = Uri.fromFile(f);
+
+		/*//insert a image into the MediaStore manually
+		try {
+			MediaStore.Images.Media.insertImage(getActivity().getApplicationContext().getContentResolver(),
+					f.getAbsolutePath(), f.getName(), null);
+		} catch (FileNotFoundException e) {
+			Common.logError("FileNotFoundException @ NewEquipment.addImage2Gallery: "+e.getMessage());
+		}*/
+		//Broadcasting a Media Scanner intent to make the image show up in the gallery
+		Common.log("Build.VERSION.SDK_INT:"+Integer.toString(Build.VERSION.SDK_INT));
+		Common.log("Build.VERSION_CODES.KITKAT:"+Integer.toString(Build.VERSION_CODES.KITKAT));
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+			Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+			mediaScanIntent.setData(contentUri);
+			getActivity().sendBroadcast(mediaScanIntent);
+		}
+		else {
+			//getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, contentUri));
+			getActivity().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, contentUri));
+		 }
 	}
 }

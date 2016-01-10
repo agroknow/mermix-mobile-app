@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.realestate.model.EquipmentPostPayload;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
+import com.realestate.utils.ImageUtils;
 import com.realestate.utils.JacksonObjectMapper;
 import com.realestate.utils.MainService;
 
@@ -211,7 +212,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 		EquipmentPostPayload payload = (EquipmentPostPayload) Common.json2Pojo(requestParams, Constants.PojoClass.EQUIPMENTPOSTPAYLOAD);
 		List<String> imageList = new ArrayList<>();
 		bitmap = BitmapFactory.decodeFile(payload.getImage().get(0), options);
-		String base64Encoding = Common.bitmap2Base64(bitmap);
+		String base64Encoding = ImageUtils.bitmap2Base64(bitmap);
 		//String base64Encoding = Common.getImageBase64(payload.getImage().get(0));
 		imageList.add(0, Constants.base64Prefix + base64Encoding);
 		payload.setImage(imageList);

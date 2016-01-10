@@ -2,7 +2,12 @@ package com.realestate.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
 import android.util.Base64;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
@@ -99,37 +104,6 @@ public class Common {
 		return false;
 	}
 
-	public static String bitmap2Base64(Bitmap bitmap) {
-		String base64String = "";
-		if(bitmap != null){
-			ByteArrayOutputStream output = new ByteArrayOutputStream();
-			bitmap.compress(Bitmap.CompressFormat.PNG, 100, output);
-//			bitmap.compress(Bitmap.CompressFormat.JPEG, 90, output);
-			byte[] byteArray = output.toByteArray();
-			base64String = Base64.encodeToString(byteArray, Base64.DEFAULT);
-		}
-		return base64String;
-	}
-
-	public static String getImageBase64(String imagePath) {
-		String base64String = "";
-		byte[] bytes;
-		byte[] buffer = new byte[8192];
-		int bytesRead;
-		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		try {
-			InputStream inputStream = new FileInputStream(imagePath);
-			while ((bytesRead = inputStream.read(buffer)) != -1) {
-				output.write(buffer, 0, bytesRead);
-			}
-			bytes = output.toByteArray();
-			base64String = Base64.encodeToString(bytes, Base64.DEFAULT);
-		} catch (IOException e) {
-			Common.logError("IOException @ Common getImageBase64:" + e.getMessage());
-		}
-		return base64String;
-	}
-
 	public static <T extends Pojo> String pojo2Json(T pojoObject){
 		String jsonString = "";
 
@@ -156,5 +130,40 @@ public class Common {
 			Common.logError("IOException|ClassNotFoundException @ Common.json2Pojo:" + e.getMessage());
 		}
 		return pojoObject;
+	}
+
+	/* Checks if external storage is available for read and write */
+	public static boolean isExternalStorageWritable() {
+		String state = Environment.getExternalStorageState();
+		Common.log("ExternalStorageState: " + state);
+		if (Environment.MEDIA_MOUNTED.equals(state)) {
+			return true;
+		}
+		return false;
+	}
+
+	public static String getGalleryImagePathFromUri(Uri imageUri, Activity activity){
+		/*
+		 * Android saves the images in its own database,
+		 * and when we want to access that database,
+		 * we have to retrieve the content by URI.
+		 * Projection specifies how many columns do you want from the given data, http://developer.android.com/reference/android/provider/MediaStore.MediaColumns.html.
+		 * You can add all the columns you want in the projection
+		 * and data for all the records for those particular columns would be returned in a cursor.
+		 */
+		String imagePath = "";
+		String[] projection = {MediaStore.Images.Media.DATA};
+		int columnIndex;
+		Cursor cursor;		//Cursor to get image uri to display
+		CursorLoader cursorLoader = new CursorLoader(activity, imageUri, projection, null, null, null);
+		cursor = cursorLoader.loadInBackground();
+		if(cursor != null && cursor.moveToFirst()) {
+			do {
+				columnIndex = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+				imagePath = cursor.getString(columnIndex);
+			} while(cursor.moveToNext());
+			cursor.close();
+		}
+		return imagePath;
 	}
 }
