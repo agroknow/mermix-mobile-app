@@ -2,32 +2,268 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 			  android:layout_width="match_parent"
 			  android:layout_height="match_parent"
-			  android:gravity="center_horizontal"
 			  android:orientation="vertical"
 			  android:background="@color/mermix_bg_color">
-	<ImageView
-		android:id="@+id/img2Submit"
+	<ScrollView
+		android:id="@+id/scrollView1"
 		android:layout_width="match_parent"
-		android:layout_height="200dp"
-		android:adjustViewBounds="true"
-		android:cropToPadding="false"
-		android:src="@drawable/tab_bg"/>
-	<Button
-		android:id="@+id/btnSubmit"
-		style="@style/green_btn"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/submit" />
-	<Button
-		android:id="@+id/openCamera"
-		style="@style/green_btn"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/openCamera" />
-	<Button
-		android:id="@+id/selectImageFile"
-		style="@style/green_btn"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:text="@string/selectImageFile" />
+		android:layout_height="0dp"
+		android:layout_weight="1" >
+
+		<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical" >
+<!--MACHINE TYPE-->
+			<LinearLayout
+				android:id="@+id/machine_type_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/machine_type_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/machine_type"/>
+				<Spinner
+					android:id="@+id/machine_type"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/machine_type"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--TITLE-->
+			<LinearLayout
+				android:id="@+id/title_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/title_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/title"/>
+				<EditText
+					android:id="@+id/title"
+					style="android:Widget.Holo.Light.TextView.EditText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/enter_title"
+					android:inputType="textPersonName" >
+				</EditText>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--TEXT-->
+			<LinearLayout
+				android:id="@+id/text_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/text_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/text"/>
+				<EditText
+					android:id="@+id/text"
+					style="android:Widget.Holo.Light.TextView.EditText"
+					android:layout_width="match_parent"
+					android:layout_height="100dp"
+					android:hint="@string/enter_text"
+					android:inputType="text|textMultiLine" >
+				</EditText>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--IMAGE-->
+			<LinearLayout
+				android:id="@+id/image_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/image_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/image"/>
+				<LinearLayout
+					android:id="@+id/image_btns_layout"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal">
+					<ImageButton
+						android:id="@+id/openCamera"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:src="@drawable/abc_btn_switch_to_on_mtrl_00012"
+						android:layout_marginRight="@dimen/pad_10dp"/>
+					<ImageButton
+						android:id="@+id/selectImageFile"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:src="@drawable/abc_ic_menu_selectall_mtrl_alpha" />
+				</LinearLayout>
+				<ImageView
+					android:id="@+id/img2Submit"
+					android:layout_width="match_parent"
+					android:layout_height="200dp"
+					android:adjustViewBounds="true"
+					android:cropToPadding="false"
+					android:background="@color/mermix_img_bg_color"
+					android:src="@drawable/tab_bg"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--ADDRESS-->
+			<LinearLayout
+				android:id="@+id/address_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/address_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/address"/>
+				<EditText
+					android:id="@+id/address"
+					style="android:Widget.Holo.Light.TextView.EditText"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:hint="@string/enter_address"
+					android:inputType="textPersonName" >
+				</EditText>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--LOCATION-->
+			<LinearLayout
+				android:id="@+id/location_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/location_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/location"/>
+				<Spinner
+					android:id="@+id/location"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/location"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--CULTIVATION TYPE-->
+			<LinearLayout
+				android:id="@+id/cultivation_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/cultivation_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/cultivation"/>
+				<com.realestate.ui.components.multispinner.MultiSpinner
+					android:id="@+id/cultivation"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content" />
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--CONTRACT TYPE-->
+			<LinearLayout
+				android:id="@+id/contract_type_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/contract_type_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/contract_type"/>
+				<Spinner
+					android:id="@+id/contract_type"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/contract_type"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
+<!--SUBMIT-->
+			<LinearLayout
+				android:id="@+id/submit_btn_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:gravity="center_horizontal"
+				android:padding="@dimen/pad_10dp" >
+				<Button
+					android:id="@+id/btnSubmit"
+					style="@style/green_btn"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="@string/submit" />
+			</LinearLayout>
+
+		</LinearLayout>
+	</ScrollView>
 </LinearLayout>

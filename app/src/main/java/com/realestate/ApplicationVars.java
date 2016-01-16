@@ -39,7 +39,7 @@ public class ApplicationVars {
 	 * structure that indicates whether
 	 * data have been retrieved from REST API
 	 */
-	public static Map<String, Boolean> dataRetrieved = new HashMap<String, Boolean>();
+	public static Map<String, Boolean> dataRetrieved = new HashMap<>();
 	private static boolean varsInitialized = false;
 
 	public static void initialize(Context context) {

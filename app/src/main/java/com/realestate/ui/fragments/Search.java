@@ -152,7 +152,7 @@ public class Search extends CustomFragment implements DataRetrieve
 		if(ApplicationVars.dataRetrieved.get(vocabulary)){
 			DrupalTerms drupalTerms = new DrupalTerms(getActivity());
 			SQLiteTerms = drupalTerms.getVocabularyTerms(vocabulary);
-			SQLiteTerms.add(0, new SQLiteTerm(Constants.SPINNERITEMS.ALLTERM.TID, Constants.SPINNERITEMS.ALLTERM.NAME, ""));
+			SQLiteTerms.add(0, new SQLiteTerm(Constants.SPINNERITEMS.ALLTERM.TID, getResources().getString(R.string.all), ""));
 			drupalTerms.closeConnection();
 			/*
 			 * more android.R.layout. options in

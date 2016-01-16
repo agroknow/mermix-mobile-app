@@ -205,19 +205,22 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 	 * set image base64 encoding from image path
 	 */
 	private String setImageBase64Encoding(String requestParams){
-		String updateRequestParams = "";
+		String updateRequestParams;
 		Bitmap bitmap;
-		BitmapFactory.Options options = new BitmapFactory.Options();
 
 		EquipmentPostPayload payload = (EquipmentPostPayload) Common.json2Pojo(requestParams, Constants.PojoClass.EQUIPMENTPOSTPAYLOAD);
 		List<String> imageList = new ArrayList<>();
-		bitmap = BitmapFactory.decodeFile(payload.getImage().get(0), options);
-		String base64Encoding = ImageUtils.bitmap2Base64(bitmap);
-		//String base64Encoding = Common.getImageBase64(payload.getImage().get(0));
-		imageList.add(0, Constants.base64Prefix + base64Encoding);
-		payload.setImage(imageList);
-		updateRequestParams = Common.pojo2Json(payload);
-
+		try {
+			bitmap = ImageUtils.configureBitmapSamplingRotation(payload.getImage().get(0));
+			//bitmap = BitmapFactory.decodeFile(payload.getImage().get(0), options);
+			String base64Encoding = ImageUtils.bitmap2Base64(bitmap);
+			imageList.add(0, Constants.base64Prefix + base64Encoding);
+			payload.setImage(imageList);
+			updateRequestParams = Common.pojo2Json(payload);
+		} catch (IOException e) {
+			Common.logError("IOException @ RestApiConsumer setImageBase64Encoding " + e.getMessage());
+			updateRequestParams = requestParams;
+		}
 		return updateRequestParams;
 	}
 }

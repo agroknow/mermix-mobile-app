@@ -13,5 +13,6 @@
     <color name="main_color_green">#16a085</color>
     <color name="blue_lt">#33b5e5</color>
     <color name="mermix_bg_color">#e63434</color>
+    <color name="mermix_img_bg_color">#ad4b46</color>
 
 </resources>

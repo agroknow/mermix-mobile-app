@@ -3,7 +3,7 @@
 	<string name="app_name">Mermix</string>
 	<string name="drawer_open">Ανοιχτό</string>
 	<string name="drawer_close">Κλειστό</string>
-	<string name="enter_address">Εισάγετε τοποθεσία...</string>
+	<string name="enter_address">Εισάγετε διεύθυνση...</string>
 	<string name="locate">Εντοπισμός</string>
 	<string name="search">Αναζήτηση</string>
 	<string name="sort">Ταξινόμηση</string>
@@ -56,4 +56,16 @@
 	<string name="add_new_equipment">Προσθήκη</string>
 	<string name="openCamera">Κάμερα</string>
 	<string name="selectImageFile">Επιλογή Εικόνας</string>
+	<string name="enter_text">Εισάγετε κείμενο...</string>
+	<string name="text">Κείμενο</string>
+	<string name="title">Τίτλος</string>
+	<string name="enter_title">Εισάγετε τίτλο...</string>
+	<string name="image">Εικόνα</string>
+	<string name="address">Διεύθυνση</string>
+	<string name="enter_location">Εισάγετε τοποθεσία...</string>
+	<string name="type_to_search">εισάγετε τιμή για αναζήτηση</string>
+	<string name="selectItems">Επιλέξτε από τη λίστα</string>
+	<string name="complete_obligatory_field">Συμπληρώστε</string>
+	<string name="all">Όλα</string>
+	<string name="select_obligatory_field">Επιλέξτε</string>
 </resources>

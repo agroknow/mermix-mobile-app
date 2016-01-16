@@ -107,6 +107,7 @@ public class Constants {
 		public static final String MACHINETYPE = "appartment_type";
 		public static final String CULTIVATION = "cultivation";
 		public static final String CONTRACTTYPE = "contract_type";
+		public static final String EMPTY = "";
 	}
 
 	/**
@@ -144,8 +145,12 @@ public class Constants {
 
 	public class SPINNERITEMS {
 		public class ALLTERM {
-			public static final String NAME = "All";
+			public static final String NAME = "all";
 			public static final int TID = -1;
+		}
+		public class EMPTYTERM {
+			public static final String NAME = "";
+			public static final int TID = -2;
 		}
 	}
 
@@ -158,4 +163,13 @@ public class Constants {
 		public static final String ASC = "asc";
 	}
 
+	public class LOCALE{
+		public class DRUPAL{
+			public static final String GREEK = "el";
+			public static final String ENGLISH = "en";
+		}
+		public class ANDROID{
+			public static final String GREEK = "el_GR";
+		}
+	}
 }

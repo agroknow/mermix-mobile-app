@@ -510,6 +510,8 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		MapsInitializer.initialize(getActivity());
 		mMapView = (MapView) v.findViewById(R.id.map);
 		//TODO mMapView.onCreate causes APP to freeze for about a second
+		//http://stackoverflow.com/questions/26265526/what-makes-my-map-fragment-loading-slow
+		//http://stackoverflow.com/questions/26178212/first-launch-of-activity-with-google-maps-is-very-slow
 		mMapView.onCreate(savedInstanceState);
 		markersOnMap = new HashMap<String, String>();
 	}
