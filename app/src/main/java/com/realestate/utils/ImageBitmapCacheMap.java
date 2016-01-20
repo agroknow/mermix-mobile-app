@@ -14,42 +14,42 @@ import java.util.Iterator;
  */
 public class ImageBitmapCacheMap {
 
-    private static HashMap<String, Bitmap> imageCacheMap = null;
+	private static HashMap<String, Bitmap> imageCacheMap = null;
 
-    public ImageBitmapCacheMap() {
-        if(imageCacheMap == null){
-            imageCacheMap = new HashMap<String, Bitmap>();
-        }
-    }
+	public ImageBitmapCacheMap() {
+		if(imageCacheMap == null){
+			imageCacheMap = new HashMap<>();
+		}
+	}
 
-    public void addBitmap(String uri, Bitmap bitmap){
-        if(!imageCacheMap.containsKey(uri)){
-            imageCacheMap.put(uri, bitmap);
-        }
-        else{
-            Common.log("ImageBitmapCacheMap addBitmap uri " + uri + " already exists in HashMap imageCacheMap");
-        }
-    }
+	public void addBitmap(String uri, Bitmap bitmap){
+		if(!imageCacheMap.containsKey(uri)){
+			imageCacheMap.put(uri, bitmap);
+			Common.log("ImageBitmapCacheMap addBitmap ADDED img:" + Common.getFileNameFromUri(uri));
+		}
+		else
+			Common.log("ImageBitmapCacheMap addBitmap ALREADY EXISTS img:" + Common.getFileNameFromUri(uri));
+	}
 
-    public Bitmap getBitmap(String uri){
-        Bitmap bitmap = null;
-        if(imageCacheMap.containsKey(uri)){
-            bitmap = imageCacheMap.get(uri);
-        }
-        else{
-            Common.log("ImageBitmapCacheMap getBitmap uri "+uri+" NOT exists in HashMap imageCacheMap");
-        }
-        return bitmap;
-    }
+	public Bitmap getBitmap(String uri){
+		Bitmap bitmap = null;
+		if(imageCacheMap.containsKey(uri)){
+			bitmap = imageCacheMap.get(uri);
+			Common.log("ImageBitmapCacheMap getBitmap RETRIEVED img:" + Common.getFileNameFromUri(uri));
+		}
+		else
+			Common.log("ImageBitmapCacheMap getBitmap NOT FOUND img:" + Common.getFileNameFromUri(uri));
+		return bitmap;
+	}
 
-    public void debug(){
-        Common.log("ImageBitmapCacheMap debug size:"+Integer.toString(imageCacheMap.size()));
-        Iterator it = imageCacheMap.entrySet().iterator();
-        while (it.hasNext()) {
-            HashMap.Entry pair = (HashMap.Entry)it.next();
-            Common.log("ImageBitmapCacheMap debug key:"+pair.getKey());
-            it.remove(); // avoids a ConcurrentModificationException
-        }
-    }
+	public void debug(){
+		Common.log("ImageBitmapCacheMap debug size:"+Integer.toString(imageCacheMap.size()));
+		Iterator it = imageCacheMap.entrySet().iterator();
+		while (it.hasNext()) {
+			HashMap.Entry pair = (HashMap.Entry)it.next();
+			Common.log("ImageBitmapCacheMap debug key:"+pair.getKey());
+			it.remove(); // avoids a ConcurrentModificationException
+		}
+	}
 
 }
