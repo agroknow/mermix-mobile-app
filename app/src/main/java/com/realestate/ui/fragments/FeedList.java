@@ -1,6 +1,7 @@
 package com.realestate.ui.fragments;
 
 import android.app.AlertDialog.Builder;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +44,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 {
 
 	private FeedAdapter adapter = new FeedAdapter();
+	private ProgressDialog progress;
 	public int sortSelection = 0;
 
 	/* (non-Javadoc)
@@ -61,6 +63,15 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	}
 
 	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Common.log("FeedList onCreate");
+		progress = new ProgressDialog(getActivity());
+		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
+		progress.setMessage(getResources().getString(R.string.progress_dialog_retrieve_msg));
+	}
+
+	@Override
 	public void startRequestService(UrlArgs urlArgs) {
 		FeedListArgs args = (FeedListArgs) urlArgs;
 		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFEQUIPMENTS +
@@ -72,6 +83,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, pojoClass);
 		this.getActivity().startService(i);
+		progress.show();
 	}
 
 	/**
@@ -118,6 +130,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	@Override
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("FeedList updateUI");
+		progress.dismiss();
 		try {
 			ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
 			List<Equipment> equipments = equipmentsList.getEquipments();

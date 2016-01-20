@@ -44,9 +44,10 @@
 	<string name="contract_type">Contract type</string>
 	<string name="no_results">No Results</string>
 	<string name="progress_dialog_title"></string>
-	<string name="progress_dialog_search_msg">Retrieving search results</string>
+	<string name="progress_dialog_search_msg">Loading ....</string>
 	<string name="progress_dialog_search_map_msg">Searching ....</string>
 	<string name="progress_dialog_upload_msg">Uploading Equipment</string>
+	<string name="progress_dialog_retrieve_msg">Retrieving ....</string>
 	<string name="enable_location_detect_service">Please enable your device\'s location service to get near by equipments.</string>
 	<string name="rest_api_connection_error">Unable to connect to mermix data servers</string>
 	<string name="enable">Enable</string>
