@@ -34,10 +34,7 @@ import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.UrlArgs;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by teo on 7/9/2015.
@@ -92,10 +89,8 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 				equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
 			}
 
-			Pattern p = Pattern.compile("^http(s)?:\\/\\/(.*?)");
-			Matcher m = p.matcher(equipment.getImage());
 			ImageView img = (ImageView) findViewById(R.id.img1);
-			if(m.find())
+			if(Common.hasUrlFormat(equipment.getImage()))
 				img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
 			else{
 				try {

@@ -47,10 +47,13 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
 		super.onPostExecute(bitmap);
-		this.imageView.setImageBitmap(bitmap);
-		if(this.marker.isInfoWindowShown()){
-			this.marker.hideInfoWindow();
-			this.marker.showInfoWindow();
+		if(bitmap != null) {
+			this.imageView.setImageBitmap(bitmap);
+			if (this.marker.isInfoWindowShown()) {
+				//redraw InfoWindow to display bitmap
+				this.marker.hideInfoWindow();
+				this.marker.showInfoWindow();
+			}
 		}
 	}
 }

@@ -3,14 +3,12 @@ package com.realestate.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
-import android.util.Base64;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -20,13 +18,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.realestate.model.common.Pojo;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created on 12/07/2015
@@ -193,5 +189,30 @@ public class Common {
 		}
 
 		return addressCustom;
+	}
+
+	/**
+	 * check if string is a url
+	 * use regular expressionn ^http(s)?:\/\/(.*?)
+	 */
+	public static Boolean hasUrlFormat(String str){
+		Boolean isUrl = false;
+
+		Pattern p = Pattern.compile("^http(s)?:\\/\\/(.*?)");
+		Matcher m = p.matcher(str);
+		if(m.find())
+			isUrl = true;
+		return isUrl;
+	}
+
+	public static String getFileNameFromUri(String uri){
+		String file = "";
+		int lastIndexOfSlash = -1;
+		if(!uri.isEmpty()){
+			lastIndexOfSlash = uri.lastIndexOf('/');
+			if(lastIndexOfSlash > -1)
+				file = uri.substring(uri.lastIndexOf('/'), uri.length());
+		}
+		return file;
 	}
 }

@@ -46,10 +46,10 @@ import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.EquipmentDetail;
-import com.realestate.ui.activities.MainActivity;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageBitmapCacheMap;
+import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.InfoWindowImageDownload;
 import com.realestate.utils.net.args.MapViewArgs;
@@ -614,6 +614,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 
 		@Override
 		public View getInfoContents(Marker marker) {
+			Common.log("MapViewer getInfoContents");
 			iwMarker = marker;
 			LayoutInflater inflater = (LayoutInflater) iwContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -637,12 +638,21 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			DrupalNodes drupalNodes = new DrupalNodes(iwContext);
 			SQLiteNode node = drupalNodes.getNode(equipmentId);
 			String imageUrl = node.getImage(0);
-			Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl);
-			if (cachedBitmap == null) {
-				popUpImage.setImageDrawable(null);
-				new InfoWindowImageDownload(popUpImage, iwMarker).execute(imageUrl);
-			} else {
-				popUpImage.setImageBitmap(cachedBitmap);
+			if(Common.hasUrlFormat(imageUrl)) {
+				Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl);
+				if (cachedBitmap == null) {
+					popUpImage.setImageDrawable(null);
+					new InfoWindowImageDownload(popUpImage, iwMarker).execute(imageUrl);
+				} else
+					popUpImage.setImageBitmap(cachedBitmap);
+			}
+			else{
+				try {
+					popUpImage.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(imageUrl));
+				} catch (IOException e) {
+					//e.printStackTrace();
+					Common.logError("IOException @ MapViewer.getInfoContents:" + e.getMessage());
+				}
 			}
 
 			return popUp;
