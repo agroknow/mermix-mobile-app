@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 
 /**
@@ -31,6 +32,8 @@ public class SplashScreen extends Activity
 		isRunning = true;
 
 		startSplash();
+
+		ApplicationVars.initialize(getApplicationContext());
 
 	}
 
