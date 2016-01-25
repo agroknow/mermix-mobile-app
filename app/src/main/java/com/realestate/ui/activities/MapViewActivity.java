@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
 import com.realestate.ui.fragments.MapViewer;
+import com.realestate.utils.Common;
 
 /**
  * The MapViewActivity is the activity class that shows Map fragment. This activity is
@@ -19,6 +20,7 @@ public class MapViewActivity extends CustomActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		Common.log("MapViewActivity onCreate");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 

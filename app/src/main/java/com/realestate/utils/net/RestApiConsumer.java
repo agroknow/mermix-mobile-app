@@ -124,7 +124,8 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 		URL url;
 		String credentials = !ApplicationVars.User.credentials.isEmpty() ? ApplicationVars.User.credentials : Constants.APICREDENTIALS;
 		Common.log("exec " + httpMethod + " request on url " + requestUrl + "?" + requestParams);
-//		Common.log("basic auth credentials " + credentials);
+		if(Constants.devMode)
+			Common.log("basic AUTH credentials " + credentials);
 
 		try {
 			switch(httpMethod){

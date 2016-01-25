@@ -91,10 +91,15 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 
 	@Override
 	public void updateUI(Pojo apiResponseData) {
+		Common.log("NewEquipment updateUI");
 		progress.dismiss();
 		String dataType = "";
 		ListOfTerms termsList = null;
 		com.realestate.model.NewEquipment equipment = null;
+		if(apiResponseData == null){
+			Common.logError(Constants.ErrorMessages.NO_DATA);
+			return;
+		}
 		try {
 			equipment = (com.realestate.model.NewEquipment) apiResponseData;
 			dataType = "com.realestate.model.NewEquipment";

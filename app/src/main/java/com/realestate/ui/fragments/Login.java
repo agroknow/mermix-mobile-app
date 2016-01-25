@@ -112,24 +112,28 @@ public class Login extends CustomFragment implements DataRetrieve {
 
 	@Override
 	public void updateUI(Pojo apiResponseData) {
+		Common.log("Login updateUI");
 		Boolean userLoggedIn = false;
 		progress.dismiss();
-		try{
-			ListOfUsers usersList = (ListOfUsers) apiResponseData;
-			List<User> users = usersList.getUsers();
-			if(users.size() > 0){
-				ApplicationVars.User.id = users.get(0).getUid();
-				userLoggedIn = true;
+		if(apiResponseData != null) {
+			try {
+				ListOfUsers usersList = (ListOfUsers) apiResponseData;
+				List<User> users = usersList.getUsers();
+				if (users.size() > 0) {
+					ApplicationVars.User.id = users.get(0).getUid();
+					userLoggedIn = true;
 
-				MainActivity activity = (MainActivity) this.getActivity();
-				activity.goToFragmentAfterLogon();
+					MainActivity activity = (MainActivity) this.getActivity();
+					activity.goToFragmentAfterLogon();
+				}
+			} catch (ClassCastException e) {
+				Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
 			}
 		}
-		catch (ClassCastException e){
-			Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
-		}
-		if(!userLoggedIn)
+		if(!userLoggedIn) {
+			Common.displayToast(getResources().getString(R.string.user_login_failed), getActivity().getApplicationContext());
 			ApplicationVars.User.credentials = "";
+		}
 	}
 
 	@Override

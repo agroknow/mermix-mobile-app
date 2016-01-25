@@ -81,5 +81,6 @@
 	<string name="login">Login</string>
 	<string name="register">Become a member</string>
 	<string name="progress_dialog_user_login">Checking user credentials....</string>
+	<string name="user_login_failed">User credentials check failed.</string>
 
 </resources>

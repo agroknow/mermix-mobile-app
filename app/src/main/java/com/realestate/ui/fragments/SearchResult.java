@@ -249,6 +249,10 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("SearchResult updateUI");
 		progress.dismiss();
+		if(apiResponseData == null){
+			getActivity().findViewById(R.id.no_results).setVisibility(View.VISIBLE);
+			return;
+		}
 		try {
 			ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
 			List<Equipment> equipments = equipmentsList.getEquipments();

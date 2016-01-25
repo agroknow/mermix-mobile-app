@@ -88,7 +88,8 @@ public class MainService extends Service {
 				parserResult.close();
 			}
 			else{
-				Common.logError(Constants.ErrorMessages.NO_DATA);
+				//Common.logError(Constants.ErrorMessages.NO_DATA);
+				broadCastData(apiResponseData);
 			}
 		} catch (JsonParseException e){
 			Common.logError("JsonParseException @ asyncTaskCB:" + e.getMessage());

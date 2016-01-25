@@ -56,6 +56,10 @@ public class Search extends CustomFragment implements DataRetrieve
 	@Override
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("Search updateUI");
+		if(apiResponseData == null){
+			Common.logError(Constants.ErrorMessages.NO_DATA);
+			return;
+		}
 		try {
 			ListOfTerms termsList = (ListOfTerms) apiResponseData;
 			List<PojoTerm> terms = termsList.getTerms();

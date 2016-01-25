@@ -132,21 +132,25 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	public void updateUI(Pojo apiResponseData) {
 		Common.log("FeedList updateUI");
 		progress.dismiss();
-		try {
-			ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
-			List<Equipment> equipments = equipmentsList.getEquipments();
-			adapter.clear();
-			int idx = 0;
-			while(idx < equipments.size()){
-				//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
-				//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
-				adapter.addItem(equipments.get(idx));
-				idx++;
+		if(apiResponseData != null) {
+			try {
+				ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
+				List<Equipment> equipments = equipmentsList.getEquipments();
+				adapter.clear();
+				int idx = 0;
+				while (idx < equipments.size()) {
+					//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
+					//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
+					adapter.addItem(equipments.get(idx));
+					idx++;
+				}
+				adapter.notifyDataSetChanged();
+			} catch (ClassCastException e) {
+				Common.logError("ClassCastException @ FeedList updateUI:" + e.getMessage());
 			}
-			adapter.notifyDataSetChanged();
 		}
-		catch (ClassCastException e){
-			Common.logError("ClassCastException @ FeedList updateUI:" + e.getMessage());
+		else{
+			Common.displayToast(getResources().getString(R.string.no_results), getActivity().getApplicationContext());
 		}
 	}
 
