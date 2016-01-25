@@ -22,7 +22,7 @@ public class MapViewActivity extends CustomActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-		getActionBar().setTitle("Map");
+		getActionBar().setTitle(getResources().getString(R.string.map));
 
 		addFragment();
 	}
