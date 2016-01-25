@@ -16,6 +16,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
 import com.realestate.model.Equipment;
@@ -277,7 +278,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 	public void startRequestService(UrlArgs urlArgs) {
 		Common.log("EquipmentDetail startRequestService");
 		equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
-		String apiUrl = Constants.APIENDPOINT + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
 		Intent i = new Intent(this, MainService.class);
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
 		i.putExtra(Constants.INTENTVARS.POJOCLASS, Constants.PojoClass.EQUIPMENT);

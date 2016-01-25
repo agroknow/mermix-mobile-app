@@ -167,7 +167,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			case "NewEquipmentArgs":
 				Common.log("NewEquipment startRequestService NewEquipmentArgs");
 				String queryString = newEquipmentArgs.getUrlArgs();
-				apiUrl = Constants.APIENDPOINT + Constants.URI.NEWEQUIPMENT + "?" + queryString;
+				apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.NEWEQUIPMENT + "?" + queryString;
 				pojoClass = Constants.PojoClass.NEWEQUIPMENT;
 				i = new Intent(this.getActivity(), MainService.class);
 				i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
@@ -177,9 +177,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 				break;
 			case "TermArgs":
 				Common.log("NewEquipment startRequestService TermArgs");
-				apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFTERMS +
-						"?" + termArgs.getUrlArgs() +
-						"";
+				apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFTERMS + "?" + termArgs.getUrlArgs();
 				pojoClass = Constants.PojoClass.LISTOFTERMS;
 				i = new Intent(this.getActivity(), MainService.class);
 				i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
@@ -425,12 +423,9 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		Common.log("NewEquipment getFormData");
 		String type = "apartment";
 		int promote = 0;
-		String lang = Resources.getSystem().getConfiguration().locale.toString().equals(Constants.LOCALE.ANDROID.GREEK) ?
-				Constants.LOCALE.DRUPAL.GREEK:
-				Constants.LOCALE.DRUPAL.ENGLISH;
 
 		DrupalListField author = new DrupalListField();
-		author.setId("59");
+		author.setId(ApplicationVars.User.id);
 
 		EditText titleTxtBox = (EditText) getActivity().findViewById(R.id.title);
 		String title = titleTxtBox.getText().toString();
@@ -486,7 +481,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		imageList.add(0, this.equipmentPhotoPath);
 
 		this.payload = new EquipmentPostPayload();
-		this.payload.setData(title, body, type, promote, lang, author, machineType, contract, cultivationsList, location, address, imageList);
+		this.payload.setData(title, body, type, promote, ApplicationVars.restApiLocale, author, machineType, contract, cultivationsList, location, address, imageList);
 	}
 
 	/**

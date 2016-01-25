@@ -80,9 +80,7 @@ public class Search extends CustomFragment implements DataRetrieve
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
 		TermArgs args = (TermArgs) urlArgs;
-		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFTERMS +
-				"?" + args.getUrlArgs() +
-				"";
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFTERMS + "?" + args.getUrlArgs();
 		String pojoClass = Constants.PojoClass.LISTOFTERMS;
 
 		Intent i = new Intent(this.getActivity(), MainService.class);
@@ -164,7 +162,7 @@ public class Search extends CustomFragment implements DataRetrieve
 			spinner.setAdapter(spinAdapter);
 		}
 		else{
-			SQLiteTerms.add(0, new SQLiteTerm(Constants.SPINNERITEMS.ALLTERM.TID, Constants.SPINNERITEMS.ALLTERM.NAME, ""));
+			SQLiteTerms.add(0, new SQLiteTerm(Constants.SPINNERITEMS.ALLTERM.TID, getResources().getString(R.string.all), ""));
 			vocabularyId = Constants.TERMVOCABULARIES.containsKey(vocabulary) ? Constants.TERMVOCABULARIES.get(vocabulary) :
 					noneVocabularyId;
 			startRequestService(new TermArgs(Integer.toString(vocabularyId)));

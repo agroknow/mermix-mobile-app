@@ -21,6 +21,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.Equipment;
@@ -233,7 +234,7 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 	public void startRequestService(UrlArgs urlArgs) {
 		SearchArgs args = (SearchArgs) urlArgs;
 		String queryString = args.getUrlArgs();
-		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFEQUIPMENTS +
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFEQUIPMENTS +
 						(!queryString.isEmpty() ? "?" + queryString : "" )+
 						"";
 			String pojoClass = Constants.PojoClass.LISTOFEQUIPMENTS;

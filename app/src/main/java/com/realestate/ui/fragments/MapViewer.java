@@ -37,6 +37,7 @@ import com.google.maps.android.clustering.Cluster;
 import com.google.maps.android.clustering.ClusterItem;
 import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.clustering.view.DefaultClusterRenderer;
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
 import com.realestate.custom.CustomFragment;
@@ -328,7 +329,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
 		MapViewArgs args = (MapViewArgs) urlArgs;
-		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFNEARBYEQUIPMENTS +
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFNEARBYEQUIPMENTS +
 				"?" + args.getUrlArgs() +
 				"";
 		String pojoClass = Constants.PojoClass.EQUIPMENTINVIEW;

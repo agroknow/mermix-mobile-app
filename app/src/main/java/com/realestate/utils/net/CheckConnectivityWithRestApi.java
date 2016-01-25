@@ -2,6 +2,7 @@ package com.realestate.utils.net;
 
 import android.os.AsyncTask;
 
+import com.realestate.ApplicationVars;
 import com.realestate.custom.CustomActivity;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
@@ -30,7 +31,7 @@ public class CheckConnectivityWithRestApi extends AsyncTask<Void, Void, Boolean>
 		URL url;
 		Boolean restApiAccessible = false;
 		try {
-			url = new URL(Constants.APIENDPOINT);
+			url = new URL(Constants.APIENDPOINT + ApplicationVars.restApiLocale);
 			urlConnection = (HttpURLConnection) url.openConnection();
 			urlConnection.setConnectTimeout(Constants.CONNECTIONTIMEOUT);
 			if (urlConnection.getResponseCode() == HttpURLConnection.HTTP_OK)

@@ -15,6 +15,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
 import com.realestate.model.Equipment;
@@ -74,7 +75,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
 		FeedListArgs args = (FeedListArgs) urlArgs;
-		String apiUrl = Constants.APIENDPOINT + Constants.URI.LISTOFEQUIPMENTS +
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFEQUIPMENTS +
 				"?" + args.getUrlArgs() +
 				"";
 		String pojoClass = Constants.PojoClass.LISTOFEQUIPMENTS;
