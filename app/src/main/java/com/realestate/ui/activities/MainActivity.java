@@ -1,5 +1,6 @@
 package com.realestate.ui.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -22,6 +23,7 @@ import com.realestate.model.SQLiteTerm;
 import com.realestate.model.sqlite.DrupalTerms;
 import com.realestate.ui.adapters.LeftNavAdapter;
 import com.realestate.ui.fragments.FeedList;
+import com.realestate.ui.fragments.Login;
 import com.realestate.ui.fragments.MapViewer;
 import com.realestate.ui.fragments.NewEquipment;
 import com.realestate.ui.fragments.Search;
@@ -53,6 +55,7 @@ public class MainActivity extends CustomActivity
 	/** The left navigation list adapter. */
 	private LeftNavAdapter adapter;
 	private int fragment2Launch = 0;
+	private int fragment2LaunchAfterLogon = -1;
 
 	/**
 	 * Dispatch onPause() to fragments.
@@ -104,7 +107,6 @@ public class MainActivity extends CustomActivity
 	protected void onStart() {
 		Common.log("MainActivity onStart");
 		super.onStart();
-		ApplicationVars.initialize(getApplicationContext());
 	}
 
 	/* (non-Javadoc)
@@ -223,8 +225,16 @@ public class MainActivity extends CustomActivity
 		}
 		else if (pos == 3)
 		{
-			title = getResources().getString(R.string.add_new_equipment);
-			f = new NewEquipment();
+			if(!ApplicationVars.User.id.isEmpty()) {
+				title = getResources().getString(R.string.add_new_equipment);
+				f = new NewEquipment();
+			}
+			else{
+				Common.log("MainActivity launchFragment user NOT logged-in, activate Login fragment");
+				title = getResources().getString(R.string.login);
+				f = new Login();
+				fragment2LaunchAfterLogon = pos;
+			}
 		}
 
 		if (f != null)
@@ -238,6 +248,13 @@ public class MainActivity extends CustomActivity
 					.commit();
 			if (adapter != null)
 				adapter.setSelection(pos);
+		}
+	}
+
+	public void goToFragmentAfterLogon(){
+		if(this.fragment2LaunchAfterLogon > -1) {
+			this.launchFragment(this.fragment2LaunchAfterLogon);
+			this.fragment2LaunchAfterLogon = -1;
 		}
 	}
 

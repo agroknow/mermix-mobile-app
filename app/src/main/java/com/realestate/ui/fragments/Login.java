@@ -1,0 +1,149 @@
+package com.realestate.ui.fragments;
+
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.EditText;
+
+import com.realestate.ApplicationVars;
+import com.realestate.R;
+import com.realestate.custom.CustomFragment;
+import com.realestate.model.ListOfUsers;
+import com.realestate.model.common.Pojo;
+import com.realestate.model.common.User;
+import com.realestate.ui.DataRetrieve;
+import com.realestate.ui.activities.MainActivity;
+import com.realestate.ui.activities.RegisterActivity;
+import com.realestate.utils.Common;
+import com.realestate.utils.Constants;
+import com.realestate.utils.MainService;
+import com.realestate.utils.net.args.UrlArgs;
+import com.realestate.utils.net.args.UserArgs;
+
+import java.util.List;
+
+/**
+ * Created on 25/01/2016
+ * Description:
+ */
+public class Login extends CustomFragment implements DataRetrieve {
+	private ProgressDialog progress;
+	private String username;
+	private String password;
+
+	@Override
+	public View setTouchNClick(View v) {
+		return super.setTouchNClick(v);
+	}
+
+	@Override
+	public void onClick(View v) {
+		Common.log("Login onClick");
+		super.onClick(v);
+
+		if (v.getId() == R.id.btnLogin) {
+			EditText usrTxtBox = (EditText)  this.getActivity().findViewById(R.id.username);
+			this.username = usrTxtBox.getText().toString();
+
+			EditText pwdTxtBox = (EditText) this.getActivity().findViewById(R.id.password);
+			this.password = pwdTxtBox.getText().toString();
+
+			ApplicationVars.User.credentials = this.username+":"+this.password;
+			startRequestService(new UserArgs(this.username));
+		}
+		else if(v.getId() == R.id.btnRegister) {
+			Intent i = new Intent(this.getActivity(), RegisterActivity.class);
+			startActivity(i);
+		}
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Common.log("Login onCreateView");
+		View v = inflater.inflate(R.layout.login, null);
+		setTouchNClick(v.findViewById(R.id.btnRegister));
+		setTouchNClick(v.findViewById(R.id.btnLogin));
+
+		return v;
+	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		Common.log("Login onCreate");
+		super.onCreate(savedInstanceState);
+
+		progress = new ProgressDialog(this.getActivity());
+		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
+		progress.setMessage(getResources().getString(R.string.progress_dialog_user_login));
+	}
+
+	@Override
+	public void onStart() {
+		Common.log("Login onStart");
+		super.onStart();
+	}
+
+	@Override
+	public void onResume() {
+		Common.log("Login onResume");
+		super.onResume();
+	}
+
+	@Override
+	public void onDestroy() {
+		Common.log("Login onDestroy");
+		super.onDestroy();
+	}
+
+	@Override
+	public void onPause() {
+		Common.log("Login onPause");
+		super.onPause();
+	}
+
+	@Override
+	public void onStop() {
+		Common.log("Login onStop");
+		super.onStop();
+	}
+
+	@Override
+	public void updateUI(Pojo apiResponseData) {
+		Boolean userLoggedIn = false;
+		progress.dismiss();
+		try{
+			ListOfUsers usersList = (ListOfUsers) apiResponseData;
+			List<User> users = usersList.getUsers();
+			if(users.size() > 0){
+				ApplicationVars.User.id = users.get(0).getUid();
+				userLoggedIn = true;
+
+				MainActivity activity = (MainActivity) this.getActivity();
+				activity.goToFragmentAfterLogon();
+			}
+		}
+		catch (ClassCastException e){
+			Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
+		}
+		if(!userLoggedIn)
+			ApplicationVars.User.credentials = "";
+	}
+
+	@Override
+	public void startRequestService(UrlArgs urlArgs) {
+		UserArgs args = (UserArgs) urlArgs;
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFUSERS +
+				"?" + args.getUrlArgs() +
+				"";
+		String pojoClass = Constants.PojoClass.LISTOFUSERS;
+
+		Intent i = new Intent(this.getActivity(), MainService.class);
+		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
+		i.putExtra(Constants.INTENTVARS.POJOCLASS, pojoClass);
+		this.getActivity().startService(i);
+		progress.show();
+	}
+}

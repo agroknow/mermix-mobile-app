@@ -69,4 +69,13 @@
 	<string name="all">Όλα</string>
 	<string name="select_obligatory_field">Επιλέξτε</string>
 	<string name="progress_dialog_retrieve_msg">Λήψη μηχανημάτων....</string>
+	<string name="username">Όνομα χρήστη</string>
+	<string name="email">E-mail</string>
+	<string name="password">Συνθηματικό</string>
+	<string name="enter_email">Εισάγετε email...</string>
+	<string name="enter_password">Εισάγετε συνθηματικό...</string>
+	<string name="enter_username">Εισάγετε όνομα χρήστη...</string>
+	<string name="login">Είσοδος</string>
+	<string name="register">Γίνε Μέλος</string>
+	<string name="progress_dialog_user_login">Έλεγχος στοιχείων χρήστη....</string>
 </resources>

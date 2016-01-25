@@ -1,6 +1,7 @@
 package com.realestate;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.realestate.model.PojoTerm;
 import com.realestate.model.SQLiteTerm;
@@ -41,10 +42,20 @@ public class ApplicationVars {
 	 */
 	public static Map<String, Boolean> dataRetrieved = new HashMap<>();
 	private static boolean varsInitialized = false;
+	public static String restApiLocale;
+	public static class User {
+		public static String credentials;
+		public static String id;
+	}
 
 	public static void initialize(Context context) {
 		Common.log("ApplicationVars initialize");
 		if(!varsInitialized) {
+			User.credentials = "";
+			User.id = "";
+			restApiLocale =  Resources.getSystem().getConfiguration().locale.toString().equals(Constants.LOCALE.ANDROID.GREEK) ?
+					Constants.LOCALE.DRUPAL.GREEK:
+					Constants.LOCALE.DRUPAL.ENGLISH;
 			initDataRetrievedFlags();
 			clearTermsCache(context);
 			clearNodesCache(context);

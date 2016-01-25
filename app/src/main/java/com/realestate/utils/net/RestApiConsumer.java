@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.realestate.ApplicationVars;
 import com.realestate.model.EquipmentPostPayload;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
@@ -121,7 +122,9 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 		HttpURLConnection urlConnection = null;
 		OutputStream output;
 		URL url;
+		String credentials = !ApplicationVars.User.credentials.isEmpty() ? ApplicationVars.User.credentials : Constants.APICREDENTIALS;
 		Common.log("exec " + httpMethod + " request on url " + requestUrl + "?" + requestParams);
+//		Common.log("basic auth credentials " + credentials);
 
 		try {
 			switch(httpMethod){
@@ -144,7 +147,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 
 					//Authorization Request Header
 					urlConnection.setRequestProperty("Authorization", "Basic "+
-						new String(android.util.Base64.encode(Constants.APICREDENTIALS.getBytes(), android.util.Base64.NO_WRAP))
+						new String(android.util.Base64.encode(credentials.getBytes(), android.util.Base64.NO_WRAP))
 					);
 					break;
 				case Constants.HttpRequestMethods.POST:
@@ -161,7 +164,7 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 						urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + requestCharset);
 					//Authorization Request Header
 					urlConnection.setRequestProperty("Authorization", "Basic "+
-						new String(android.util.Base64.encode(Constants.APICREDENTIALS.getBytes(), android.util.Base64.NO_WRAP))
+						new String(android.util.Base64.encode(credentials.getBytes(), android.util.Base64.NO_WRAP))
 					);
 					output = urlConnection.getOutputStream();
 					try {
