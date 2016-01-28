@@ -97,7 +97,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		ListOfTerms termsList = null;
 		com.realestate.model.NewEquipment equipment = null;
 		if(apiResponseData == null){
-			Common.logError(Constants.ErrorMessages.NO_DATA);
+			Common.displayToast(getResources().getString(R.string.upload_failed), getActivity().getApplicationContext());
 			return;
 		}
 		try {

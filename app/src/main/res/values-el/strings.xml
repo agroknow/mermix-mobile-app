@@ -79,4 +79,5 @@
 	<string name="register">Γίνε Μέλος</string>
 	<string name="progress_dialog_user_login">Έλεγχος στοιχείων χρήστη....</string>
 	<string name="user_login_failed">Ο έλεγχος των στοιχείων απέτυχε.</string>
+	<string name="upload_failed">Η αποθήκευση μηχανήματος απέτυχε.</string>
 </resources>

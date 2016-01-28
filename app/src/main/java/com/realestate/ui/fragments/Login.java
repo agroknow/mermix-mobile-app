@@ -11,7 +11,6 @@ import android.widget.EditText;
 import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
-import com.realestate.model.ListOfUsers;
 import com.realestate.model.common.Pojo;
 import com.realestate.model.common.User;
 import com.realestate.ui.DataRetrieve;
@@ -21,9 +20,6 @@ import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.UrlArgs;
-import com.realestate.utils.net.args.UserArgs;
-
-import java.util.List;
 
 /**
  * Created on 25/01/2016
@@ -52,7 +48,7 @@ public class Login extends CustomFragment implements DataRetrieve {
 			this.password = pwdTxtBox.getText().toString();
 
 			ApplicationVars.User.credentials = this.username+":"+this.password;
-			startRequestService(new UserArgs(this.username));
+			startRequestService(null);
 		}
 		else if(v.getId() == R.id.btnRegister) {
 			Intent i = new Intent(this.getActivity(), RegisterActivity.class);
@@ -90,6 +86,10 @@ public class Login extends CustomFragment implements DataRetrieve {
 	public void onResume() {
 		Common.log("Login onResume");
 		super.onResume();
+		if(Constants.devMode) {
+			EditText usrTxtBox = (EditText)  this.getActivity().findViewById(R.id.username);
+			usrTxtBox.setText("tkosmopoulos_159");
+		}
 	}
 
 	@Override
@@ -117,15 +117,12 @@ public class Login extends CustomFragment implements DataRetrieve {
 		progress.dismiss();
 		if(apiResponseData != null) {
 			try {
-				ListOfUsers usersList = (ListOfUsers) apiResponseData;
-				List<User> users = usersList.getUsers();
-				if (users.size() > 0) {
-					ApplicationVars.User.id = users.get(0).getUid();
-					userLoggedIn = true;
+				User user = (User) apiResponseData;
+				ApplicationVars.User.id = user.getUid();
+				userLoggedIn = true;
 
-					MainActivity activity = (MainActivity) this.getActivity();
-					activity.goToFragmentAfterLogon();
-				}
+				MainActivity activity = (MainActivity) this.getActivity();
+				activity.goToFragmentAfterLogon();
 			} catch (ClassCastException e) {
 				Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
 			}
@@ -138,11 +135,8 @@ public class Login extends CustomFragment implements DataRetrieve {
 
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
-		UserArgs args = (UserArgs) urlArgs;
-		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFUSERS +
-				"?" + args.getUrlArgs() +
-				"";
-		String pojoClass = Constants.PojoClass.LISTOFUSERS;
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.USERINFO;
+		String pojoClass = Constants.PojoClass.USER;
 
 		Intent i = new Intent(this.getActivity(), MainService.class);
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);

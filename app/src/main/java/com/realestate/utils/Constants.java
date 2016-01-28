@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public class Constants {
 	public static final String base64Prefix = "data:image/jpeg;base64,";
-	public static final Boolean devMode = false;
+	public static final Boolean devMode = true;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
 	public static final String APIENDPOINT = "http://dev.mermix.gr/";
 	public static final String CONCATDELIMETER = ",";
@@ -34,7 +34,7 @@ public class Constants {
 		type=apartment&limit=1&page=4
 		*/
 		public static final String LISTOFEQUIPMENTS = "node.json";
-		public static final String LISTOFUSERS = "user.json";
+		public static final String USERINFO = "restws/user";
 		public static final String LISTOFTERMS = "taxonomy_term.json";
 		public static final String LISTOFNEARBYEQUIPMENTS = "views/mobile_app_machine_results/default.json";
 		public static final String NEWEQUIPMENT = "node";
@@ -52,7 +52,6 @@ public class Constants {
 			public static final String LOCATION = "field_location";
 			public static final String COORDINATES = "args[0]";
 			public static final String JSONPAYLOAD = "JSON_PAYLOAD";
-			public static final String NAME = "name";
 		}
 	}
 
@@ -92,7 +91,7 @@ public class Constants {
 		public static final String LISTOFEQUIPMENTS = "com.realestate.model.ListOfEquipments";
 		public static final String EQUIPMENT = "com.realestate.model.Equipment";
 		public static final String LISTOFTERMS = "com.realestate.model.ListOfTerms";
-		public static final String LISTOFUSERS = "com.realestate.model.ListOfUsers";
+		public static final String USER = "com.realestate.model.common.User";
 		public static final String EQUIPMENTINVIEW = "com.realestate.model.EquipmentInView";
 		public static final String NEWEQUIPMENT = "com.realestate.model.NewEquipment";
 		public static final String EQUIPMENTPOSTPAYLOAD = "com.realestate.model.EquipmentPostPayload";
