@@ -7,12 +7,14 @@
     <color name="black">#000000</color>
     <color name="red">#f14242</color>
     <color name="transparent">#00000000</color>
-    <color name="mermix_font_color_dk">#ffffff</color>
-    <color name="mermix_font_color">#ffffff</color>
+    <color name="mermix_font_color_dk">#444</color>
+    <color name="mermix_font_color">#444</color>
     <color name="gray_light">#c0c1c1</color>
     <color name="main_color_green">#16a085</color>
+    <color name="main_color_gray">#707070</color>
+    <color name="mermix_red">#e63434</color>
     <color name="blue_lt">#33b5e5</color>
-    <color name="mermix_bg_color">#e63434</color>
+    <color name="mermix_bg_color">#ffffff</color>
     <color name="mermix_img_bg_color">#ad4b46</color>
 
 </resources>

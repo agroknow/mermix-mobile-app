@@ -98,7 +98,7 @@ public class LeftNavAdapter extends BaseAdapter
 			lbl.setCompoundDrawablesWithIntrinsicBounds(getItem(position)
 					.getImage2(), 0, 0, 0);
 			lbl.setBackgroundColor(context.getResources().getColor(
-					R.color.main_color_green));
+					R.color.main_color_gray));
 			lbl.setTextColor(Color.WHITE);
 		}
 		else
