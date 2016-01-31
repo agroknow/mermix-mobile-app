@@ -9,11 +9,13 @@ import java.util.Map;
  */
 public class Constants {
 	public static final String base64Prefix = "data:image/jpeg;base64,";
-	public static final Boolean devMode = false;
+	public static final Boolean devMode = true;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
 	public static final String APIENDPOINT = "http://dev.mermix.gr/";
 	public static final String CONCATDELIMETER = ",";
-	//public static final String APIENDPOINT = "http://192.168.1.64/";
+	public static final String MULTIPRICEDELIMETER = "&";
+	public static final String PRICEUNITDELIMETER = "/";
+	public static final String LOCALAPIENDPOINT = "http://192.168.1.64/";
 
 	public static final String APICREDENTIALS = "restws:r3stw5!";
 
@@ -109,6 +111,7 @@ public class Constants {
 		public static final String MACHINETYPE = "appartment_type";
 		public static final String CULTIVATION = "cultivation";
 		public static final String CONTRACTTYPE = "contract_type";
+		public static final String PRICEUNITS = "price_units";
 		public static final String EMPTY = "";
 	}
 
@@ -123,12 +126,13 @@ public class Constants {
 		mMap.put(VOCABULARYNAMES.MACHINETYPE, 2);
 		mMap.put(VOCABULARYNAMES.CULTIVATION, 9);
 		mMap.put(VOCABULARYNAMES.CONTRACTTYPE, 6);
+		mMap.put(VOCABULARYNAMES.PRICEUNITS, 12);
 		return mMap;
 	}
 
 	public class SQLITE{
 		public static final String DBNAME = "mermix";
-		public static final int DBVERSION = 7;
+		public static final int DBVERSION = 8;
 		public class TABLES {
 			public static final String TERMS = "terms";
 			public static final String NODES = "nodes";
@@ -142,6 +146,7 @@ public class Constants {
 			public static final String BODY = "body";
 			public static final String COORDINATES = "coordinates";
 			public static final String IMAGES = "images";
+			public static final String MULTIPRICE = "multiprice";
 		}
 	}
 

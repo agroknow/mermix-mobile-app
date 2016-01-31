@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Availability;
 import com.realestate.model.common.Node;
+import com.realestate.model.common.Price;
+import com.realestate.utils.Constants;
 
 import java.io.Serializable;
 import java.util.List;
@@ -16,8 +18,8 @@ import java.util.List;
  * more on nested classes @ http://stackoverflow.com/a/70358
  */
 public class Equipment extends Node implements Serializable{
-	@JsonProperty("field_price")
-	private float price;
+	@JsonProperty("field_multiprice")
+	private List<Price> price;
 	@JsonProperty("field_availability")
 	private List<Availability> availability;
 	@JsonProperty("field_image")
@@ -34,11 +36,11 @@ public class Equipment extends Node implements Serializable{
 		this.address = address;
 	}
 
-	public float getPrice() {
+	public List<Price> getPrice() {
 		return price;
 	}
 
-	public void setPrice(float price) {
+	public void setPrice(List<Price> price) {
 		this.price = price;
 	}
 
@@ -56,6 +58,19 @@ public class Equipment extends Node implements Serializable{
 
 	public void setAvailability(List<Availability> availability) {	this.availability = availability;	}
 
+	public String getMultiPriceString(){
+		String priceStr = "";
+		for(int i=0; i<this.price.size(); i++){
+			priceStr += Constants.MULTIPRICEDELIMETER + this.price.get(i).getValue() + Constants.PRICEUNITDELIMETER + this.price.get(i).getUnit().getName();
+		}
+		if(!priceStr.isEmpty())
+			priceStr = priceStr.substring(Constants.MULTIPRICEDELIMETER.length());
+		return priceStr;
+	}
 
+	public String getMultiPriceString2Display(){
+		String multiPrice = getMultiPriceString();
+		return multiPrice.replace(Constants.MULTIPRICEDELIMETER, " , ");
+	}
 
 }

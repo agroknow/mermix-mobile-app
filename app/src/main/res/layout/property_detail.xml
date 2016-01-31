@@ -57,12 +57,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pad_3dp"
-                    android:text="Price: "
+					android:layout_marginRight="@dimen/pad_3dp"
+                    android:text="@string/price_lbl"
                     android:textColor="@color/mermix_font_color"
                     android:textSize="@dimen/txt_12sp"
                     android:textStyle="bold" />
                 <TextView
-                    android:id="@+id/price"
+                    android:id="@+id/multiprice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/pad_3dp"
@@ -70,15 +71,15 @@
                     android:textColor="@color/mermix_font_color"
                     android:textSize="@dimen/txt_12sp"
                     android:textStyle="bold" />
-                <TextView
-                    android:id="@+id/priceFt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/pad_3dp"
-                    android:text=" €"
-                    android:textColor="@color/mermix_font_color"
-                    android:textSize="@dimen/txt_12sp"
-                    android:textStyle="bold" />
+                <!--<TextView-->
+                    <!--android:id="@+id/priceFt"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginTop="@dimen/pad_3dp"-->
+                    <!--android:text=" €"-->
+                    <!--android:textColor="@color/mermix_font_color"-->
+                    <!--android:textSize="@dimen/txt_12sp"-->
+                    <!--android:textStyle="bold" />-->
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
