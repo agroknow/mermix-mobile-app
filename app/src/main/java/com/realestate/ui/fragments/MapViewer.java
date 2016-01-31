@@ -303,7 +303,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 									equipment.getBody(),
 									dblCoords,
 									Common.concatString(equipment.getImages(), Constants.CONCATDELIMETER),
-									(float) -1));
+									""));
 				}
 				else
 					Common.log("equipment "+equipment.getNid()+" already exists in sqlite");

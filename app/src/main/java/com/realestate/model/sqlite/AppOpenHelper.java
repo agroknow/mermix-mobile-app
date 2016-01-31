@@ -51,7 +51,8 @@ public class AppOpenHelper extends SQLiteOpenHelper {
 				+Constants.SQLITE.COLUMNS.TITLE+" TEXT NOT NULL, "
 				+Constants.SQLITE.COLUMNS.BODY+" TEXT , "
 				+Constants.SQLITE.COLUMNS.COORDINATES+" TEXT , "
-				+Constants.SQLITE.COLUMNS.IMAGES+" TEXT"
+				+Constants.SQLITE.COLUMNS.IMAGES+" TEXT , "
+				+Constants.SQLITE.COLUMNS.MULTIPRICE+" TEXT"
 				+")");
 	}
 

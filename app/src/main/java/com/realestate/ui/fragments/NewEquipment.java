@@ -126,7 +126,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 								this.payload.getBody().getValue(),
 								coords,
 								Common.concatString(this.payload.getImage(), Constants.CONCATDELIMETER),
-								(float) -1));
+								""));
 				//navigate to activity EquipmentDetail
 				Intent i = new Intent(getActivity(), EquipmentDetail.class);
 				i.putExtra(Constants.INTENTVARS.EQUIPMENTID, equipmentId);

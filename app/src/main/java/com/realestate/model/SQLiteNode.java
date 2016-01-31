@@ -4,9 +4,12 @@ import com.realestate.model.common.Address;
 import com.realestate.model.common.Availability;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.Pojo;
+import com.realestate.model.common.Price;
 import com.realestate.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created on 15/11/2015
@@ -19,15 +22,15 @@ public class SQLiteNode extends Pojo {
 	private String body;
 	private Double[] coordinates;
 	private String images;		//comma delimeted image urls
-	private Float price;
+	private String multiprice;
 
-	public SQLiteNode(int nid, String title, String body, Double[] coordinates, String images, Float price) {
+	public SQLiteNode(int nid, String title, String body, Double[] coordinates, String images,String multiprice) {
 		this.nid = nid;
 		this.title = title;
 		this.body = body;
 		this.coordinates = coordinates;
 		this.images = images;
-		this.price = price;
+		this.multiprice = multiprice;
 	}
 
 	public int getNid() {
@@ -50,8 +53,27 @@ public class SQLiteNode extends Pojo {
 		return images;
 	}
 
-	public Float getPrice() {
-		return price;
+	public String getMultiprice() {
+		return multiprice;
+	}
+
+	public List<Price> getPriceObject(){
+		List<Price> priceObj = new ArrayList<>();
+		Price price;
+		Price.PriceUnit priceUnit;
+		if(!this.multiprice.isEmpty()) {
+			String[] multiPriceUnits = this.multiprice.split(Constants.MULTIPRICEDELIMETER);
+			for (int i = 0; i < multiPriceUnits.length; i++) {
+				String[] multiPriceUnitValue = multiPriceUnits[i].split(Constants.PRICEUNITDELIMETER);
+				price = new Price();
+				priceUnit = price.new PriceUnit();
+				priceUnit.setName(multiPriceUnitValue[1]);
+				price.setUnit(priceUnit);
+				price.setValue(multiPriceUnitValue[0]);
+				priceObj.add(price);
+			}
+		}
+		return priceObj;
 	}
 
 	public String getImage(int idx){
@@ -74,7 +96,7 @@ public class SQLiteNode extends Pojo {
 		equipment.setImage(this.getImage(0));
 		equipment.setNid(this.getNid());
 		equipment.setBody(Arrays.asList(body));
-		equipment.setPrice(-1);
+		equipment.setPrice(this.getPriceObject());
 		equipment.setAddress(Arrays.asList(address));
 		equipment.setAvailability(Arrays.asList(availability));
 

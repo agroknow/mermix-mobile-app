@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 import com.realestate.model.SQLiteNode;
-import com.realestate.model.sqlite.AppOpenHelper;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 
@@ -36,6 +35,7 @@ public class DrupalNodes {
 			content.put(Constants.SQLITE.COLUMNS.BODY, node.getBody());
 			content.put(Constants.SQLITE.COLUMNS.COORDINATES, Common.doubleArr2String(node.getCoordinates(), Constants.CONCATDELIMETER));
 			content.put(Constants.SQLITE.COLUMNS.IMAGES, node.getImages());
+			content.put(Constants.SQLITE.COLUMNS.MULTIPRICE, node.getMultiprice());
 			this.dbInstance.insert(Constants.SQLITE.TABLES.NODES, null, content);
 			this.dbInstance.close();
 		}
@@ -56,7 +56,8 @@ public class DrupalNodes {
 							Constants.SQLITE.COLUMNS.TITLE,
 							Constants.SQLITE.COLUMNS.BODY,
 							Constants.SQLITE.COLUMNS.COORDINATES,
-							Constants.SQLITE.COLUMNS.IMAGES
+							Constants.SQLITE.COLUMNS.IMAGES,
+							Constants.SQLITE.COLUMNS.MULTIPRICE
 					},
 					Constants.SQLITE.COLUMNS.NID + "=?",
 					new String[]{String.valueOf(nid)},
@@ -68,7 +69,7 @@ public class DrupalNodes {
 						cur.getString(2),
 						Common.stringToDoubleArr(cur.getString(3), Constants.CONCATDELIMETER),
 						cur.getString(4),
-						(float) -1);
+						cur.getString(5));
 			}
 			cur.close();
 			this.dbInstance.close();
