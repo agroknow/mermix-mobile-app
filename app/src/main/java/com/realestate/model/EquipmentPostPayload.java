@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.DrupalListField;
+import com.realestate.model.common.MultiPricePayload;
 import com.realestate.model.common.Pojo;
 
 import java.util.List;
@@ -11,44 +12,44 @@ import java.util.List;
 /**
  * Created on 20/12/2015
  * Description:
- * holds data that will be submitted in REST API using POST method, to create new equipment
+ * holds data that will be submitted in REST API to create new equipment
  */
 public class EquipmentPostPayload extends Pojo{
 	private String title;
 	private Body body;
 	private String type;
-	private int promote;
-	private String language;
 	private DrupalListField author;
 	@JsonProperty("field_type")
 	private DrupalListField equipmentType;
-	@JsonProperty("field_contract_type")
-	private DrupalListField contract;
 	@JsonProperty("field_cultivation")
 	private List<DrupalListField> cultivation;
-	@JsonProperty("field_location")
-	private DrupalListField location;
 	@JsonProperty("field_address")
 	private Address address;
 	@JsonProperty("field_image")
 	private List<String> image;
+	@JsonProperty("field_multiprice")
+	private List<MultiPricePayload> multiprice;
+
+//	@JsonProperty("field_contract_type")
+//	private DrupalListField contract;
+//	@JsonProperty("field_location")
+//	private DrupalListField location;
 
 	/**
 	 * use current function instead of constructor due to Jackson parsing limitations
 	 */
-	public void setData(String title, Body body, String type, int promote, String language, DrupalListField author, DrupalListField equipmentType, DrupalListField contract, List<DrupalListField> cultivation, DrupalListField location, Address address, List<String> image) {
+	public void setData(String title, Body body, String type, DrupalListField author, DrupalListField equipmentType, List<DrupalListField> cultivation, Address address, List<String> image, List<MultiPricePayload> prices) {
 		this.title = title;
 		this.body = body;
 		this.type = type;
-		this.promote = promote;
-		this.language = language;
 		this.author = author;
 		this.equipmentType = equipmentType;
-		this.contract = contract;
 		this.cultivation = cultivation;
-		this.location = location;
+//		this.contract = contract;
+//		this.location = location;
 		this.address = address;
 		this.image = image;
+		this.multiprice = prices;
 	}
 
 	public String getTitle() {
@@ -75,22 +76,6 @@ public class EquipmentPostPayload extends Pojo{
 		this.type = type;
 	}
 
-	public int getPromote() {
-		return promote;
-	}
-
-	public void setPromote(int promote) {
-		this.promote = promote;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public void setLanguage(String language) {
-		this.language = language;
-	}
-
 	public DrupalListField getAuthor() {
 		return author;
 	}
@@ -107,28 +92,12 @@ public class EquipmentPostPayload extends Pojo{
 		this.equipmentType = equipmentType;
 	}
 
-	public DrupalListField getContract() {
-		return contract;
-	}
-
-	public void setContract(DrupalListField contract) {
-		this.contract = contract;
-	}
-
 	public List<DrupalListField> getCultivation() {
 		return cultivation;
 	}
 
 	public void setCultivation(List<DrupalListField> cultivation) {
 		this.cultivation = cultivation;
-	}
-
-	public DrupalListField getLocation() {
-		return location;
-	}
-
-	public void setLocation(DrupalListField location) {
-		this.location = location;
 	}
 
 	public Address getAddress() {
@@ -146,4 +115,29 @@ public class EquipmentPostPayload extends Pojo{
 	public void setImage(List<String> image) {
 		this.image = image;
 	}
+
+	public List<MultiPricePayload> getMultiprice() {
+		return multiprice;
+	}
+
+	public void setMultiprice(List<MultiPricePayload> multiprice) {
+		this.multiprice = multiprice;
+	}
+
+//	public DrupalListField getContract() {
+//		return contract;
+//	}
+//
+//	public void setContract(DrupalListField contract) {
+//		this.contract = contract;
+//	}
+//
+//	public DrupalListField getLocation() {
+//		return location;
+//	}
+//
+//	public void setLocation(DrupalListField location) {
+//		this.location = location;
+//	}
+
 }

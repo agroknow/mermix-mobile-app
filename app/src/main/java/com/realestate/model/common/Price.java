@@ -1,7 +1,5 @@
 package com.realestate.model.common;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.io.Serializable;
 
 /**

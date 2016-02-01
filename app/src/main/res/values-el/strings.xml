@@ -81,4 +81,6 @@
 	<string name="user_login_failed">Ο έλεγχος των στοιχείων απέτυχε.</string>
 	<string name="upload_failed">Η αποθήκευση μηχανήματος απέτυχε.</string>
 	<string name="price_lbl">Τιμή(€)</string>
+	<string name="price_unit">Μονάδα Τιμής</string>
+	<string name="enter_price">Εισάγετε τιμή...</string>
 </resources>

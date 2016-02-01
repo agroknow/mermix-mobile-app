@@ -3,7 +3,6 @@ package com.realestate.ui.fragments;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
@@ -29,6 +28,7 @@ import com.realestate.model.SQLiteTerm;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.DrupalListField;
+import com.realestate.model.common.MultiPricePayload;
 import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.model.sqlite.DrupalTerms;
@@ -85,7 +85,8 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	private HashMap<Integer, Integer> obligatorySpinnerFields;
 
 	private int[] multiValueSpinnerFields = {R.id.cultivation};
-	private int[] singleValueSpinnerFields = {R.id.machine_type, R.id.location, R.id.contract_type};
+//	private int[] singleValueSpinnerFields = {R.id.machine_type, R.id.location, R.id.contract_type, R.id.price_unit_1};
+	private int[] singleValueSpinnerFields = {R.id.machine_type, R.id.price_unit_1};
 	private boolean resetOnResume;
 	private Map<String, SQLiteTerm> sqliteTermsRefMap;
 
@@ -295,11 +296,12 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		this.obligatoryTextFields = new HashMap<>();
 		this.obligatoryTextFields.put(R.id.title, R.id.title_lbl);
 		this.obligatoryTextFields.put(R.id.address, R.id.address_lbl);
+		this.obligatoryTextFields.put(R.id.price_value_1, R.id.multiprice_lbl);
 
 		this.obligatorySpinnerFields = new HashMap<>();
 		this.obligatorySpinnerFields.put(R.id.machine_type, R.id.machine_type_lbl);
 		this.obligatorySpinnerFields.put(R.id.cultivation, R.id.cultivation_lbl);
-		this.obligatorySpinnerFields.put(R.id.contract_type, R.id.contract_type_lbl);
+//		this.obligatorySpinnerFields.put(R.id.contract_type, R.id.contract_type_lbl);
 
 		progress = new ProgressDialog(getActivity());
 		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
@@ -330,10 +332,11 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		super.onStart();
 		Common.log("NewEquipment onStart");
 		if(!spinnersInitialized) {
-			spinners.put(Constants.VOCABULARYNAMES.LOCATION, (Spinner) getActivity().findViewById(R.id.location));
 			spinners.put(Constants.VOCABULARYNAMES.MACHINETYPE, (Spinner) getActivity().findViewById(R.id.machine_type));
 			spinners.put(Constants.VOCABULARYNAMES.CULTIVATION, (Spinner) getActivity().findViewById(R.id.cultivation));
-			spinners.put(Constants.VOCABULARYNAMES.CONTRACTTYPE, (Spinner) getActivity().findViewById(R.id.contract_type));
+			spinners.put(Constants.VOCABULARYNAMES.PRICEUNITS, (Spinner) getActivity().findViewById(R.id.price_unit_1));
+//			spinners.put(Constants.VOCABULARYNAMES.LOCATION, (Spinner) getActivity().findViewById(R.id.location));
+//			spinners.put(Constants.VOCABULARYNAMES.CONTRACTTYPE, (Spinner) getActivity().findViewById(R.id.contract_type));
 			setSpinnersData();
 			spinnersInitialized = true;
 		}
@@ -427,18 +430,29 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	private void getFormData() {
 		Common.log("NewEquipment getFormData");
 		String type = "apartment";
-		int promote = 0;
+		this.payload = new EquipmentPostPayload();
 
 		DrupalListField author = new DrupalListField();
 		author.setId(ApplicationVars.User.id);
-
+//title
 		EditText titleTxtBox = (EditText) getActivity().findViewById(R.id.title);
 		String title = titleTxtBox.getText().toString();
-
+//text
 		Body body = new Body();
 		EditText textTxtBox = (EditText) getActivity().findViewById(R.id.text);
 		body.setValue(textTxtBox.getText().toString());
 
+//multiprice
+		EditText priceValue1 = (EditText) getActivity().findViewById(R.id.price_value_1);
+		SQLiteTerm priceUnit1Term = (SQLiteTerm) spinners.get(Constants.VOCABULARYNAMES.PRICEUNITS).getSelectedItem();
+
+		MultiPricePayload multiPrice = new MultiPricePayload();
+		List<MultiPricePayload> multiPriceList = new ArrayList<>();
+
+		multiPrice.setData(priceValue1.getText().toString(), Integer.toString(priceUnit1Term.getTid()));
+		multiPriceList.add(multiPrice);
+
+//machine type
 		DrupalListField machineType = new DrupalListField();
 		SQLiteTerm machineTypeTerm = (SQLiteTerm) spinners.get(Constants.VOCABULARYNAMES.MACHINETYPE).getSelectedItem();
 		if(machineTypeTerm.getTid() != Constants.SPINNERITEMS.EMPTYTERM.TID)
@@ -446,13 +460,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		else
 			machineType = null;
 
-		DrupalListField contract = new DrupalListField();
-		SQLiteTerm contractTerm = (SQLiteTerm) spinners.get(Constants.VOCABULARYNAMES.CONTRACTTYPE).getSelectedItem();
-		if(contractTerm.getTid() != Constants.SPINNERITEMS.EMPTYTERM.TID)
-			contract.setId(Integer.toString(contractTerm.getTid()));
-		else
-			contract = null;
-
+//cultivation
 		List<DrupalListField> cultivationsList = new ArrayList<>();
 		String selection = spinners.get(Constants.VOCABULARYNAMES.CULTIVATION).getSelectedItem().toString();
 		if(!selection.equals(getResources().getString(R.string.selectItems))) {
@@ -470,23 +478,33 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		}
 		else
 			cultivationsList = null;
-
+/*
+//contract type
+		DrupalListField contract = new DrupalListField();
+		SQLiteTerm contractTerm = (SQLiteTerm) spinners.get(Constants.VOCABULARYNAMES.CONTRACTTYPE).getSelectedItem();
+		if(contractTerm.getTid() != Constants.SPINNERITEMS.EMPTYTERM.TID)
+			contract.setId(Integer.toString(contractTerm.getTid()));
+		else
+			contract = null;
+//location
 		DrupalListField location = new DrupalListField();
 		SQLiteTerm locationTerm = (SQLiteTerm) spinners.get(Constants.VOCABULARYNAMES.LOCATION).getSelectedItem();
 		if(locationTerm.getTid() != Constants.SPINNERITEMS.EMPTYTERM.TID)
 			location.setId(Integer.toString(locationTerm.getTid()));
 		else
 			location = null;
-
+*/
+//address
 		EditText addressTxtBox = (EditText) getActivity().findViewById(R.id.address);
 		String addressTxt = addressTxtBox.getText().toString();
 		Address address = Common.getAddressFromLocation(addressTxt, getActivity().getApplicationContext());
 
+//image
 		List<String> imageList = new ArrayList<>();
 		imageList.add(0, this.equipmentPhotoPath);
 
-		this.payload = new EquipmentPostPayload();
-		this.payload.setData(title, body, type, promote, ApplicationVars.restApiLocale, author, machineType, contract, cultivationsList, location, address, imageList);
+		//this.payload.setData(title, body, type, author, machineType, contract, cultivationsList, location, address, imageList, multiPriceList);
+		this.payload.setData(title, body, type, author, machineType, cultivationsList, address, imageList, multiPriceList);
 	}
 
 	/**
@@ -556,10 +574,11 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 
 	private void setSpinnersData() {
 		Common.log("NewEquipment setSpinnersData");
-		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.LOCATION, spinners.get(Constants.VOCABULARYNAMES.LOCATION));
 		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.MACHINETYPE, spinners.get(Constants.VOCABULARYNAMES.MACHINETYPE));
 		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.CULTIVATION, spinners.get(Constants.VOCABULARYNAMES.CULTIVATION));
-		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.CONTRACTTYPE, spinners.get(Constants.VOCABULARYNAMES.CONTRACTTYPE));
+		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.PRICEUNITS, spinners.get(Constants.VOCABULARYNAMES.PRICEUNITS));
+//		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.LOCATION, spinners.get(Constants.VOCABULARYNAMES.LOCATION));
+//		updateSpinnerWithVocabularyTerms(Constants.VOCABULARYNAMES.CONTRACTTYPE, spinners.get(Constants.VOCABULARYNAMES.CONTRACTTYPE));
 	}
 
 	/**

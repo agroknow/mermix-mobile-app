@@ -84,5 +84,7 @@
 	<string name="user_login_failed">User credentials check failed.</string>
 	<string name="upload_failed">Equipment upload failed.</string>
 	<string name="price_lbl">Price(€)</string>
+	<string name="price_unit">Price Unit</string>
+	<string name="enter_price">Enter price</string>
 
 </resources>

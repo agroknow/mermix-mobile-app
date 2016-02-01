@@ -94,6 +94,7 @@ public class ApplicationVars {
 		dataRetrieved.put(Constants.VOCABULARYNAMES.MACHINETYPE, false);
 		dataRetrieved.put(Constants.VOCABULARYNAMES.CULTIVATION, false);
 		dataRetrieved.put(Constants.VOCABULARYNAMES.CONTRACTTYPE, false);
+		dataRetrieved.put(Constants.VOCABULARYNAMES.PRICEUNITS, false);
 	}
 
 }

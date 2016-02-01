@@ -95,6 +95,45 @@
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/divider"
 				android:background="@color/gray_light" />
+<!--MULTIPRICE-->
+			<LinearLayout
+				android:id="@+id/multiprice_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/multiprice_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/price_lbl"/>
+				<LinearLayout
+					android:id="@+id/price_layout_1"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:orientation="horizontal"
+					android:padding="@dimen/pad_3dp" >
+					<EditText
+						android:id="@+id/price_value_1"
+						style="android:Widget.Holo.Light.TextView.EditText"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:hint="@string/enter_price"
+						android:inputType="numberDecimal" />
+					<Spinner
+						android:id="@+id/price_unit_1"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:prompt="@string/price_unit"/>
+					</LinearLayout>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />
 <!--IMAGE-->
 			<LinearLayout
 				android:id="@+id/image_layout"
@@ -169,36 +208,6 @@
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/divider"
 				android:background="@color/gray_light" />
-<!--LOCATION-->
-			<LinearLayout
-				android:id="@+id/location_layout"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:orientation="vertical"
-				android:padding="@dimen/pad_10dp" >
-				<TextView
-					android:id="@+id/location_lbl"
-					style="@style/lbl_spinner"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_weight="1"
-					android:text="@string/location"/>
-				<Spinner
-					android:id="@+id/location"
-					android:layout_width="match_parent"
-					android:layout_height="wrap_content"
-					android:prompt="@string/location"/>
-			</LinearLayout>
-
-			<View
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/divider"
-				android:background="@color/gray_light" />
-
-			<View
-				android:layout_width="match_parent"
-				android:layout_height="@dimen/divider"
-				android:background="@color/gray_light" />
 <!--CULTIVATION TYPE-->
 			<LinearLayout
 				android:id="@+id/cultivation_layout"
@@ -224,7 +233,7 @@
 				android:layout_height="@dimen/divider"
 				android:background="@color/gray_light" />
 <!--CONTRACT TYPE-->
-			<LinearLayout
+			<!--<LinearLayout
 				android:id="@+id/contract_type_layout"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
@@ -247,7 +256,32 @@
 			<View
 				android:layout_width="match_parent"
 				android:layout_height="@dimen/divider"
-				android:background="@color/gray_light" />
+				android:background="@color/gray_light" />-->
+<!--LOCATION-->
+			<!--<LinearLayout
+				android:id="@+id/location_layout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:orientation="vertical"
+				android:padding="@dimen/pad_10dp" >
+				<TextView
+					android:id="@+id/location_lbl"
+					style="@style/lbl_spinner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_weight="1"
+					android:text="@string/location"/>
+				<Spinner
+					android:id="@+id/location"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:prompt="@string/location"/>
+			</LinearLayout>
+
+			<View
+				android:layout_width="match_parent"
+				android:layout_height="@dimen/divider"
+				android:background="@color/gray_light" />-->
 <!--SUBMIT-->
 			<LinearLayout
 				android:id="@+id/submit_btn_layout"
