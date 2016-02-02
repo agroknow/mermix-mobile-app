@@ -170,7 +170,7 @@
          android:layout_height="wrap_content"
          android:layout_marginLeft="@dimen/pad_10dp"
          android:layout_marginRight="@dimen/pad_10dp"
-         android:text="@string/temp_txt"
+         android:text="@string/no_text"
          android:textColor="@color/mermix_font_color_dk"
          android:textSize="@dimen/txt_13sp" />
 

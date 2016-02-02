@@ -86,5 +86,6 @@
 	<string name="price_lbl">Price(€)</string>
 	<string name="price_unit">Price Unit</string>
 	<string name="enter_price">Enter price</string>
+	<string name="no_text">no text available</string>
 
 </resources>
