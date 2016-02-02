@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:orientation="vertical" >
 
-            <LinearLayout
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
                 <TextView
@@ -48,7 +48,7 @@
                     android:textColor="@color/mermix_font_color_dk"
                     android:textSize="@dimen/txt_18sp"
                     android:textStyle="bold" />
-            </LinearLayout>
+            </LinearLayout>-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
@@ -174,7 +174,7 @@
          android:textColor="@color/mermix_font_color_dk"
          android:textSize="@dimen/txt_13sp" />
 
-     <TextView
+     <!--<TextView
          android:id="@+id/title_extra"
          android:layout_width="match_parent"
          android:layout_height="wrap_content"
@@ -280,7 +280,7 @@
          android:layout_height="@dimen/divider"
          android:background="@color/gray_light"
          android:layout_marginTop="@dimen/pad_5dp"
-         />
+         />-->
     <Button
         android:id="@+id/btnContact"
         style="@style/red_btn"

@@ -102,8 +102,8 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 				}
 			}
 
-			TextView nid = (TextView) findViewById(R.id.nid);
-			nid.setText(Integer.toString(equipment.getNid()));
+//			TextView nid = (TextView) findViewById(R.id.nid);
+//			nid.setText(Integer.toString(equipment.getNid()));
 
 			TextView price = (TextView) findViewById(R.id.multiprice);
 			price.setText(equipment.getMultiPriceString2Display());

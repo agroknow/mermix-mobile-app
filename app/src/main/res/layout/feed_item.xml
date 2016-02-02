@@ -51,6 +51,13 @@
                 android:text=""
                 android:textColor="@color/mermix_font_color"
                 android:textSize="@dimen/txt_12sp" />
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/divider"
+                android:background="@color/gray_light"
+                android:layout_marginTop="@dimen/pad_5dp"
+                />
         </LinearLayout>
 
         <!--<LinearLayout
