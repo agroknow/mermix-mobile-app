@@ -20,7 +20,7 @@ import android.widget.TextView;
 import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomFragment;
-import com.realestate.model.EquipmentPostPayload;
+import com.realestate.model.payload.EquipmentPostPayload;
 import com.realestate.model.ListOfTerms;
 import com.realestate.model.PojoTerm;
 import com.realestate.model.SQLiteNode;
@@ -28,7 +28,7 @@ import com.realestate.model.SQLiteTerm;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.DrupalListField;
-import com.realestate.model.common.MultiPricePayload;
+import com.realestate.model.payload.MultiPricePayload;
 import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.model.sqlite.DrupalTerms;
@@ -85,8 +85,8 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	private HashMap<Integer, Integer> obligatorySpinnerFields;
 
 	private int[] multiValueSpinnerFields = {R.id.cultivation};
-//	private int[] singleValueSpinnerFields = {R.id.machine_type, R.id.location, R.id.contract_type, R.id.price_unit_1};
 	private int[] singleValueSpinnerFields = {R.id.machine_type, R.id.price_unit_1};
+	private int[] editTextFields = {R.id.title, R.id.text, R.id.address, R.id.price_value_1};
 	private boolean resetOnResume;
 	private Map<String, SQLiteTerm> sqliteTermsRefMap;
 
@@ -127,7 +127,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 								this.payload.getBody().getValue(),
 								coords,
 								Common.concatString(this.payload.getImage(), Constants.CONCATDELIMETER),
-								""));
+								this.payload.multiPrice2String(getActivity())));
 				//navigate to activity EquipmentDetail
 				Intent i = new Intent(getActivity(), EquipmentDetail.class);
 				i.putExtra(Constants.INTENTVARS.EQUIPMENTID, equipmentId);
@@ -301,7 +301,6 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		this.obligatorySpinnerFields = new HashMap<>();
 		this.obligatorySpinnerFields.put(R.id.machine_type, R.id.machine_type_lbl);
 		this.obligatorySpinnerFields.put(R.id.cultivation, R.id.cultivation_lbl);
-//		this.obligatorySpinnerFields.put(R.id.contract_type, R.id.contract_type_lbl);
 
 		progress = new ProgressDialog(getActivity());
 		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
@@ -651,35 +650,14 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	 * sets dummy values when in development mode
 	 */
 	private void updateFormView() {
-		Activity v = getActivity();
 		if(this.resetOnResume){
 			Common.log("NewEquipment updateFormView resetOnResume");
-//EditText
-			EditText editText = (EditText) v.findViewById(R.id.title);
-			editText.setText("");
-			editText = (EditText) v.findViewById(R.id.text);
-			editText.setText("");
-			editText = (EditText) v.findViewById(R.id.address);
-			editText.setText("");
-//singleValueSpinnerFields
-			Spinner spinner;
-			for(int idx=0;idx<this.singleValueSpinnerFields.length;idx++){
-				spinner = (Spinner) v.findViewById(this.singleValueSpinnerFields[idx]);
-				spinner.setSelection(0, true);
-			}
-//multiValueSpinnerFields
-			MultiSpinner multiSpinner;
-			for(int idx=0;idx<this.multiValueSpinnerFields.length;idx++){
-				multiSpinner = (MultiSpinner) v.findViewById(this.multiValueSpinnerFields[idx]);
-				multiSpinner.resetSelections();
-			}
-//ImageViews
-			ImageView imageView = (ImageView) getActivity().findViewById(R.id.img2Submit);
-			imageView.setImageBitmap(null);
+			clearFormData();
 			this.resetOnResume = false;
 		}
 
 		if(Constants.devMode){
+			Activity v = getActivity();
 			EditText editText = (EditText) v.findViewById(R.id.title);
 			editText.setText("Equipment submitted from mobile app");
 			editText = (EditText) v.findViewById(R.id.text);
@@ -687,5 +665,30 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 			editText = (EditText) v.findViewById(R.id.address);
 			editText.setText("Leof. Athinon 110");
 		}
+	}
+
+	private void clearFormData() {
+		Activity v = getActivity();
+//EditText
+		EditText editText;
+		for(int idx=0;idx<this.editTextFields.length;idx++) {
+			editText = (EditText) v.findViewById(this.editTextFields[idx]);
+			editText.setText("");
+		}
+//singleValueSpinnerFields
+		Spinner spinner;
+		for(int idx=0;idx<this.singleValueSpinnerFields.length;idx++){
+			spinner = (Spinner) v.findViewById(this.singleValueSpinnerFields[idx]);
+			spinner.setSelection(0, true);
+		}
+//multiValueSpinnerFields
+		MultiSpinner multiSpinner;
+		for(int idx=0;idx<this.multiValueSpinnerFields.length;idx++){
+			multiSpinner = (MultiSpinner) v.findViewById(this.multiValueSpinnerFields[idx]);
+			multiSpinner.resetSelections();
+		}
+//ImageViews
+		ImageView imageView = (ImageView) getActivity().findViewById(R.id.img2Submit);
+		imageView.setImageBitmap(null);
 	}
 }

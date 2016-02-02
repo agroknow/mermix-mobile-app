@@ -89,6 +89,8 @@ public class Login extends CustomFragment implements DataRetrieve {
 		if(Constants.devMode) {
 			EditText usrTxtBox = (EditText)  this.getActivity().findViewById(R.id.username);
 			usrTxtBox.setText("tkosmopoulos_159");
+			EditText pwdTxtBox = (EditText)  this.getActivity().findViewById(R.id.password);
+			pwdTxtBox.setText("te0k0sm@");
 		}
 	}
 

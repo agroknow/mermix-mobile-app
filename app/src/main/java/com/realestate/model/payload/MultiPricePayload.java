@@ -1,4 +1,4 @@
-package com.realestate.model.common;
+package com.realestate.model.payload;
 
 /**
  * Created on 01/02/2016
@@ -7,10 +7,9 @@ package com.realestate.model.common;
  * json payload:
  * "field_multiprice":[{"field_multiprice_value":{"und":[{"value":"20.00"}]},"field_multiprice_unit":{"und":[{"tid":"219"}]}}]
  *
- * IMPORTANT
- * make inner classes 'static' in order to be deserialized from jackson lib
- * check http://www.cowtowncoder.com/blog/archives/2010/08/entry_411.html
  */
+
+import com.realestate.utils.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,61 +42,14 @@ public class MultiPricePayload{
 		priceValueList.add(priceValue);
 		priceValueUnd.setUnd(priceValueList);
 		this.setField_multiprice_value(priceValueUnd);
-
-		PriceUnit priceUnit = new PriceUnit();
-		PriceUnitUnd priceUnitUnd = new PriceUnitUnd();
-		List<PriceUnit> priceUnitList = new ArrayList<>();
-		priceUnit.setTid(tid);
-		priceUnitList.add(priceUnit);
-		priceUnitUnd.setUnd(priceUnitList);
-		this.setField_multiprice_unit(priceUnitUnd);
-	}
-
-	static class PriceUnitUnd {
-		private List<PriceUnit> und;
-
-		public List<PriceUnit> getUnd() {
-			return und;
-		}
-
-		public void setUnd(List<PriceUnit> und) {
-			this.und = und;
-		}
-	}
-
-	static class PriceUnit {
-		private String tid;
-
-		public String getTid() {
-			return tid;
-		}
-
-		public void setTid(String tid) {
-			this.tid = tid;
-		}
-	}
-
-	static class PriceValueUnd {
-		private List<PriceValue> und;
-
-		public List<PriceValue> getUnd() {
-			return und;
-		}
-
-		public void setUnd(List<PriceValue> und) {
-			this.und = und;
-		}
-	}
-
-	static class PriceValue {
-		private String value;
-
-		public String getValue() {
-			return value;
-		}
-
-		public void setValue(String value) {
-			this.value = value;
+		if(!tid.equals(Integer.toString(Constants.SPINNERITEMS.EMPTYTERM.TID))) {
+			PriceUnit priceUnit = new PriceUnit();
+			PriceUnitUnd priceUnitUnd = new PriceUnitUnd();
+			List<PriceUnit> priceUnitList = new ArrayList<>();
+			priceUnit.setTid(tid);
+			priceUnitList.add(priceUnit);
+			priceUnitUnd.setUnd(priceUnitList);
+			this.setField_multiprice_unit(priceUnitUnd);
 		}
 	}
 }

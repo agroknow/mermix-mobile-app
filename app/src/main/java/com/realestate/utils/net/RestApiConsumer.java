@@ -1,14 +1,13 @@
 package com.realestate.utils.net;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.realestate.ApplicationVars;
-import com.realestate.model.EquipmentPostPayload;
+import com.realestate.model.payload.EquipmentPostPayload;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageUtils;

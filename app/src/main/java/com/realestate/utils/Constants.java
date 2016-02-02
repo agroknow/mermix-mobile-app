@@ -96,7 +96,7 @@ public class Constants {
 		public static final String USER = "com.realestate.model.common.User";
 		public static final String EQUIPMENTINVIEW = "com.realestate.model.EquipmentInView";
 		public static final String NEWEQUIPMENT = "com.realestate.model.NewEquipment";
-		public static final String EQUIPMENTPOSTPAYLOAD = "com.realestate.model.EquipmentPostPayload";
+		public static final String EQUIPMENTPOSTPAYLOAD = "com.realestate.model.payload.EquipmentPostPayload";
 	}
 
 	public class FRAGMENTS {

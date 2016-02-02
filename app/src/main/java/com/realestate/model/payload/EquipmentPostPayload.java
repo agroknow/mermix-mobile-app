@@ -1,12 +1,17 @@
-package com.realestate.model;
+package com.realestate.model.payload;
+
+import android.app.Activity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.realestate.model.SQLiteTerm;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Body;
 import com.realestate.model.common.DrupalListField;
-import com.realestate.model.common.MultiPricePayload;
 import com.realestate.model.common.Pojo;
+import com.realestate.model.sqlite.DrupalTerms;
+import com.realestate.utils.Constants;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -140,4 +145,23 @@ public class EquipmentPostPayload extends Pojo{
 //		this.location = location;
 //	}
 
+	public String multiPrice2String(Activity activity){
+		String priceStr = "";
+		for(int i=0; i<this.multiprice.size(); i++){
+			priceStr += Constants.MULTIPRICEDELIMETER + this.multiprice.get(i).getField_multiprice_value().getUnd().get(0).getValue();
+			if(this.multiprice.get(i).getField_multiprice_unit() != null) {
+				DrupalTerms drupalTerms = new DrupalTerms(activity);
+				List<SQLiteTerm> SQLiteTerms = drupalTerms.getVocabularyTerms(Constants.VOCABULARYNAMES.PRICEUNITS);
+				for(int idx=0;idx<SQLiteTerms.size();idx++) {
+					if(Integer.toString(SQLiteTerms.get(idx).getTid()).equals(this.multiprice.get(i).getField_multiprice_unit().getUnd().get(0).getTid())) {
+						priceStr += Constants.PRICEUNITDELIMETER + SQLiteTerms.get(idx).getName();
+						break;
+					}
+				}
+			}
+		}
+		if(!priceStr.isEmpty())
+			priceStr = priceStr.substring(Constants.MULTIPRICEDELIMETER.length());
+		return priceStr;
+	}
 }
