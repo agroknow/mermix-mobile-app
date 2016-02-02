@@ -6,6 +6,7 @@ import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,6 +26,10 @@ public class EquipmentInView extends Pojo implements Serializable{
 	private String coordinates;
 	@JsonProperty("field_image")
 	private List<String> images;
+	@JsonProperty("field_multiprice_field_multiprice_unit")
+	private String multiPriceUnit;
+	@JsonProperty("field_multiprice_field_multiprice_value")
+	private String multiPriceValue;
 
 	public String getTitle() {
 		return title;
@@ -71,5 +76,34 @@ public class EquipmentInView extends Pojo implements Serializable{
 
 	public void setImages(List<String> images) {
 		this.images = images;
+	}
+
+	public String getMultiPriceUnit() {
+		return multiPriceUnit;
+	}
+
+	public void setMultiPriceUnit(String multiPriceUnit) {
+		this.multiPriceUnit = multiPriceUnit;
+	}
+
+	public String getMultiPriceValue() {
+		return multiPriceValue;
+	}
+
+	public void setMultiPriceValue(String multiPriceValue) {
+		this.multiPriceValue = multiPriceValue;
+	}
+
+	public String multiPrice2String(){
+		String priceStr = "";
+		String[] units = !this.multiPriceUnit.isEmpty() ? this.multiPriceUnit.split(Constants.CONCATDELIMETER) : new String[0];
+		String[] values = !this.multiPriceValue.isEmpty() ? this.multiPriceValue.split(Constants.CONCATDELIMETER) : new String[0];
+
+		for(int i=0; i<units.length; i++) {
+			priceStr += Constants.MULTIPRICEDELIMETER + values[i] + Constants.PRICEUNITDELIMETER + units[i];
+		}
+		if(!priceStr.isEmpty())
+			priceStr = priceStr.substring(Constants.MULTIPRICEDELIMETER.length());
+		return priceStr;
 	}
 }
