@@ -29,7 +29,7 @@
             android:layout_weight="1"
             android:orientation="vertical" >
 
-            <!--<LinearLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
                 <TextView
@@ -39,6 +39,7 @@
                     android:text="Nid: "
                     android:textColor="@color/mermix_font_color_dk"
                     android:textSize="@dimen/txt_18sp"
+                    android:visibility="gone"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/nid"
@@ -47,8 +48,9 @@
                     android:text="-1"
                     android:textColor="@color/mermix_font_color_dk"
                     android:textSize="@dimen/txt_18sp"
+                    android:visibility="gone"
                     android:textStyle="bold" />
-            </LinearLayout>-->
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >

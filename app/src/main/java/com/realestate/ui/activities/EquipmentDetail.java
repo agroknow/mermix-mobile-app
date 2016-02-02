@@ -101,9 +101,14 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 					Common.logError("IOException @ EquipmentDetail.onCreate:" + e.getMessage());
 				}
 			}
+			if(Constants.devMode) {
+				TextView nid = (TextView) findViewById(R.id.nid);
+				nid.setText(Integer.toString(equipment.getNid()));
+				nid.setVisibility(View.VISIBLE);
 
-//			TextView nid = (TextView) findViewById(R.id.nid);
-//			nid.setText(Integer.toString(equipment.getNid()));
+				TextView nidHd = (TextView) findViewById(R.id.nidHd);
+				nidHd.setVisibility(View.VISIBLE);
+			}
 
 			TextView price = (TextView) findViewById(R.id.multiprice);
 			price.setText(equipment.getMultiPriceString2Display());
