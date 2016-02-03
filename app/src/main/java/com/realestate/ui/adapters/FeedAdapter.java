@@ -71,9 +71,6 @@ public class FeedAdapter extends BaseAdapter
 		Equipment equipment = getItem(position);
 		Common.log("FeedAdapter getView pos:" + Integer.toString(position) +
 					", img:"+Common.getFileNameFromUri(equipment.getImage()));
-		String dbgStr = "";
-		if(Constants.devMode)
-			dbgStr = " (" + Integer.toString(position) + ": " + Common.getFileNameFromUri(equipment.getImage()) + ")";
 
 		if (convertView == null) {
 			convertView = LayoutInflater.from(parent.getContext()).inflate(
@@ -97,11 +94,17 @@ public class FeedAdapter extends BaseAdapter
 		listViewHolder.lblLocationView.setText(equipment.getLocation().getName());
 		listViewHolder.lblMultipriceView.setText(equipment.getMultiPriceString2Display());
 
-		List<Body> bodyList = equipment.getBody();
+//		List<Body> bodyList = equipment.getBody();
 //		if(bodyList != null && bodyList.size() > 0)
 //			listViewHolder.lbl2View.setText(Html.fromHtml(bodyList.get(0).getValue()) + dbgStr);
 //		else
 //			listViewHolder.lbl2View.setText(dbgStr);
+
+		if(Constants.devMode) {
+			String dbgStr = " (" + Integer.toString(position) + ": " + Common.getFileNameFromUri(equipment.getImage()) + ")";
+			TextView dbgLbl = (TextView) convertView.findViewById(R.id.lbl3);
+			dbgLbl.setText(dbgStr);
+		}
 
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
 		Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl);
