@@ -48,6 +48,14 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	private ProgressDialog progress;
 	public int sortSelection = 0;
 
+	public static class Args {
+		static int page = 0;
+		static String pageSize = "10";
+		static String type = "apartment";
+		static String sort = "";
+		static String dir = "";
+	}
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -59,7 +67,8 @@ public class FeedList extends CustomFragment implements DataRetrieve
 		View v = inflater.inflate(R.layout.feed, null);
 		setFeedList(v, false);
 		setHasOptionsMenu(true);
-		startRequestService(new FeedListArgs("apartment", "10", "", ""));
+		setTouchNClick(v.findViewById(R.id.btnMore));
+		startRequestService(new FeedListArgs(Args.type, Args.pageSize, Args.sort, Args.dir, Integer.toString(Args.page)));
 		return v;
 	}
 
@@ -98,34 +107,9 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	private void setFeedList(View v, boolean sort)
 	{
 		ListView list = (ListView) v.findViewById(R.id.list);
+		list.addFooterView(getLayoutInflater(null).inflate(R.layout.footer, null));
 		list.setAdapter(adapter);
 		list.setOnItemClickListener(new onEquipmentClickListener());
-	}
-
-	/**
-	 * Load a dummy list of feeds. You need to write your own logic to load
-	 * actual list of feeds.
-	 * DEPRECATED!!!!!!
-	 * 
-	 * @param sort
-	 *            flag for whether sort the list or not
-	 */
-	private void loadDummyFeeds(boolean sort)
-	{
-		ArrayList<String[]> sl = new ArrayList<String[]>();
-		sl.add(new String[]{"$950,000 - $1,200,000", "South Extenstion 324",
-				"15 Fair bank place", "6", "2", "1"});
-
-		sl.add(sort ? 0 : 1, new String[]{"$550,000 - $5,200,000",
-				"North Extenstion 454", "14 Mount view place", "4", "3", "2"});
-
-		/*adapterEquipmentsList = new ArrayList<String[]>(sl);
-		adapterEquipmentsList.addAll(sl);
-		adapterEquipmentsList.addAll(sl);
-		adapterEquipmentsList.addAll(sl);
-		adapterEquipmentsList.addAll(sl);
-		adapterEquipmentsList.addAll(sl);
-		adapterEquipmentsList.addAll(sl);*/
 	}
 
 	@Override
@@ -136,20 +120,22 @@ public class FeedList extends CustomFragment implements DataRetrieve
 			try {
 				ListOfEquipments equipmentsList = (ListOfEquipments) apiResponseData;
 				List<Equipment> equipments = equipmentsList.getEquipments();
-				adapter.clear();
+				if(Args.page == 0)
+					adapter.clear();
 				int idx = 0;
 				while (idx < equipments.size()) {
-					//Common.log(Integer.toString(idx)+". node title: " + equipments.get(idx).getTitle());
-					//Common.log("1st node body: " + equipments.get(idx).getBody().getValue());
 					adapter.addItem(equipments.get(idx));
 					idx++;
 				}
 				adapter.notifyDataSetChanged();
+				int visibility = (idx > 0) ? View.VISIBLE : View.GONE;
+				getActivity().findViewById(R.id.btnMore).setVisibility(visibility);
 			} catch (ClassCastException e) {
 				Common.logError("ClassCastException @ FeedList updateUI:" + e.getMessage());
 			}
 		}
 		else{
+			getActivity().findViewById(R.id.btnMore).setVisibility(View.GONE);
 			Common.displayToast(getResources().getString(R.string.no_results), getActivity().getApplicationContext());
 		}
 	}
@@ -180,6 +166,15 @@ public class FeedList extends CustomFragment implements DataRetrieve
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onClick(View v) {
+		super.onClick(v);
+		if (v.getId() == R.id.btnMore) {
+			Args.page++;
+			startRequestService(new FeedListArgs(Args.type, Args.pageSize, Args.sort, Args.dir, Integer.toString(Args.page)));
+		}
+	}
+
 	/**
 	 * Shows a sort dialog that holds a list of various sort options for sorting
 	 * the feeds.
@@ -194,11 +189,11 @@ public class FeedList extends CustomFragment implements DataRetrieve
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						dialog.dismiss();
-						FeedListArgs feedListArgs = (which == 1) ?
-										new FeedListArgs("apartment", "10", Constants.SORTPROPERTIES.CREATED, Constants.DIRECTIONS.DESC):
-										new FeedListArgs("apartment", "10", "", "");
 						sortSelection = which;
-						startRequestService(feedListArgs);
+						Args.page = 0;
+						Args.sort = (which == 1) ? Constants.SORTPROPERTIES.CREATED : "";
+						Args.dir = (which == 1) ? Constants.DIRECTIONS.DESC : "";
+						startRequestService(new FeedListArgs(Args.type, Args.pageSize, Args.sort, Args.dir, Integer.toString(Args.page)));
 					}
 				});
 		b.create().show();

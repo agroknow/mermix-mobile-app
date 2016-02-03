@@ -43,6 +43,7 @@ public class Constants {
 		public static final String REGISTRATIONFORM = "user/register?destination=equipment";
 
 		public class PARAMS {
+			public static final String PAGE = "page";
 			public static final String LIMIT = "limit";
 			public static final String SORT = "sort";
 			public static final String TYPE = "type";
