@@ -83,6 +83,7 @@ public class FeedAdapter extends BaseAdapter
 			listViewHolder.imageView = (ImageView) convertView.findViewById(R.id.img1);
 			listViewHolder.lbl1View = (TextView) convertView.findViewById(R.id.lbl1);
 			listViewHolder.lblLocationView = (TextView) convertView.findViewById(R.id.lbl_location);
+			listViewHolder.lblMultipriceView = (TextView) convertView.findViewById(R.id.multiprice);
 			listViewHolder.lbl2View = (TextView) convertView.findViewById(R.id.lbl2);
 			convertView.setTag(listViewHolder);
 		}
@@ -94,12 +95,13 @@ public class FeedAdapter extends BaseAdapter
 
 		listViewHolder.lbl1View.setText(equipment.getTitle());
 		listViewHolder.lblLocationView.setText(equipment.getLocation().getName());
+		listViewHolder.lblMultipriceView.setText(equipment.getMultiPriceString2Display());
 
 		List<Body> bodyList = equipment.getBody();
-		if(bodyList != null && bodyList.size() > 0)
-			listViewHolder.lbl2View.setText(Html.fromHtml(bodyList.get(0).getValue()) + dbgStr);
-		else
-			listViewHolder.lbl2View.setText(dbgStr);
+//		if(bodyList != null && bodyList.size() > 0)
+//			listViewHolder.lbl2View.setText(Html.fromHtml(bodyList.get(0).getValue()) + dbgStr);
+//		else
+//			listViewHolder.lbl2View.setText(dbgStr);
 
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
 		Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl);
@@ -145,6 +147,7 @@ public class FeedAdapter extends BaseAdapter
 		TextView lbl1View;
 		TextView lbl2View;
 		TextView lblLocationView;
+		TextView lblMultipriceView;
 		ImageView imageView;
 		Bitmap bitmap;
 		String imageUrl;

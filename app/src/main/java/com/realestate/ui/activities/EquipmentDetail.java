@@ -113,11 +113,18 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 			TextView price = (TextView) findViewById(R.id.multiprice);
 			price.setText(equipment.getMultiPriceString2Display());
 
-			TextView available = (TextView) findViewById(R.id.available);
-			List<Availability> availableList = equipment.getAvailability();
-			if(availableList.size() > 0) {
-				available.setText(Integer.toString(availableList.get(0).getEnabled()));
+			if(Constants.devMode) {
+				TextView available = (TextView) findViewById(R.id.available);
+				TextView availablehd = (TextView) findViewById(R.id.availableHd);
+				available.setVisibility(View.VISIBLE);
+				availablehd.setVisibility(View.VISIBLE);
+				List<Availability> availableList = equipment.getAvailability();
+				if (availableList.size() > 0) {
+					available.setText(Integer.toString(availableList.get(0).getEnabled()));
+				}
 			}
+			TextView location = (TextView) findViewById(R.id.lbl_location);
+			location.setText(equipment.getLocation().getName());
 
 			TextView title = (TextView) findViewById(R.id.title);
 			title.setText(equipment.getTitle());
@@ -178,6 +185,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 		{
 			mMap.setMyLocationEnabled(false);
 			mMap.getUiSettings().setAllGesturesEnabled(false);
+			mMap.getUiSettings().setZoomControlsEnabled(true);
 			mMap.setInfoWindowAdapter(null);
 			setupMarker();
 		}

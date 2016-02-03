@@ -52,6 +52,21 @@
                     android:textStyle="bold" />
             </LinearLayout>
             <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/lbl_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:textColor="@color/mermix_font_color_dk"
+                    android:textSize="@dimen/txt_12sp"
+                    android:textStyle="bold"
+                    android:drawablePadding="4dp"
+                    android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/map_marker" />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" >
                 <TextView
@@ -91,6 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Is Available: "
+                    android:visibility="gone"
                     android:textColor="@color/mermix_font_color"
                     android:textSize="@dimen/txt_12sp" />
                 <TextView
@@ -98,6 +114,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=""
+                    android:visibility="gone"
                     android:textColor="@color/mermix_font_color"
                     android:textSize="@dimen/txt_12sp" />
             </LinearLayout>
