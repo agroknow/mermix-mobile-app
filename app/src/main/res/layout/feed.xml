@@ -11,10 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:cacheColorHint="@color/transparent"
-        android:divider="@null"
-        android:dividerHeight="0dp"
+        android:divider="@color/gray_light"
+        android:dividerHeight="@dimen/divider"
         tools:listitem="@layout/feed_item" 
-        android:layout_marginTop="@dimen/pad_5dp">
+        android:layout_marginTop="@dimen/pad_5dp"
+        android:footerDividersEnabled="true">
     </ListView>
 
 </LinearLayout>

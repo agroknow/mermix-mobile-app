@@ -82,6 +82,7 @@ public class FeedAdapter extends BaseAdapter
 			listViewHolder = new ListViewHolder();
 			listViewHolder.imageView = (ImageView) convertView.findViewById(R.id.img1);
 			listViewHolder.lbl1View = (TextView) convertView.findViewById(R.id.lbl1);
+			listViewHolder.lblLocationView = (TextView) convertView.findViewById(R.id.lbl_location);
 			listViewHolder.lbl2View = (TextView) convertView.findViewById(R.id.lbl2);
 			convertView.setTag(listViewHolder);
 		}
@@ -92,6 +93,7 @@ public class FeedAdapter extends BaseAdapter
 		listViewHolder.imageUrl = equipment.getImage();
 
 		listViewHolder.lbl1View.setText(equipment.getTitle());
+		listViewHolder.lblLocationView.setText(equipment.getLocation().getName());
 
 		List<Body> bodyList = equipment.getBody();
 		if(bodyList != null && bodyList.size() > 0)
@@ -142,6 +144,7 @@ public class FeedAdapter extends BaseAdapter
 	static class ListViewHolder {
 		TextView lbl1View;
 		TextView lbl2View;
+		TextView lblLocationView;
 		ImageView imageView;
 		Bitmap bitmap;
 		String imageUrl;

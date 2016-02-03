@@ -3,6 +3,7 @@ package com.realestate.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Availability;
+import com.realestate.model.common.Location;
 import com.realestate.model.common.Node;
 import com.realestate.model.common.Price;
 import com.realestate.utils.Constants;
@@ -27,6 +28,9 @@ public class Equipment extends Node implements Serializable{
 	//private List<Image> image;
 	@JsonProperty("field_address")
 	private List<Address> address;
+
+	@JsonProperty("field_location")
+	private Location location;
 
 	public List<Address> getAddress() {
 		return address;
@@ -57,6 +61,14 @@ public class Equipment extends Node implements Serializable{
 	}
 
 	public void setAvailability(List<Availability> availability) {	this.availability = availability;	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
+	}
 
 	public String getMultiPriceString(){
 		String priceStr = "";
