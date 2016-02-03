@@ -25,7 +25,7 @@ public class SearchResultActivity extends CustomActivity
 	{
 		Common.log("SearchResultActivity onCreate");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_searchresult);
 
 		getActionBar().setTitle("Search Results");
 
