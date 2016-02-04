@@ -82,7 +82,42 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	}
 
 	@Override
+	public void onStop() {
+		super.onStop();
+		Common.log("FeedList onStop");
+		Args.page = 0;
+		Args.sort = "";
+		Args.dir = "";
+		sortSelection = 0;
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		Common.log("FeedList onStart");
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		Common.log("FeedList onResume");
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		Common.log("FeedList onPause");
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		Common.log("FeedList onDestroy");
+	}
+
+	@Override
 	public void startRequestService(UrlArgs urlArgs) {
+		Common.log("FeedList startRequestService");
 		FeedListArgs args = (FeedListArgs) urlArgs;
 		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.LISTOFEQUIPMENTS +
 				"?" + args.getUrlArgs() +
