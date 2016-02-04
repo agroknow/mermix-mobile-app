@@ -1,6 +1,7 @@
 package com.realestate.ui.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.Menu;
@@ -85,9 +86,13 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 			//TODO startRequestService();
 		}
 		else{
-			if(equipment == null) {
-				//equipment from intent parameters
+			if(equipment == null)
+			//equipment from intent parameters
 				equipment = (Equipment) getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
+
+			if(equipment == null){
+				Common.displayToast(getResources().getString(R.string.no_data), getApplicationContext());
+				return;
 			}
 
 			ImageView img = (ImageView) findViewById(R.id.img1);
@@ -124,7 +129,8 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 				}
 			}
 			TextView location = (TextView) findViewById(R.id.lbl_location);
-			location.setText(equipment.getLocation().getName());
+			if(equipment.getLocation() != null)
+				location.setText(equipment.getLocation().getName());
 
 			TextView title = (TextView) findViewById(R.id.title);
 			title.setText(equipment.getTitle());

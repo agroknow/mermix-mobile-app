@@ -67,7 +67,8 @@ public class SQLiteNode extends Pojo {
 				String[] multiPriceUnitValue = multiPriceUnits[i].split(Constants.PRICEUNITDELIMETER);
 				price = new Price();
 				priceUnit = price.new PriceUnit();
-				priceUnit.setName(multiPriceUnitValue[1]);
+				if(multiPriceUnitValue.length > 1)
+					priceUnit.setName(multiPriceUnitValue[1]);
 				price.setUnit(priceUnit);
 				price.setValue(multiPriceUnitValue[0]);
 				priceObj.add(price);

@@ -88,5 +88,6 @@
 	<string name="enter_price">Enter price</string>
 	<string name="no_text">no text available</string>
 	<string name="load_more">Load more</string>
+	<string name="no_data">No data to display</string>
 
 </resources>
