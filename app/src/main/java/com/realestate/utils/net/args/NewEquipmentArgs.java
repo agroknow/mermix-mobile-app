@@ -15,6 +15,9 @@ public class NewEquipmentArgs extends UrlArgs {
 	public NewEquipmentArgs(String jsonPayload) {
 		newEquipmentArgs.put(Constants.URI.PARAMS.JSONPAYLOAD, jsonPayload);
 	}
+	public NewEquipmentArgs(String jsonPayload, boolean flag) {
+		newEquipmentArgs.put(Constants.URI.PARAMS.JSONPAYLOAD_MULTI, jsonPayload);
+	}
 
 	public String getUrlArgs(){
 		return super.getUrlArgs(newEquipmentArgs);

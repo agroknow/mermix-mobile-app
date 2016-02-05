@@ -155,7 +155,11 @@ public class RestApiConsumer extends AsyncTask<String, Void, JsonNode>{
 					urlConnection = (HttpURLConnection) url.openConnection();
 					urlConnection.setRequestProperty("Accept-Charset", requestCharset);
 					urlConnection.setDoOutput(true);
-					if(requestParams.contains(Constants.URI.PARAMS.JSONPAYLOAD)) {
+					if(requestParams.contains(Constants.URI.PARAMS.JSONPAYLOAD_MULTI)) {
+						requestParams = requestParams.split(Constants.URI.PARAMS.JSONPAYLOAD_MULTI + "=")[1];
+						urlConnection.setRequestProperty("Content-Type", "application/json;charset=" + requestCharset);
+					}
+					else if(requestParams.contains(Constants.URI.PARAMS.JSONPAYLOAD)) {
 						requestParams = requestParams.split(Constants.URI.PARAMS.JSONPAYLOAD + "=")[1];
 						requestParams = setImageBase64Encoding(requestParams);
 						urlConnection.setRequestProperty("Content-Type", "application/json;charset=" + requestCharset);

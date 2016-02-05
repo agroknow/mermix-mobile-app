@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.custom.CustomActivity;
+import com.realestate.model.BookEquipment;
 import com.realestate.model.Equipment;
 import com.realestate.model.SQLiteNode;
 import com.realestate.model.common.Address;
@@ -33,6 +34,7 @@ import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
+import com.realestate.utils.net.args.NewEquipmentArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
 import java.io.IOException;
@@ -66,6 +68,7 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 
 		Common.log("EquipmentDetail onCreate");
 		setContentView(R.layout.property_detail);
+		setClick(R.id.btnContact);
 		setupMap(savedInstanceState);
 		this.invokeRestApi = getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
 		this.equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
@@ -200,6 +203,13 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
     @Override
     public void onClick(View v) {
         super.onClick(v);
+		if (v.getId() == R.id.btnContact) {
+			//and call start request service
+
+			String jsonString = "{\"nid\" : \""+ this.equipment.getNid() +"\"}";
+			Common.log(jsonString);
+			startRequestService(new NewEquipmentArgs(jsonString,true));
+		}
     }
 
     /* (non-Javadoc)
@@ -286,7 +296,8 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
     public void updateUI(Pojo apiResponseData) {
 		Common.log("EquipmentDetail updateUI");
 		try {
-			Equipment equipment = (Equipment) apiResponseData;
+			//Equipment equipment = (Equipment) apiResponseData;
+			BookEquipment response = (BookEquipment) apiResponseData;
 		}
 		catch (ClassCastException e){
 			Common.logError("ClassCastException @ EquipmentDetail updateUI:" + e.getMessage());
@@ -295,12 +306,16 @@ public class EquipmentDetail extends CustomActivity implements DataRetrieve {
 
 	@Override
 	public void startRequestService(UrlArgs urlArgs) {
+		NewEquipmentArgs newEquipmentArgs = (NewEquipmentArgs) urlArgs;
+		String queryString = newEquipmentArgs.getUrlArgs();
 		Common.log("EquipmentDetail startRequestService");
-		equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
-		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
+		//equipmentId = getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
+		//String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
+		String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.BOOKEQUIPMENT + "?" + queryString;
+
 		Intent i = new Intent(this, MainService.class);
 		i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
-		i.putExtra(Constants.INTENTVARS.POJOCLASS, Constants.PojoClass.EQUIPMENT);
+		i.putExtra(Constants.INTENTVARS.POJOCLASS, Constants.PojoClass.BOOKEQUIPMENT);
 		this.startService(i);
 	}
 }

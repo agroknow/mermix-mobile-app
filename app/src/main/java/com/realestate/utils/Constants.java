@@ -9,9 +9,9 @@ import java.util.Map;
  */
 public class Constants {
 	public static final String base64Prefix = "data:image/jpeg;base64,";
-	public static final Boolean devMode = false;
+	public static final Boolean devMode = true;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
-	public static final String APIENDPOINT = "http://dev.mermix.gr/";
+	public static final String APIENDPOINT = "http://192.168.1.3/mermix/";
 	public static final String CONCATDELIMETER = ",";
 	public static final String MULTIPRICEDELIMETER = "&";
 	public static final String PRICEUNITDELIMETER = "/";
@@ -37,6 +37,7 @@ public class Constants {
 		*/
 		public static final String LISTOFEQUIPMENTS = "node.json";
 		public static final String USERINFO = "restws/user";
+		public static final String BOOKEQUIPMENT = "restws/book-equipment";
 		public static final String LISTOFTERMS = "taxonomy_term.json";
 		public static final String LISTOFNEARBYEQUIPMENTS = "views/mobile_app_machine_results/default.json";
 		public static final String NEWEQUIPMENT = "node";
@@ -55,6 +56,7 @@ public class Constants {
 			public static final String LOCATION = "field_location";
 			public static final String COORDINATES = "args[0]";
 			public static final String JSONPAYLOAD = "JSON_PAYLOAD";
+			public static final String JSONPAYLOAD_MULTI = "JSON_PAYLOAD_MULTI";
 		}
 	}
 
@@ -93,6 +95,7 @@ public class Constants {
 	public class PojoClass{
 		public static final String LISTOFEQUIPMENTS = "com.realestate.model.ListOfEquipments";
 		public static final String EQUIPMENT = "com.realestate.model.Equipment";
+		public static final String BOOKEQUIPMENT = "com.realestate.model.BookEquipment";
 		public static final String LISTOFTERMS = "com.realestate.model.ListOfTerms";
 		public static final String USER = "com.realestate.model.common.User";
 		public static final String EQUIPMENTINVIEW = "com.realestate.model.EquipmentInView";
