@@ -29,7 +29,7 @@ import com.realestate.model.ListOfEquipments;
 import com.realestate.model.common.Address;
 import com.realestate.model.common.Pojo;
 import com.realestate.ui.DataRetrieve;
-import com.realestate.ui.activities.EquipmentDetail;
+import com.realestate.ui.activities.EquipmentDetailActivity;
 import com.realestate.ui.activities.MapViewActivity;
 import com.realestate.ui.adapters.FeedAdapter;
 import com.realestate.utils.Common;
@@ -220,7 +220,7 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 									long id) {
 				Equipment equipment = (Equipment) parent.getItemAtPosition(position);
-				Intent i = new Intent(getActivity(), EquipmentDetail.class);
+				Intent i = new Intent(getActivity(), EquipmentDetailActivity.class);
 				Bundle mBundle = new Bundle();
 				mBundle.putSerializable(Constants.INTENTVARS.EQUIPMENT, equipment);
 				i.putExtras(mBundle);
@@ -280,7 +280,7 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 		int idx = 0;
 		while(idx < equipments.size()){
 			addressList = equipments.get(idx).getAddress();
-			if(addressList.size() > 0) {
+			if(addressList != null && addressList.size() > 0) {
 				opt = new MarkerOptions();
 				l = new LatLng(addressList.get(0).getLatitude(), addressList.get(0).getLongitude());
 				opt.position(l);

@@ -46,7 +46,7 @@ import com.realestate.model.SQLiteNode;
 import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.ui.DataRetrieve;
-import com.realestate.ui.activities.EquipmentDetail;
+import com.realestate.ui.activities.EquipmentDetailActivity;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageBitmapCacheMap;
@@ -74,7 +74,7 @@ import java.util.List;
  * Get current location coordinates (from GPS or network locationProvider) and invoke REST API.
  * In order to display markers with identical coordinates add commonCoordsOffset to longitude value of one of them.
  * On marker click, display InfoWindow with equipment's title & image.
- * On InfoWindow's click, start EquipmentDetail activity.
+ * On InfoWindow's click, start EquipmentDetailActivity activity.
  * Markers Clustering.
  *
  * WORKFLOW
@@ -416,11 +416,11 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 		if (markersOnMap.containsKey(coordinatesKey)) {
 			String nid = markersOnMap.get(coordinatesKey);
 			equipmentDetailActivityStart = true;
-			Intent i = new Intent(getActivity(), EquipmentDetail.class);
+			Intent i = new Intent(getActivity(), EquipmentDetailActivity.class);
 			i.putExtra(Constants.INTENTVARS.EQUIPMENTID, Integer.parseInt(nid));
 			startActivity(i);
 		} else
-			Common.logError("EquipmentDetail failed to start because coordinates " + coordinatesKey + " DO NOT exist in HashMap markersOnMap");
+			Common.logError("EquipmentDetailActivity failed to start because coordinates " + coordinatesKey + " DO NOT exist in HashMap markersOnMap");
 	}
 
 	private void checkDeviceLocationService() {

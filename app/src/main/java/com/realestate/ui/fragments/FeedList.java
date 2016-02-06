@@ -22,7 +22,7 @@ import com.realestate.model.Equipment;
 import com.realestate.model.ListOfEquipments;
 import com.realestate.model.common.Pojo;
 import com.realestate.ui.DataRetrieve;
-import com.realestate.ui.activities.EquipmentDetail;
+import com.realestate.ui.activities.EquipmentDetailActivity;
 import com.realestate.ui.activities.MainActivity;
 import com.realestate.ui.activities.MapViewActivity;
 import com.realestate.ui.adapters.FeedAdapter;
@@ -32,7 +32,6 @@ import com.realestate.utils.MainService;
 import com.realestate.utils.net.args.FeedListArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -240,7 +239,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 		long id)
 		{
 			Equipment equipment = (Equipment)parent.getItemAtPosition(position);
-			Intent i = new Intent(getActivity(), EquipmentDetail.class);
+			Intent i = new Intent(getActivity(), EquipmentDetailActivity.class);
 			Bundle mBundle = new Bundle();
 			mBundle.putSerializable(Constants.INTENTVARS.EQUIPMENT, equipment);
 			i.putExtras(mBundle);

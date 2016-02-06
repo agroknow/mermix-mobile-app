@@ -1,0 +1,307 @@
+package com.realestate.ui.fragments;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.Html;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.realestate.ApplicationVars;
+import com.realestate.R;
+import com.realestate.custom.CustomFragment;
+import com.realestate.model.BookEquipment;
+import com.realestate.model.Equipment;
+import com.realestate.model.SQLiteNode;
+import com.realestate.model.common.Address;
+import com.realestate.model.common.Availability;
+import com.realestate.model.common.Body;
+import com.realestate.model.common.Pojo;
+import com.realestate.model.sqlite.DrupalNodes;
+import com.realestate.ui.DataRetrieve;
+import com.realestate.ui.activities.MainActivity;
+import com.realestate.ui.activities.MapViewActivity;
+import com.realestate.utils.Common;
+import com.realestate.utils.Constants;
+import com.realestate.utils.ImageBitmapCacheMap;
+import com.realestate.utils.ImageUtils;
+import com.realestate.utils.MainService;
+import com.realestate.utils.net.args.NewEquipmentArgs;
+import com.realestate.utils.net.args.UrlArgs;
+
+import java.io.IOException;
+import java.util.List;
+
+/**
+ * Created by teo on 7/9/2015.
+ *
+ * Display equipment node in detail.
+ * To retrieve equipment details
+ * either invoke REST API's request node/NID.json	(invokeRestApi = true, equipmentId != defaultEquipmentId)
+ * or get equipment object from intent parameters	(invokeRestApi = false, equipmentId == defaultEquipmentId)
+ * or get equipment object from SQLite				(invokeRestApi = false, equipmentId != defaultEquipmentId)
+ */
+public class EquipmentDetail extends CustomFragment implements DataRetrieve {
+    /** The map view. */
+    private MapView mMapView;
+
+    /** The Google map. */
+    private GoogleMap mMap;
+
+    private int equipmentId = -1;
+    private Equipment equipment = null;
+    private final int defaultEquipmentId = -1;
+    private Boolean invokeRestApi = false;
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+
+        Common.log("EquipmentDetailActivity onCreateview");
+        View v = inflater.inflate(R.layout.property_detail, null);
+        setTouchNClick(v.findViewById(R.id.btnContact));
+
+        setupMap(v, savedInstanceState);
+        this.invokeRestApi = getActivity().getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
+        this.equipmentId = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
+
+        if(this.equipmentId > defaultEquipmentId){
+            DrupalNodes drupalNodes = new DrupalNodes(getActivity().getApplicationContext());
+            SQLiteNode node = drupalNodes.getNode(equipmentId);
+            if(node == null)
+                invokeRestApi = true;
+            else{
+                //equipment from SQLite
+                equipment = node.toEquipment();
+            }
+        }
+
+        if(invokeRestApi){
+            //invoke REST API
+            //TODO startRequestService();
+        }
+        else{
+            if(equipment == null)
+                //equipment from intent parameters
+                equipment = (Equipment) getActivity().getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
+
+            if(equipment == null){
+                Common.displayToast(getResources().getString(R.string.no_data), getActivity().getApplicationContext());
+                return v;
+            }
+
+            ImageView img = (ImageView) v.findViewById(R.id.img1);
+            if(Common.hasUrlFormat(equipment.getImage()))
+                img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
+            else{
+                try {
+                    img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
+                } catch (IOException e) {
+                    //e.printStackTrace();
+                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
+                }
+            }
+            if(Constants.devMode) {
+                TextView nid = (TextView) v.findViewById(R.id.nid);
+                nid.setText(Integer.toString(equipment.getNid()));
+                nid.setVisibility(View.VISIBLE);
+
+                TextView nidHd = (TextView) v.findViewById(R.id.nidHd);
+                nidHd.setVisibility(View.VISIBLE);
+            }
+
+            TextView price = (TextView) v.findViewById(R.id.multiprice);
+            price.setText(equipment.getMultiPriceString2Display());
+
+            if(Constants.devMode) {
+                TextView available = (TextView) v.findViewById(R.id.available);
+                TextView availablehd = (TextView) v.findViewById(R.id.availableHd);
+                available.setVisibility(View.VISIBLE);
+                availablehd.setVisibility(View.VISIBLE);
+                List<Availability> availableList = equipment.getAvailability();
+                if (availableList.size() > 0) {
+                    available.setText(Integer.toString(availableList.get(0).getEnabled()));
+                }
+            }
+            TextView location = (TextView) v.findViewById(R.id.lbl_location);
+            if(equipment.getLocation() != null)
+                location.setText(equipment.getLocation().getName());
+
+            TextView title = (TextView) v.findViewById(R.id.title);
+            title.setText(equipment.getTitle());
+
+            TextView body = (TextView) v.findViewById(R.id.body);
+            List<Body> bodyList = equipment.getBody();
+            if(bodyList.size() > 0) {
+                body.setText(Html.fromHtml(bodyList.get(0).getValue()));
+            }
+        }
+        return v;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Common.log("EquipmentDetailActivity onStart");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Common.log("EquipmentDetailActivity onStop");
+    }
+    /* (non-Javadoc)
+     * @see android.support.v4.app.Fragment#onPause()
+     */
+    @Override
+    public void onPause()
+    {
+        Common.log("EquipmentDetailActivity onPause");
+        mMapView.onPause();
+        super.onPause();
+    }
+
+    /* (non-Javadoc)
+     * @see android.support.v4.app.Fragment#onDestroy()
+     */
+    @Override
+    public void onDestroy()
+    {
+        Common.log("EquipmentDetailActivity onDestroy");
+        mMapView.onDestroy();
+        super.onDestroy();
+    }
+
+    /* (non-Javadoc)
+     * @see android.support.v4.app.Fragment#onResume()
+     */
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        Common.log("EquipmentDetailActivity onResume");
+        mMapView.onResume();
+
+        mMap = mMapView.getMap();
+        if (mMap != null)
+        {
+            mMap.setMyLocationEnabled(false);
+            mMap.getUiSettings().setAllGesturesEnabled(false);
+            mMap.getUiSettings().setZoomControlsEnabled(true);
+            mMap.setInfoWindowAdapter(null);
+            setupMarker();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if (v.getId() == R.id.btnContact) {
+            //show alert
+            //and call start request service
+
+            String jsonString = "{\"nid\":\""+ this.equipment.getNid() +"\"}";
+            Common.log(jsonString);
+            startRequestService(new NewEquipmentArgs(jsonString,true));
+        }
+    }
+
+    /* (non-Javadoc)
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+    //    getMenuInflater().inflate(R.menu.feed, menu);
+    //    menu.findItem(R.id.menu_sort).setVisible(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    /**
+     * Setup and initialize the Google map view.
+     *
+     * @param savedInstanceState
+     *            the saved instance state
+     */
+    private void setupMap(View v, Bundle savedInstanceState)
+    {
+		/*
+		//new api of google play services has changed and method MapsInitializer.initialize
+		//no longer throws the exception GooglePlayServicesNotAvailableException
+		try
+		{
+			MapsInitializer.initialize(this);
+		} catch (GooglePlayServicesNotAvailableException e)
+		{
+			e.printStackTrace();
+		}*/
+        MapsInitializer.initialize(getActivity());
+        mMapView = (MapView) v.findViewById(R.id.map);
+        mMapView.onCreate(savedInstanceState);
+
+    }
+
+    /**
+     * This method places a location marker on Map View for the current equipment.
+     */
+    private void setupMarker()
+    {
+        List<Address> addressList = equipment.getAddress();
+        if(addressList.size() > 0) {
+            mMap.clear();
+            LatLng l = new LatLng(addressList.get(0).getLatitude(), addressList.get(0).getLongitude());
+            MarkerOptions opt = new MarkerOptions();
+            opt.position(l);
+            //.title("South Extenstion 324")
+            //.snippet("Sydney, Australia");
+            opt.icon(BitmapDescriptorFactory.fromResource(R.drawable.map_marker));
+
+            mMap.addMarker(opt);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(l, 12));
+        }
+
+    }
+
+    @Override
+    public void updateUI(Pojo apiResponseData) {
+        Common.log("EquipmentDetailActivity updateUI");
+        try {
+            //Equipment equipment = (Equipment) apiResponseData;
+            BookEquipment response = (BookEquipment) apiResponseData;
+            Common.displayToast(response.getSuccess(),getActivity().getApplicationContext());
+        }
+        catch (ClassCastException e){
+            Common.logError("ClassCastException @ EquipmentDetailActivity updateUI:" + e.getMessage());
+        }
+    }
+
+    @Override
+    public void startRequestService(UrlArgs urlArgs) {
+        NewEquipmentArgs newEquipmentArgs = (NewEquipmentArgs) urlArgs;
+        String queryString = newEquipmentArgs.getUrlArgs();
+        Common.log("EquipmentDetailActivity startRequestService");
+        //equipmentId = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
+        //String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.SINGLEEQUIPMENT.replace("NID", Integer.toString(equipmentId));
+        String apiUrl = Constants.APIENDPOINT + ApplicationVars.restApiLocale + "/" + Constants.URI.BOOKEQUIPMENT + "?" + queryString;
+
+        Intent i = new Intent(getActivity(), MainService.class);
+        i.putExtra(Constants.INTENTVARS.APIURL, apiUrl);
+        i.putExtra(Constants.INTENTVARS.POJOCLASS, Constants.PojoClass.BOOKEQUIPMENT);
+        getActivity().startService(i);
+    }
+}
