@@ -8,13 +8,13 @@ import java.io.Serializable;
  * Created by vasilis on 2/4/16.
  */
 public class BookEquipment extends Pojo implements Serializable {
-    private String success;
+    private String status;
 
-    public String getSuccess() {
-        return success;
+    public String getStatus() {
+        return status;
     }
 
-    public void setSuccess(String success) {
-        this.success = success;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
