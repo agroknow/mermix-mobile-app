@@ -32,7 +32,6 @@
 	<string name="smoke_permit">Smoke Permitted</string>
 	<string name="rante_range">Ranting Range</string>
 	<string name="search_now">Search Now</string>
-	<string name="contact_agent">Contact Agent</string>
 	<string name="desc">Description</string>
 	<string name="temp_txt">Mermix is "property consisting of land and the buildings on it, along with its natural resources such as crops, minerals, or water; immovable property of this nature; an interest vested in this; (also) an item of real property; (more generally) buildings or housing in general. Also: the business of real estate; the profession of buying, selling, or renting land, buildings or housing."</string>
 	<string name="inspections">Inspections/Auctions</string>
@@ -102,5 +101,6 @@
 	<string name="professional_desc">Machinery renter and owner</string>
 	<string name="invalid_phone_msg">Please enter valid phone number</string>
 	<string name="select_role_error">Please select at least a role</string>
+	<string name="contact_agent">Book it</string>
 
 </resources>
