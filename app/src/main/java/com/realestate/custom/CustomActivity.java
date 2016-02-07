@@ -44,9 +44,11 @@ public class CustomActivity extends FragmentActivity implements OnClickListener
 			Common.log("CustomActivity MainBroadCastReceiver onReceive");
 			Pojo apiResponseData = (Pojo) intent.getSerializableExtra("APIRESPONSEDATA");
 			Fragment fragment = getActiveFragment();
-			//INVOKE fragment's updateUI implemented by interface DataRetrieve
-			DataRetrieve customFragment = (DataRetrieve) fragment;
-			customFragment.updateUI(apiResponseData);
+			if(fragment != null) {
+				//INVOKE fragment's updateUI implemented by interface DataRetrieve
+				DataRetrieve customFragment = (DataRetrieve) fragment;
+				customFragment.updateUI(apiResponseData);
+			}
 		}
 	}
 
