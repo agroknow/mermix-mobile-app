@@ -182,7 +182,7 @@ public class Common {
 	public static String getFileNameFromUri(String uri){
 		String file = "";
 		int lastIndexOfSlash = -1;
-		if(!uri.isEmpty()){
+		if(uri != null && !uri.isEmpty()){
 			lastIndexOfSlash = uri.lastIndexOf('/');
 			if(lastIndexOfSlash > -1)
 				file = uri.substring(uri.lastIndexOf('/'), uri.length());
