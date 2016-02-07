@@ -339,7 +339,9 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
         try {
             //Equipment equipment = (Equipment) apiResponseData;
             BookEquipment response = (BookEquipment) apiResponseData;
-            Common.displayToast(response.getMessage(),getActivity().getApplicationContext());
+            if(response != null) {
+                Common.displayToast(response.getMessage(), getActivity().getApplicationContext());
+            }
         }
         catch (ClassCastException e){
             Common.logError("ClassCastException @ EquipmentDetailActivity updateUI:" + e.getMessage());
