@@ -36,7 +36,7 @@ import com.realestate.model.common.Pojo;
 import com.realestate.model.sqlite.DrupalNodes;
 import com.realestate.model.sqlite.DrupalTerms;
 import com.realestate.ui.DataRetrieve;
-import com.realestate.ui.activities.EquipmentDetail;
+import com.realestate.ui.activities.EquipmentDetailActivity;
 import com.realestate.ui.adapters.SpinnerTermAdapter;
 import com.realestate.ui.components.multispinner.MultiSpinner;
 import com.realestate.utils.Common;
@@ -63,7 +63,7 @@ import java.util.TreeMap;
  * Created on 21/12/2015
  * Description:
  * submit New Equipment to REST API
- * on successful submit, store new equipment's data to SQLite & navigate to activity EquipmentDetail
+ * on successful submit, store new equipment's data to SQLite & navigate to activity EquipmentDetailActivity
  *
  * HELP
  * http://developer.android.com/guide/topics/media/camera.html
@@ -133,8 +133,8 @@ public class NewEquipment extends CustomFragment implements DataRetrieve, Locati
 								coords,
 								Common.concatString(this.payload.getImage(), Constants.CONCATDELIMETER),
 								this.payload.multiPrice2String(getActivity())));
-				//navigate to activity EquipmentDetail
-				Intent i = new Intent(getActivity(), EquipmentDetail.class);
+				//navigate to activity EquipmentDetailActivity
+				Intent i = new Intent(getActivity(), EquipmentDetailActivity.class);
 				i.putExtra(Constants.INTENTVARS.EQUIPMENTID, equipmentId);
 				startActivity(i);
 				this.resetOnResume = true;

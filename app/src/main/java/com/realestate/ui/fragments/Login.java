@@ -1,5 +1,7 @@
 package com.realestate.ui.fragments;
 
+
+import android.support.v4.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,7 +17,6 @@ import com.realestate.model.common.Pojo;
 import com.realestate.model.common.User;
 import com.realestate.ui.DataRetrieve;
 import com.realestate.ui.activities.MainActivity;
-import com.realestate.ui.activities.RegisterActivity;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.MainService;
@@ -51,8 +52,13 @@ public class Login extends CustomFragment implements DataRetrieve {
 			startRequestService(null);
 		}
 		else if(v.getId() == R.id.btnRegister) {
-			Intent i = new Intent(this.getActivity(), RegisterActivity.class);
-			startActivity(i);
+			Fragment f = null;
+			f = new RegisterUser();
+			getActivity().getSupportFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, f).addToBackStack(getResources().getString(R.string.register))
+					.commit();
+//			Intent i = new Intent(this.getActivity(), RegisterActivity.class);
+//			startActivity(i);
 		}
 	}
 

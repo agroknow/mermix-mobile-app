@@ -62,7 +62,7 @@ android:value="@integer/google_play_services_version" />
 	</activity>
 
 	  <activity
-		android:name=".ui.activities.EquipmentDetail"
+		android:name=".ui.activities.EquipmentDetailActivity"
 		android:screenOrientation="portrait"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
@@ -76,13 +76,8 @@ android:value="@integer/google_play_services_version" />
 		android:screenOrientation="portrait"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
-	<activity
-		android:name=".ui.activities.RegisterActivity"
-		android:screenOrientation="portrait"
-		android:windowSoftInputMode="stateHidden|adjustResize" >
-	</activity>
 
-	<service android:enabled="true" android:name="com.realestate.utils.MainService"></service>
+		<service android:enabled="true" android:name="com.realestate.utils.MainService"></service>
 </application>
 
 </manifest>
