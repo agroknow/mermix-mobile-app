@@ -11,7 +11,7 @@ public class Constants {
 	public static final String base64Prefix = "data:image/jpeg;base64,";
 	public static final Boolean devMode = true;
 	public static final int CONNECTIONTIMEOUT = 20000;	//ms
-	public static final String APIENDPOINT = "http://192.168.1.3/mermix/";
+	public static final String APIENDPOINT = "http://dev.mermix.gr/";
 	public static final String CONCATDELIMETER = ",";
 	public static final String MULTIPRICEDELIMETER = "&";
 	public static final String PRICEUNITDELIMETER = "/";
@@ -37,10 +37,12 @@ public class Constants {
 		*/
 		public static final String LISTOFEQUIPMENTS = "node.json";
 		public static final String USERINFO = "restws/user";
+		public static final String USERREGISTER = "restws/create-user";
 		public static final String BOOKEQUIPMENT = "restws/book-equipment";
 		public static final String LISTOFTERMS = "taxonomy_term.json";
 		public static final String LISTOFNEARBYEQUIPMENTS = "views/mobile_app_machine_results/default.json";
 		public static final String NEWEQUIPMENT = "node";
+		public static final String NEWUSER = "user";
 		public static final String REGISTRATIONFORM = "user/register?destination=equipment";
 
 		public class PARAMS {

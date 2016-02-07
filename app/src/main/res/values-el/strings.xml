@@ -86,4 +86,17 @@
 	<string name="no_text">δεν υπάρχει διαθέσιμη περιγραφή</string>
 	<string name="load_more">Περισσότερα</string>
 	<string name="no_data">Δε υπάρχουν δεδομένα για προβολή</string>
+	<string name="firstname">Όνομα</string>
+	<string name="lastname">Επώνυμο</string>
+	<string name="Renter">Ενοικιαστής</string>
+	<string name="Owner">Ιδιοκτήτης</string>
+	<string name="Professional">Επαγγελματίας</string>
+	<string name="enter_firstname">Εισάγετε όνομα</string>
+	<string name="enter_lastname">Εισάγετε επώνυμο</string>
+	<string name="enter_phone">Εισάγετε τηλέφωνο</string>
+	<string name="owner_desc">Έχω αγροτικά μηχανήματα που θέλω να ενοικιάσω</string>
+	<string name="professional_desc">Ψάχνω μηχάνημα, αλλά θέλω και να ενοικιάσω τα δικά μου</string>
+	<string name="renter_desc">Ψάχνω αγροτικό μηχάνημα προς ενοικίαση</string>
+	<string name="invalid_phone_msg">Παρακαλώ εισάγετε ένα έγκυρο τηλέφωνο</string>
+	<string name="select_role_error">Παρακαλώ επιλέξτε τουλάχιστον έναν ρόλο</string>
 </resources>

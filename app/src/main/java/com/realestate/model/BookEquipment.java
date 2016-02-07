@@ -9,6 +9,24 @@ import java.io.Serializable;
  */
 public class BookEquipment extends Pojo implements Serializable {
     private String status;
+    private String created_user;
+    private String message;
+
+    public String getCreated_user() {
+        return created_user;
+    }
+
+    public void setCreated_user(String created_user) {
+        this.created_user = created_user;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 
     public String getStatus() {
         return status;
