@@ -166,32 +166,6 @@ public class Common {
 	}
 
 	/**
-	 * uses Geocoder to get coordinates for location string
-	 * @param location
-	 * @param context
-	 * @return object com.realestate.model.common.Address
-	 */
-	public static com.realestate.model.common.Address getAddressFromLocation(String location, Context context){
-		Geocoder gc = new Geocoder(context);
-		List<Address> list = null;
-		Address addressAndroid = null;
-		com.realestate.model.common.Address addressCustom = new com.realestate.model.common.Address();
-		try {
-			list = gc.getFromLocationName(location, 1);
-			for(int idx=0;idx<list.size();idx++){
-				addressAndroid = list.get(idx);
-				addressCustom.setLatitude(addressAndroid.getLatitude());
-				addressCustom.setLongitude(addressAndroid.getLongitude());
-			}
-		} catch (IOException e) {
-			Common.logError("MapViewer findCoordArgs IOException: "+e.getMessage());
-			//e.printStackTrace();
-		}
-
-		return addressCustom;
-	}
-
-	/**
 	 * check if string is a url
 	 * use regular expressionn ^http(s)?:\/\/(.*?)
 	 */

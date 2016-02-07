@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -53,6 +52,7 @@ import com.realestate.utils.ImageBitmapCacheMap;
 import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
 import com.realestate.utils.net.InfoWindowImageDownload;
+import com.realestate.utils.LocationUtils;
 import com.realestate.utils.net.args.MapViewArgs;
 import com.realestate.utils.net.args.UrlArgs;
 
@@ -152,7 +152,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 				startRequestService(new MapViewArgs(coordsArgs[0], coordsArgs[1]));
 			}
 			else{
-				Common.displayToast(getResources().getString(R.string.enter_address), getActivity().getApplicationContext());
+				Common.displayToast(getResources().getString(R.string.enter_location), getActivity().getApplicationContext());
 			}
 		}
 	}
@@ -245,7 +245,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 				btnSearch.performClick();
 			} else {
 				//getLastKnownLocation returns null for provider 'gps' if device in a building
-				Location loc = locationManager.getLastKnownLocation(detectLocationProvider());
+				Location loc = locationManager.getLastKnownLocation(LocationUtils.detectLocationProvider(locationManager));
 				if (loc != null) {
 					onLocationChanged(loc);
 					MapZoom = Constants.MAPZOOMS.COUNTY;
@@ -451,20 +451,6 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			);
 			dialog.show();
 		}
-	}
-
-	private String detectLocationProvider() {
-		Common.log("MapViewer detectLocationProvider");
-		String provider;
-		Criteria criteria = new Criteria();
-		criteria.setPowerRequirement(Criteria.POWER_LOW);
-		criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-		Boolean getEnabledProvider = true;
-		//with criteria ACCURACY_COARSE, provider 'network' is selected
-		//with default criteria or ACCURACY_FINE, provider 'gps' is selected
-		provider = locationManager.getBestProvider(criteria, getEnabledProvider);
-		Common.log("locationProvider " + provider);
-		return provider;
 	}
 
 	private void findCoordArgs(String loc){

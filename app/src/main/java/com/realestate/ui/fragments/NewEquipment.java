@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,6 +43,7 @@ import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageUtils;
 import com.realestate.utils.MainService;
+import com.realestate.utils.LocationUtils;
 import com.realestate.utils.net.args.NewEquipmentArgs;
 import com.realestate.utils.net.args.TermArgs;
 import com.realestate.utils.net.args.UrlArgs;
@@ -72,7 +76,7 @@ import java.util.TreeMap;
  * SOLUTION
  * http://stackoverflow.com/a/10411504
  */
-public class NewEquipment extends CustomFragment implements DataRetrieve {
+public class NewEquipment extends CustomFragment implements DataRetrieve, LocationListener {
 	private EquipmentPostPayload payload;
 	private Bitmap equipmentPhoto;
 	private String equipmentPhotoPath;
@@ -89,6 +93,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 	private int[] editTextFields = {R.id.title, R.id.text, R.id.address, R.id.price_value_1};
 	private boolean resetOnResume;
 	private Map<String, SQLiteTerm> sqliteTermsRefMap;
+	private LocationManager locationManager;
 
 	@Override
 	public void updateUI(Pojo apiResponseData) {
@@ -302,6 +307,8 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		this.obligatorySpinnerFields.put(R.id.machine_type, R.id.machine_type_lbl);
 		this.obligatorySpinnerFields.put(R.id.cultivation, R.id.cultivation_lbl);
 
+		this.locationManager = (LocationManager) getActivity().getSystemService(getActivity().getApplicationContext().LOCATION_SERVICE);
+
 		progress = new ProgressDialog(getActivity());
 		progress.setTitle(getResources().getString(R.string.progress_dialog_title));
 		progress.setMessage(getResources().getString(R.string.progress_dialog_upload_msg));
@@ -346,12 +353,23 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 		super.onResume();
 		Common.log("NewEquipment onResume");
 		updateFormView();
+
+		Location loc = locationManager.getLastKnownLocation(LocationUtils.detectLocationProvider(locationManager));
+		if(loc != null)
+			onLocationChanged(loc);
+
+		long minTime = 60 * 1000;	//ms
+		float minDistance = 100;    //meters
+		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, minTime, minDistance, this);
+		locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, minTime, minDistance, this);
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		Common.log("NewEquipment onPause");
+
+		locationManager.removeUpdates(this);
 	}
 
 	@Override
@@ -496,7 +514,7 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 //address
 		EditText addressTxtBox = (EditText) getActivity().findViewById(R.id.address);
 		String addressTxt = addressTxtBox.getText().toString();
-		Address address = Common.getAddressFromLocation(addressTxt, getActivity().getApplicationContext());
+		Address address = LocationUtils.getAddressFromLocation(addressTxt, getActivity().getApplicationContext());
 
 //image
 		List<String> imageList = new ArrayList<>();
@@ -690,5 +708,30 @@ public class NewEquipment extends CustomFragment implements DataRetrieve {
 //ImageViews
 		ImageView imageView = (ImageView) getActivity().findViewById(R.id.img2Submit);
 		imageView.setImageBitmap(null);
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		Common.log("NewEquipment onLocationChanged");
+		EditText editText = (EditText)getActivity().findViewById(R.id.address);
+		editText.setText(LocationUtils.location2Address(location, getActivity().getApplicationContext()));
+	}
+
+	@Override
+	public void onStatusChanged(String s, int i, Bundle bundle) {
+		Common.log("NewEquipment onStatusChanged");
+
+	}
+
+	@Override
+	public void onProviderEnabled(String s) {
+		Common.log("NewEquipment onProviderEnabled");
+
+	}
+
+	@Override
+	public void onProviderDisabled(String s) {
+		Common.log("NewEquipment onProviderDisabled");
+
 	}
 }
