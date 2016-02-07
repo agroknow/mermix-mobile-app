@@ -217,50 +217,52 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
     public void onClick(View v) {
         super.onClick(v);
         if (v.getId() == R.id.btnContact) {
-            //show alert
             // Creating alert Dialog with one Button
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
-
             //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-
             // Setting Dialog Title
             alertDialog.setTitle(R.string.contact_agent);
-
             // Setting Dialog Message
             alertDialog.setMessage(R.string.enter_phone);
             final EditText input = new EditText(getActivity());
+            input.setSingleLine(true);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
             input.setLayoutParams(lp);
             alertDialog.setView(input);
             //alertDialog.setView(input);
-
             // Setting Icon to Dialog
             //alertDialog.setIcon(R.drawable.ic_launcher);
-
             // Setting Positive "Yes" Button
             alertDialog.setPositiveButton(R.string.submit,
                     new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,int which) {
-                            // Write your code here to execute after dialog
-                            //Toast.makeText(getActivity().getApplicationContext(), input.getText(), Toast.LENGTH_SHORT).show();
-                            //Intent myIntent1 = new Intent(view.getContext(), Show.class);
-                            //startActivityForResult(myIntent1, 0);
-                            //and call start request service
-                            String regexStr = "^[+]?[0-9]{10,13}$";
-                            String entered_number=input.getText().toString();
-
-                            if( entered_number.matches(regexStr)==false  ) {
-                                Toast.makeText(getActivity().getApplicationContext(),R.string.invalid_phone_msg,Toast.LENGTH_SHORT).show();
-                            } else {
-                                String uid = ApplicationVars.User.id == "" ? "0" : ApplicationVars.User.id;
-                                String jsonString = "{\"nid\":\"" + equipment.getNid() + "\",\"tel\":\"" + input.getText() + "\",\"uid\":\"" +  uid + "\"}";
-                                Common.log(jsonString);
-                                startRequestService(new NewEquipmentArgs(jsonString, true));
-                            }
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //no code here
+                            //must have valid input before dismiss dialog (http://stackoverflow.com/a/15619098)
                         }
                     });
+            final AlertDialog dialog = alertDialog.create();
+            dialog.show();
+            //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String regexStr = "^[+]?[0-9]{10,13}$";
+                    String entered_number = input.getText().toString();
+
+                    if (entered_number.matches(regexStr) == false) {
+                        Toast.makeText(getActivity().getApplicationContext(), R.string.invalid_phone_msg, Toast.LENGTH_SHORT).show();
+                    } else {
+                        String uid = ApplicationVars.User.id == "" ? "0" : ApplicationVars.User.id;
+                        String jsonString = "{\"nid\":\"" + equipment.getNid() + "\",\"tel\":\"" + input.getText() + "\",\"uid\":\"" + uid + "\"}";
+                        Common.log(jsonString);
+                        startRequestService(new NewEquipmentArgs(jsonString, true));
+                        dialog.dismiss();
+                    }
+                }
+            });
             // Setting Negative "NO" Button
 //            alertDialog.setNegativeButton("NO",
 //                    new DialogInterface.OnClickListener() {
@@ -269,12 +271,9 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 //                            dialog.cancel();
 //                        }
 //                    });
-
             // closed
-
             // Showing Alert Message
-            alertDialog.show();
-
+            //alertDialog.show();
         }
     }
 
