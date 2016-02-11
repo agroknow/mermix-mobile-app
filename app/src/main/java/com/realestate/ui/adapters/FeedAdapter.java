@@ -7,9 +7,7 @@ package com.realestate.ui.adapters;
  */
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,15 +17,14 @@ import android.widget.TextView;
 
 import com.realestate.R;
 import com.realestate.model.Equipment;
-import com.realestate.model.common.Body;
 import com.realestate.utils.Common;
 import com.realestate.utils.Constants;
 import com.realestate.utils.ImageBitmapCacheMap;
+import com.realestate.utils.ImageUtils;
 
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 public class FeedAdapter extends BaseAdapter
 {
@@ -169,7 +166,7 @@ public class FeedAdapter extends BaseAdapter
 				imageUrl = listViewHolder.imageUrl;
 				Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl));
 				InputStream in = new URL(imageUrl).openStream();
-				bitmap = BitmapFactory.decodeStream(in);
+				bitmap = ImageUtils.configureBitmapFromInputStream(in);
 				imageBitmapCacheMap.addBitmap(imageUrl, bitmap);
 				listViewHolder.bitmap = bitmap;
 			} catch (Exception e) {

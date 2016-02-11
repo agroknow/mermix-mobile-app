@@ -52,7 +52,7 @@ public class ImageUtils {
 	}
 
 	public static Bitmap configureBitmapSamplingRotation(String selectedImagePath)throws IOException{
-		Common.log("NewEquipment configureBitmapSamplingRotation");
+		Common.log("ImageUtils configureBitmapSamplingRotation");
 		int MAX_HEIGHT = 1024;
 		int MAX_WIDTH = 1024;
 		Bitmap bitmap;
@@ -73,6 +73,16 @@ public class ImageUtils {
 		return bitmap;
 	}
 
+	public static Bitmap configureBitmapFromInputStream(InputStream inputStream){
+		Common.log("ImageUtils configureBitmapFromInputStream");
+		Bitmap bitmap;
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inSampleSize = 3;
+		bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+		Common.log("bitmap size: " + Integer.toString(bitmap.getByteCount()) + " bytes");
+		return bitmap;
+	}
+
 	/**
 	 *
 	 * @param img					the image bitmap
@@ -80,7 +90,7 @@ public class ImageUtils {
 	 * @return						The resulted Bitmap after manipulation
 	 */
 	public static Bitmap rotateImageIfRequired(Bitmap img, String selectedImagePath) throws IOException {
-		Common.log("NewEquipment rotateImageIfRequired");
+		Common.log("ImageUtils rotateImageIfRequired");
 		ExifInterface ei = new ExifInterface(selectedImagePath);
 		int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
@@ -98,7 +108,7 @@ public class ImageUtils {
 	}
 
 	public static Bitmap rotateImage(Bitmap img, int degree) {
-		Common.log("NewEquipment rotateImage");
+		Common.log("ImageUtils rotateImage");
 		Matrix matrix = new Matrix();
 		Common.log("degree: "+Integer.toString(degree));
 		matrix.postRotate(degree);
@@ -122,7 +132,7 @@ public class ImageUtils {
 	 * @return	The value to be used for inSampleSize
 	 */
 	public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-		Common.log("NewEquipment calculateInSampleSize");
+		Common.log("ImageUtils calculateInSampleSize");
 		// Raw height and width of image
 		final int height = options.outHeight;
 		final int width = options.outWidth;
