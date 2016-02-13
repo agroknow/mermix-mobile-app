@@ -84,10 +84,6 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	public void onStop() {
 		super.onStop();
 		Common.log("FeedList onStop");
-		Args.page = 0;
-		Args.sort = "";
-		Args.dir = "";
-		sortSelection = 0;
 	}
 
 	@Override
@@ -112,6 +108,10 @@ public class FeedList extends CustomFragment implements DataRetrieve
 	public void onDestroy() {
 		super.onDestroy();
 		Common.log("FeedList onDestroy");
+		Args.page = 0;
+		Args.sort = "";
+		Args.dir = "";
+		sortSelection = 0;
 	}
 
 	@Override
