@@ -1,11 +1,12 @@
 package com.realestate.utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.content.CursorLoader;
@@ -188,5 +189,19 @@ public class Common {
 				file = uri.substring(uri.lastIndexOf('/'), uri.length());
 		}
 		return file;
+	}
+
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+	public static void logMemoryStats(Context context){
+		ActivityManager.MemoryInfo mi = new ActivityManager.MemoryInfo();
+		ActivityManager activityManager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
+		activityManager.getMemoryInfo(mi);
+
+		Long bytesOfMB = 1048576L;
+		Common.log("MEMORY stats:" +
+						" availableMem=" + Long.toString(mi.availMem / bytesOfMB) + "MB," +
+						//" availableMemPercent=" + Long.toString(mi.availMem / mi.totalMem) + "%" +
+						""
+		);
 	}
 }
