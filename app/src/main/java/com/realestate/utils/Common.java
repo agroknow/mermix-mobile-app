@@ -32,11 +32,13 @@ import java.util.regex.Pattern;
  */
 public class Common {
 	public static void log(String msg){
-		Log.d("Mermix", msg);
+		if(Constants.devMode)
+			Log.d("Mermix", msg);
 	}
 
 	public static void logError(String error){
-		Log.d("MermixError", error);
+		if(Constants.devMode)
+			Log.d("MermixError", error);
 	}
 
 	public static void displayToast(String s, Context context) {
