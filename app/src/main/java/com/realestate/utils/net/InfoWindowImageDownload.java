@@ -35,7 +35,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 				Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
 				InputStream in = new URL(imageUrl).openStream();
 				mIcon11 = BitmapFactory.decodeStream(in);
-				imageBitmapCacheMap.addBitmap(imageUrl, mIcon11);
+				imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
 			}
 		} catch (Exception e) {
 			Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());

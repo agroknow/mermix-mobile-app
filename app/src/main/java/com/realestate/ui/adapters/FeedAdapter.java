@@ -15,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.realestate.ApplicationVars;
 import com.realestate.R;
 import com.realestate.model.Equipment;
 import com.realestate.utils.Common;
@@ -79,12 +80,15 @@ public class FeedAdapter extends BaseAdapter
 			listViewHolder.lblLocationView = (TextView) convertView.findViewById(R.id.lbl_location);
 			listViewHolder.lblMultipriceView = (TextView) convertView.findViewById(R.id.multiprice);
 			listViewHolder.lbl2View = (TextView) convertView.findViewById(R.id.lbl2);
+			//set listViewHolder in current convertView
 			convertView.setTag(listViewHolder);
 		}
 		else{
+			//retrieve listViewHolder for current convertView
 			listViewHolder = (ListViewHolder) convertView.getTag();
 		}
 
+		listViewHolder.viewPos = position;
 		listViewHolder.imageUrl = equipment.getImage();
 
 		listViewHolder.lbl1View.setText(equipment.getTitle());
@@ -151,6 +155,7 @@ public class FeedAdapter extends BaseAdapter
 		ImageView imageView;
 		Bitmap bitmap;
 		String imageUrl;
+		int viewPos;
 	}
 
 	private class ImageDownload extends AsyncTask<ListViewHolder, Void, ListViewHolder> {
@@ -164,10 +169,11 @@ public class FeedAdapter extends BaseAdapter
 			ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
 			try {
 				imageUrl = listViewHolder.imageUrl;
-				Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl));
+				Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl) +
+						" (no:" + Integer.toString(ApplicationVars.imageDownloadNo++) + ")");
 				InputStream in = new URL(imageUrl).openStream();
 				bitmap = ImageUtils.configureBitmapFromInputStream(in);
-				imageBitmapCacheMap.addBitmap(imageUrl, bitmap);
+				imageBitmapCacheMap.addBitmap(imageUrl, bitmap, listViewHolder.viewPos);
 				listViewHolder.bitmap = bitmap;
 			} catch (Exception e) {
 				Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());

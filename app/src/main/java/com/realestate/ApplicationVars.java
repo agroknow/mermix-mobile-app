@@ -43,6 +43,7 @@ public class ApplicationVars {
 	public static Map<String, Boolean> dataRetrieved = new HashMap<>();
 	private static boolean varsInitialized = false;
 	public static String restApiLocale;
+	public static int imageDownloadNo = 1;
 	public static class User {
 		public static String credentials;
 		public static String id;
