@@ -72,8 +72,10 @@ public class Equipment extends Node implements Serializable{
 
 	public String getMultiPriceString(){
 		String priceStr = "";
-		for(int i=0; i<this.price.size(); i++){
-			priceStr += Constants.MULTIPRICEDELIMETER + this.price.get(i).getValue() + Constants.PRICEUNITDELIMETER + this.price.get(i).getUnit().getName();
+		if(this.price != null) {
+			for (int i = 0; i < this.price.size(); i++) {
+				priceStr += Constants.MULTIPRICEDELIMETER + this.price.get(i).getValue() + Constants.PRICEUNITDELIMETER + this.price.get(i).getUnit().getName();
+			}
 		}
 		if(!priceStr.isEmpty())
 			priceStr = priceStr.substring(Constants.MULTIPRICEDELIMETER.length());

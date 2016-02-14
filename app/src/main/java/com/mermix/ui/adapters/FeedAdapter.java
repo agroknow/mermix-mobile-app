@@ -92,7 +92,8 @@ public class FeedAdapter extends BaseAdapter
 		listViewHolder.imageUrl = equipment.getImage();
 
 		listViewHolder.lbl1View.setText(equipment.getTitle());
-		listViewHolder.lblLocationView.setText(equipment.getLocation().getName());
+		if(equipment.getLocation() != null)
+			listViewHolder.lblLocationView.setText(equipment.getLocation().getName());
 		listViewHolder.lblMultipriceView.setText(equipment.getMultiPriceString2Display());
 
 //		List<Body> bodyList = equipment.getBody();
