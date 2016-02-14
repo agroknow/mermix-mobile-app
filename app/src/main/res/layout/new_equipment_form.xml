@@ -222,7 +222,7 @@
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
 					android:text="@string/cultivation"/>
-				<com.realestate.ui.components.multispinner.MultiSpinner
+				<com.mermix.ui.components.multispinner.MultiSpinner
 					android:id="@+id/cultivation"
 					android:layout_width="match_parent"
 					android:layout_height="wrap_content" />
