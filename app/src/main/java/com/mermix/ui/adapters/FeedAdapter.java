@@ -67,8 +67,8 @@ public class FeedAdapter extends BaseAdapter
 	{
 		ListViewHolder listViewHolder;
 		Equipment equipment = getItem(position);
-		Common.log("FeedAdapter getView pos:" + Integer.toString(position) +
-					", img:"+Common.getFileNameFromUri(equipment.getImage()));
+//		Common.log("FeedAdapter getView pos:" + Integer.toString(position) +
+//					", img:"+Common.getFileNameFromUri(equipment.getImage()[0]));
 
 		if (convertView == null) {
 			convertView = LayoutInflater.from(parent.getContext()).inflate(
@@ -103,16 +103,20 @@ public class FeedAdapter extends BaseAdapter
 //			listViewHolder.lbl2View.setText(dbgStr);
 
 		if(Constants.devMode) {
-			String dbgStr = " (" + Integer.toString(position) + ": " + Common.getFileNameFromUri(equipment.getImage()) + ")";
-			TextView dbgLbl = (TextView) convertView.findViewById(R.id.lbl3);
-			dbgLbl.setText(dbgStr);
+//			String dbgStr = " (" + Integer.toString(position) + ": " + Common.getFileNameFromUri(equipment.getImage()[0]) + ")";
+//			TextView dbgLbl = (TextView) convertView.findViewById(R.id.lbl3);
+//			dbgLbl.setText(dbgStr);
 		}
 
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
-		Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl);
-		if(cachedBitmap == null) {
-			listViewHolder.imageView.setImageDrawable(null);
-			//listViewHolder.imageView.setImageResource(R.drawable.feed2);
+		if (listViewHolder.imageUrl != null) {
+			for (int i = listViewHolder.imageUrl.length - 1; i >= 0; i--) {
+
+
+				Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl[i]);
+				if (cachedBitmap == null) {
+					listViewHolder.imageView.setImageDrawable(null);
+					//listViewHolder.imageView.setImageResource(R.drawable.feed2);
 /**
  * IMAGE DOWNLOAD METHODS
  */
@@ -125,11 +129,12 @@ public class FeedAdapter extends BaseAdapter
 //			e.printStackTrace();
 //		}
 //3.
-			if(listViewHolder.imageUrl != null && !listViewHolder.imageUrl.isEmpty())
-				new ImageDownload().execute(listViewHolder);
-		}
-		else {
-			listViewHolder.imageView.setImageBitmap(cachedBitmap);
+					if (listViewHolder.imageUrl != null && !listViewHolder.imageUrl[i].isEmpty())
+						new ImageDownload().execute(listViewHolder);
+				} else {
+					listViewHolder.imageView.setImageBitmap(cachedBitmap);
+				}
+			}
 		}
 
 		return convertView;
@@ -155,7 +160,7 @@ public class FeedAdapter extends BaseAdapter
 		TextView lblMultipriceView;
 		ImageView imageView;
 		Bitmap bitmap;
-		String imageUrl;
+		String[] imageUrl;
 		int viewPos;
 	}
 
@@ -168,17 +173,19 @@ public class FeedAdapter extends BaseAdapter
 			Bitmap bitmap;
 			listViewHolder.bitmap = null;
 			ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
-			try {
-				imageUrl = listViewHolder.imageUrl;
-				Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl) +
-						" (no:" + Integer.toString(ApplicationVars.imageDownloadNo++) + ")");
-				InputStream in = new URL(imageUrl).openStream();
-				bitmap = ImageUtils.configureBitmapFromInputStream(in);
-				imageBitmapCacheMap.addBitmap(imageUrl, bitmap, listViewHolder.viewPos);
-				listViewHolder.bitmap = bitmap;
-			} catch (Exception e) {
-				Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
-				e.printStackTrace();
+			for (int i = listViewHolder.imageUrl.length - 1; i >= 0 ; i--) {
+				try {
+					imageUrl = listViewHolder.imageUrl[i];
+					Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl) +
+							" (no:" + Integer.toString(ApplicationVars.imageDownloadNo++) + ")");
+					InputStream in = new URL(imageUrl).openStream();
+					bitmap = ImageUtils.configureBitmapFromInputStream(in);
+					imageBitmapCacheMap.addBitmap(imageUrl, bitmap, listViewHolder.viewPos);
+					listViewHolder.bitmap = bitmap;
+				} catch (Exception e) {
+					Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
+					e.printStackTrace();
+				}
 			}
 			return listViewHolder;
 		}
@@ -186,10 +193,12 @@ public class FeedAdapter extends BaseAdapter
 		@Override
 		protected void onPostExecute(ListViewHolder result) {
 			super.onPostExecute(result);
-			if (result.bitmap != null && result.imageUrl != null && !result.imageUrl.isEmpty()) {
-				Common.log("ImageDownload onPostExecute img:" + Common.getFileNameFromUri(result.imageUrl));
-				result.imageView.setImageBitmap(result.bitmap);
-			}
+
+				if (result.bitmap != null && result.imageUrl != null && !result.imageUrl[0].isEmpty()) {
+					Common.log("ImageDownload onPostExecute img:" + Common.getFileNameFromUri(result.imageUrl[0]));
+					result.imageView.setImageBitmap(result.bitmap);
+				}
+
 		}
 	}
 }

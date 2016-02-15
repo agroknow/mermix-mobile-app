@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.mermix.ApplicationVars;
 import com.mermix.R;
 import com.mermix.custom.CustomFragment;
@@ -42,6 +44,8 @@ import com.mermix.utils.ImageUtils;
 import com.mermix.utils.MainService;
 import com.mermix.utils.net.args.NewEquipmentArgs;
 import com.mermix.utils.net.args.UrlArgs;
+import com.mermix.ui.adapters.CustomPagerAdapter;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -76,6 +80,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 
         Common.log("EquipmentDetailActivity onCreateview");
         View v = inflater.inflate(R.layout.property_detail, null);
+
         setTouchNClick(v.findViewById(R.id.btnContact));
 
         setupMap(v, savedInstanceState);
@@ -107,17 +112,17 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 return v;
             }
 
-            ImageView img = (ImageView) v.findViewById(R.id.img1);
-            if(Common.hasUrlFormat(equipment.getImage()))
-                img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
-            else{
-                try {
-                    img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
-                }
-            }
+//            ImageView img = (ImageView) v.findViewById(R.id.img1);
+//            if(Common.hasUrlFormat(equipment.getImage()))
+//                img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
+//            else{
+//                try {
+//                    img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
+//                } catch (IOException e) {
+//                    //e.printStackTrace();
+//                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
+//                }
+//            }
             if(Constants.devMode) {
                 TextView nid = (TextView) v.findViewById(R.id.nid);
                 nid.setText(Integer.toString(equipment.getNid()));
@@ -153,6 +158,9 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 body.setText(Html.fromHtml(bodyList.get(0).getValue()));
             }
         }
+        CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
+        ViewPager mViewPager = (ViewPager) v.findViewById(R.id.pager);
+        mViewPager.setAdapter(mCustomPagerAdapter);
         return v;
     }
 

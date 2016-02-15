@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -10,6 +11,13 @@
         android:gravity="center_horizontal"
         android:background="@color/mermix_bg_color">
 
+        <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="200dp">
+        </android.support.v4.view.ViewPager>
+
+
 		<ImageView
 			android:id="@+id/img1"
 			android:layout_width="match_parent"
@@ -17,6 +25,10 @@
 			android:adjustViewBounds="true"
 			android:cropToPadding="false"
 			android:src="@drawable/tab_bg"/>
+
+
+
+
 
     <LinearLayout
         android:layout_width="match_parent"

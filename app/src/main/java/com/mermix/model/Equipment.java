@@ -24,7 +24,7 @@ public class Equipment extends Node implements Serializable{
 	@JsonProperty("field_availability")
 	private List<Availability> availability;
 	@JsonProperty("field_image")
-	private String image;
+	private String[] image;
 	//private List<Image> image;
 	@JsonProperty("field_address")
 	private List<Address> address;
@@ -48,11 +48,11 @@ public class Equipment extends Node implements Serializable{
 		this.price = price;
 	}
 
-	public String getImage() {
+	public String[] getImage() {
 		return image;
 	}
 
-	public void setImage(String image) {
+	public void setImage(String[] image) {
 		this.image = image;
 	}
 

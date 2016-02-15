@@ -624,7 +624,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			int equipmentId = Integer.parseInt(markersOnMap.get(coordinatesKey));
 			DrupalNodes drupalNodes = new DrupalNodes(iwContext);
 			SQLiteNode node = drupalNodes.getNode(equipmentId);
-			String imageUrl = node.getImage(0);
+			String imageUrl = node.getImage()[0];
 			if(Common.hasUrlFormat(imageUrl)) {
 				Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl);
 				if (cachedBitmap == null) {
