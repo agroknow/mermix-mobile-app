@@ -11,6 +11,7 @@ import com.mermix.utils.ImageBitmapCacheMap;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 /**
  * Created on 30/11/2015
@@ -27,19 +28,22 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 
 	@Override
 	protected Bitmap doInBackground(String... strings) {
-		String imageUrl = strings[0];
+		String imageUrl;
 		Bitmap mIcon11 = null;
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
-		try {
-			if (imageUrl != null && !imageUrl.isEmpty()) {
-				Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
-				InputStream in = new URL(imageUrl).openStream();
-				mIcon11 = BitmapFactory.decodeStream(in);
-				imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
+		for (int i = strings.length - 1; i >= 0 ; i--) {
+			imageUrl = strings[i];
+			try {
+				if (imageUrl != null && !imageUrl.isEmpty()) {
+					Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
+					InputStream in = new URL(imageUrl).openStream();
+					mIcon11 = BitmapFactory.decodeStream(in);
+					imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
+				}
+			} catch (Exception e) {
+				Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
+				e.printStackTrace();
 			}
-		} catch (Exception e) {
-			Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
-			e.printStackTrace();
 		}
 		return mIcon11;
 	}
