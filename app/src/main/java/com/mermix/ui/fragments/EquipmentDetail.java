@@ -228,14 +228,20 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             // Setting Dialog Title
             alertDialog.setTitle(R.string.contact_agent);
             // Setting Dialog Message
-            alertDialog.setMessage(R.string.enter_phone);
-            final EditText input = new EditText(getActivity());
+            //alertDialog.setMessage(R.string.enter_phone);
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.phone_dialog, null);
+            alertDialog.setView(dialogView);
+
+            /*final EditText input = new EditText(getActivity());
             input.setSingleLine(true);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             input.setLayoutParams(lp);
-            alertDialog.setView(input);
+
+            alertDialog.setView(input);*/
+
             //alertDialog.setView(input);
             // Setting Icon to Dialog
             //alertDialog.setIcon(R.drawable.ic_launcher);
@@ -254,6 +260,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    EditText input = (EditText) dialogView.findViewById(R.id.phone_number);
                     String regexStr = "^[+]?[0-9]{10,13}$";
                     String entered_number = input.getText().toString();
 
