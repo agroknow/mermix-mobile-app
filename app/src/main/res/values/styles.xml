@@ -95,6 +95,13 @@
 		<item name="android:textStyle">bold</item>
 		<item name="android:gravity">center</item>
 	</style>
+	<style name="red_border_btn" >
+		<item name="android:background">@drawable/red_border_btn</item>
+		<item name="android:textColor">@color/mermix_red</item>
+		<item name="android:textSize">@dimen/txt_18sp</item>
+		<item name="android:textStyle">bold</item>
+		<item name="android:gravity">center</item>
+	</style>
 	<style name="lbl_spinner" parent="android:Widget.Holo.Light.TextView.SpinnerItem">
 		<item name="android:textSize">50px</item>
 		<item name="android:layout_gravity">center_vertical</item>

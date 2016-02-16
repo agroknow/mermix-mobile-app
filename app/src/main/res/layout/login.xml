@@ -85,7 +85,7 @@
 				android:padding="@dimen/pad_10dp" >
 				<Button
 					android:id="@+id/btnLogin"
-					style="@style/gray_btn"
+					style="@style/red_btn"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:text="@string/login" />
