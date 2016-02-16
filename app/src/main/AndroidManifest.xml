@@ -43,7 +43,7 @@ android:value="@integer/google_play_services_version" />
 	<activity
 		android:name="com.mermix.ui.activities.SplashScreen"
 		android:label="@string/app_name"
-		android:screenOrientation="portrait"
+		android:screenOrientation="unspecified"
 		android:windowSoftInputMode="stateHidden"
 		android:theme="@android:style/Theme.Black.NoTitleBar.Fullscreen" >
 		<intent-filter>
@@ -57,23 +57,25 @@ android:value="@integer/google_play_services_version" />
 		android:name="com.mermix.ui.activities.MainActivity"
 		android:label="@string/app_name"
 		android:configChanges="orientation|keyboardHidden|screenSize"
-		android:screenOrientation="portrait"
+		android:screenOrientation="unspecified"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
 
 	  <activity
 		android:name="com.mermix.ui.activities.EquipmentDetailActivity"
-		android:screenOrientation="portrait"
+		android:screenOrientation="unspecified"
+		android:configChanges="orientation|keyboardHidden|screenSize"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
 	<activity
 		android:name="com.mermix.ui.activities.SearchResultActivity"
-		android:screenOrientation="portrait"
+		android:screenOrientation="unspecified"
+		android:configChanges="orientation|keyboardHidden|screenSize"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
 	<activity
 		android:name="com.mermix.ui.activities.MapViewActivity"
-		android:screenOrientation="portrait"
+		android:screenOrientation="unspecified"
 		android:windowSoftInputMode="stateHidden|adjustResize" >
 	</activity>
 
