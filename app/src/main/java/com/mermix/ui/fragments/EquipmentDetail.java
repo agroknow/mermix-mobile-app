@@ -3,6 +3,7 @@ package com.mermix.ui.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -42,6 +43,7 @@ import com.mermix.utils.Constants;
 import com.mermix.utils.ImageBitmapCacheMap;
 import com.mermix.utils.ImageUtils;
 import com.mermix.utils.MainService;
+import com.mermix.utils.net.InfoWindowImageDownload;
 import com.mermix.utils.net.args.NewEquipmentArgs;
 import com.mermix.utils.net.args.UrlArgs;
 import com.mermix.ui.adapters.CustomPagerAdapter;
@@ -75,7 +77,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Common.log("EquipmentDetailActivity onCreateview");
@@ -87,27 +89,26 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
         this.invokeRestApi = getActivity().getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
         this.equipmentId = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
 
-        if(this.equipmentId > defaultEquipmentId){
+        if (this.equipmentId > defaultEquipmentId) {
             DrupalNodes drupalNodes = new DrupalNodes(getActivity().getApplicationContext());
             SQLiteNode node = drupalNodes.getNode(equipmentId);
-            if(node == null)
+            if (node == null)
                 invokeRestApi = true;
-            else{
+            else {
                 //equipment from SQLite
                 equipment = node.toEquipment();
             }
         }
 
-        if(invokeRestApi){
+        if (invokeRestApi) {
             //invoke REST API
             //TODO startRequestService();
-        }
-        else{
-            if(equipment == null)
+        } else {
+            if (equipment == null)
                 //equipment from intent parameters
                 equipment = (Equipment) getActivity().getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
 
-            if(equipment == null){
+            if (equipment == null) {
                 Common.displayToast(getResources().getString(R.string.no_data), getActivity().getApplicationContext());
                 return v;
             }
@@ -123,7 +124,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 //                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
 //                }
 //            }
-            if(Constants.devMode) {
+            if (Constants.devMode) {
                 TextView nid = (TextView) v.findViewById(R.id.nid);
                 nid.setText(Integer.toString(equipment.getNid()));
                 nid.setVisibility(View.VISIBLE);
@@ -135,7 +136,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             TextView price = (TextView) v.findViewById(R.id.multiprice);
             price.setText(equipment.getMultiPriceString2Display());
 
-            if(Constants.devMode) {
+            if (Constants.devMode) {
                 TextView available = (TextView) v.findViewById(R.id.available);
                 TextView availablehd = (TextView) v.findViewById(R.id.availableHd);
                 available.setVisibility(View.VISIBLE);
@@ -146,7 +147,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 }
             }
             TextView location = (TextView) v.findViewById(R.id.lbl_location);
-            if(equipment.getLocation() != null)
+            if (equipment.getLocation() != null)
                 location.setText(equipment.getLocation().getName());
 
             TextView title = (TextView) v.findViewById(R.id.title);
@@ -154,8 +155,20 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 
             TextView body = (TextView) v.findViewById(R.id.body);
             List<Body> bodyList = equipment.getBody();
-            if(bodyList.size() > 0) {
+            if (bodyList.size() > 0) {
                 body.setText(Html.fromHtml(bodyList.get(0).getValue()));
+            }
+        }
+        String[] imageUrl = equipment.getImage();
+        int i ;
+        for (i=0; i < equipment.getImage().length; i++){
+            if (Common.hasUrlFormat(imageUrl[i])) {
+                Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
+                if (cachedBitmap == null) {
+                    //popUpImage.setImageDrawable(null);
+                    new InfoWindowImageDownload(null, null).execute(imageUrl);
+                    break;
+                }
             }
         }
         CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);

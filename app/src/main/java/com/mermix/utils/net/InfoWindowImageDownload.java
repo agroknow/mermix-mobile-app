@@ -31,7 +31,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 		String imageUrl;
 		Bitmap mIcon11 = null;
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
-		for (int i = strings.length - 1; i >= 0 ; i--) {
+		for (int i = 0 ; i < strings.length ; i++) {
 			imageUrl = strings[i];
 			try {
 				if (imageUrl != null && !imageUrl.isEmpty()) {
@@ -51,7 +51,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
 		super.onPostExecute(bitmap);
-		if(bitmap != null) {
+		if(bitmap != null && this.imageView != null) {
 			this.imageView.setImageBitmap(bitmap);
 			if (this.marker.isInfoWindowShown()) {
 				//redraw InfoWindow to display bitmap

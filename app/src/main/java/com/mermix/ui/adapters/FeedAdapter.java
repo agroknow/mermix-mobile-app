@@ -110,10 +110,10 @@ public class FeedAdapter extends BaseAdapter
 
 		ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
 		if (listViewHolder.imageUrl != null) {
-			for (int i = listViewHolder.imageUrl.length - 1; i >= 0; i--) {
+			//for (int i = listViewHolder.imageUrl.length - 1; i >= 0; i--) {
 
 
-				Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl[i]);
+				Bitmap cachedBitmap = imageBitmapCacheMap.getBitmap(listViewHolder.imageUrl[0]);
 				if (cachedBitmap == null) {
 					listViewHolder.imageView.setImageDrawable(null);
 					//listViewHolder.imageView.setImageResource(R.drawable.feed2);
@@ -129,12 +129,12 @@ public class FeedAdapter extends BaseAdapter
 //			e.printStackTrace();
 //		}
 //3.
-					if (listViewHolder.imageUrl != null && !listViewHolder.imageUrl[i].isEmpty())
+					if (listViewHolder.imageUrl != null && !listViewHolder.imageUrl[0].isEmpty())
 						new ImageDownload().execute(listViewHolder);
 				} else {
 					listViewHolder.imageView.setImageBitmap(cachedBitmap);
 				}
-			}
+			//}
 		}
 
 		return convertView;
@@ -173,9 +173,9 @@ public class FeedAdapter extends BaseAdapter
 			Bitmap bitmap;
 			listViewHolder.bitmap = null;
 			ImageBitmapCacheMap imageBitmapCacheMap = new ImageBitmapCacheMap();
-			for (int i = listViewHolder.imageUrl.length - 1; i >= 0 ; i--) {
+			//for (int i = listViewHolder.imageUrl.length - 1; i >= 0 ; i--) {
 				try {
-					imageUrl = listViewHolder.imageUrl[i];
+					imageUrl = listViewHolder.imageUrl[0];
 					Common.log("ImageDownload doInBackground REQUESTING img:" + Common.getFileNameFromUri(imageUrl) +
 							" (no:" + Integer.toString(ApplicationVars.imageDownloadNo++) + ")");
 					InputStream in = new URL(imageUrl).openStream();
@@ -186,7 +186,7 @@ public class FeedAdapter extends BaseAdapter
 					Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
 					e.printStackTrace();
 				}
-			}
+			//}
 			return listViewHolder;
 		}
 
