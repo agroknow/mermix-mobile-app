@@ -166,15 +166,18 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
                 if (cachedBitmap == null) {
                     //popUpImage.setImageDrawable(null);
-                    new InfoWindowImageDownload(null, null).execute(imageUrl);
+                    new InfoWindowImageDownload(null, null, this).execute(imageUrl);
                     break;
                 }
             }
         }
-        CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
-        ViewPager mViewPager = (ViewPager) v.findViewById(R.id.pager);
-        mViewPager.setAdapter(mCustomPagerAdapter);
         return v;
+    }
+
+    public void imagesDownloaded() {
+        CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
+        ViewPager mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+        mViewPager.setAdapter(mCustomPagerAdapter);
     }
 
     @Override

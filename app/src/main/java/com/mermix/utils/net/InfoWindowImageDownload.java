@@ -1,11 +1,14 @@
 package com.mermix.utils.net;
 
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.Marker;
+import com.mermix.custom.CustomFragment;
+import com.mermix.ui.fragments.EquipmentDetail;
 import com.mermix.utils.Common;
 import com.mermix.utils.ImageBitmapCacheMap;
 
@@ -21,9 +24,12 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 
 	private ImageView imageView;
 	private Marker marker;
-	public InfoWindowImageDownload(ImageView imageView, Marker marker){
+	private CustomFragment fragment;
+
+	public InfoWindowImageDownload(ImageView imageView, Marker marker, CustomFragment fragment){
 		this.imageView = imageView;
 		this.marker = marker;
+		this.fragment = fragment;
 	}
 
 	@Override
@@ -51,6 +57,14 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 	@Override
 	protected void onPostExecute(Bitmap bitmap) {
 		super.onPostExecute(bitmap);
+		if(this.fragment != null) {
+			try {
+				EquipmentDetail detailsFragm = (EquipmentDetail) this.fragment;
+				detailsFragm.imagesDownloaded();
+			} catch (ClassCastException e) {
+				Common.logError("ClassCastException @ EquipmentDetailActivity updateUI:" + e.getMessage());
+			}
+		}
 		if(bitmap != null && this.imageView != null) {
 			this.imageView.setImageBitmap(bitmap);
 			if (this.marker.isInfoWindowShown()) {
