@@ -624,18 +624,18 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 			int equipmentId = Integer.parseInt(markersOnMap.get(coordinatesKey));
 			DrupalNodes drupalNodes = new DrupalNodes(iwContext);
 			SQLiteNode node = drupalNodes.getNode(equipmentId);
-			String imageUrl = node.getImage(0);
-			if(Common.hasUrlFormat(imageUrl)) {
-				Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl);
+			String[] imageUrl = node.getImage();
+			if(Common.hasUrlFormat(imageUrl[0])) {
+				Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[0]);
 				if (cachedBitmap == null) {
 					popUpImage.setImageDrawable(null);
-					new InfoWindowImageDownload(popUpImage, iwMarker).execute(imageUrl);
+					new InfoWindowImageDownload(popUpImage, iwMarker, null).execute(imageUrl[0]);
 				} else
 					popUpImage.setImageBitmap(cachedBitmap);
 			}
 			else{
 				try {
-					popUpImage.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(imageUrl));
+					popUpImage.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(imageUrl[0]));
 				} catch (IOException e) {
 					//e.printStackTrace();
 					Common.logError("IOException @ MapViewer.getInfoContents:" + e.getMessage());

@@ -3,7 +3,9 @@ package com.mermix.ui.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +25,7 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
 import com.mermix.ApplicationVars;
 import com.mermix.R;
 import com.mermix.custom.CustomFragment;
@@ -40,8 +43,11 @@ import com.mermix.utils.Constants;
 import com.mermix.utils.ImageBitmapCacheMap;
 import com.mermix.utils.ImageUtils;
 import com.mermix.utils.MainService;
+import com.mermix.utils.net.InfoWindowImageDownload;
 import com.mermix.utils.net.args.NewEquipmentArgs;
 import com.mermix.utils.net.args.UrlArgs;
+import com.mermix.ui.adapters.CustomPagerAdapter;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -71,54 +77,54 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState){
+                             Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Common.log("EquipmentDetailActivity onCreateview");
         View v = inflater.inflate(R.layout.property_detail, null);
+
         setTouchNClick(v.findViewById(R.id.btnContact));
 
         setupMap(v, savedInstanceState);
         this.invokeRestApi = getActivity().getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
         this.equipmentId = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
 
-        if(this.equipmentId > defaultEquipmentId){
+        if (this.equipmentId > defaultEquipmentId) {
             DrupalNodes drupalNodes = new DrupalNodes(getActivity().getApplicationContext());
             SQLiteNode node = drupalNodes.getNode(equipmentId);
-            if(node == null)
+            if (node == null)
                 invokeRestApi = true;
-            else{
+            else {
                 //equipment from SQLite
                 equipment = node.toEquipment();
             }
         }
 
-        if(invokeRestApi){
+        if (invokeRestApi) {
             //invoke REST API
             //TODO startRequestService();
-        }
-        else{
-            if(equipment == null)
+        } else {
+            if (equipment == null)
                 //equipment from intent parameters
                 equipment = (Equipment) getActivity().getIntent().getSerializableExtra(Constants.INTENTVARS.EQUIPMENT);
 
-            if(equipment == null){
+            if (equipment == null) {
                 Common.displayToast(getResources().getString(R.string.no_data), getActivity().getApplicationContext());
                 return v;
             }
 
-            ImageView img = (ImageView) v.findViewById(R.id.img1);
-            if(Common.hasUrlFormat(equipment.getImage()))
-                img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
-            else{
-                try {
-                    img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
-                } catch (IOException e) {
-                    //e.printStackTrace();
-                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
-                }
-            }
-            if(Constants.devMode) {
+//            ImageView img = (ImageView) v.findViewById(R.id.img1);
+//            if(Common.hasUrlFormat(equipment.getImage()))
+//                img.setImageBitmap(new ImageBitmapCacheMap().getBitmap(equipment.getImage()));
+//            else{
+//                try {
+//                    img.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(equipment.getImage()));
+//                } catch (IOException e) {
+//                    //e.printStackTrace();
+//                    Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
+//                }
+//            }
+            if (Constants.devMode) {
                 TextView nid = (TextView) v.findViewById(R.id.nid);
                 nid.setText(Integer.toString(equipment.getNid()));
                 nid.setVisibility(View.VISIBLE);
@@ -130,7 +136,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             TextView price = (TextView) v.findViewById(R.id.multiprice);
             price.setText(equipment.getMultiPriceString2Display());
 
-            if(Constants.devMode) {
+            if (Constants.devMode) {
                 TextView available = (TextView) v.findViewById(R.id.available);
                 TextView availablehd = (TextView) v.findViewById(R.id.availableHd);
                 available.setVisibility(View.VISIBLE);
@@ -141,7 +147,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 }
             }
             TextView location = (TextView) v.findViewById(R.id.lbl_location);
-            if(equipment.getLocation() != null)
+            if (equipment.getLocation() != null)
                 location.setText(equipment.getLocation().getName());
 
             TextView title = (TextView) v.findViewById(R.id.title);
@@ -149,11 +155,29 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
 
             TextView body = (TextView) v.findViewById(R.id.body);
             List<Body> bodyList = equipment.getBody();
-            if(bodyList.size() > 0) {
+            if (bodyList.size() > 0) {
                 body.setText(Html.fromHtml(bodyList.get(0).getValue()));
             }
         }
+        String[] imageUrl = equipment.getImage();
+        int i ;
+        for (i=0; i < equipment.getImage().length; i++){
+            if (Common.hasUrlFormat(imageUrl[i])) {
+                Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
+                if (cachedBitmap == null) {
+                    //popUpImage.setImageDrawable(null);
+                    new InfoWindowImageDownload(null, null, this).execute(imageUrl);
+                    break;
+                }
+            }
+        }
         return v;
+    }
+
+    public void imagesDownloaded() {
+        CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
+        ViewPager mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+        mViewPager.setAdapter(mCustomPagerAdapter);
     }
 
     @Override
@@ -220,14 +244,20 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             // Setting Dialog Title
             alertDialog.setTitle(R.string.contact_agent);
             // Setting Dialog Message
-            alertDialog.setMessage(R.string.enter_phone);
-            final EditText input = new EditText(getActivity());
+            //alertDialog.setMessage(R.string.enter_phone);
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            final View dialogView = inflater.inflate(R.layout.phone_dialog, null);
+            alertDialog.setView(dialogView);
+
+            /*final EditText input = new EditText(getActivity());
             input.setSingleLine(true);
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
             input.setLayoutParams(lp);
-            alertDialog.setView(input);
+
+            alertDialog.setView(input);*/
+
             //alertDialog.setView(input);
             // Setting Icon to Dialog
             //alertDialog.setIcon(R.drawable.ic_launcher);
@@ -246,6 +276,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    EditText input = (EditText) dialogView.findViewById(R.id.phone_number);
                     String regexStr = "^[+]?[0-9]{10,13}$";
                     String entered_number = input.getText().toString();
 

@@ -77,8 +77,8 @@ public class SQLiteNode extends Pojo {
 		return priceObj;
 	}
 
-	public String getImage(int idx){
-		return images.split(Constants.CONCATDELIMETER)[idx];
+	public String[] getImage(){
+		return images.split(Constants.CONCATDELIMETER);
 	}
 
 	public Equipment toEquipment() {
@@ -94,7 +94,7 @@ public class SQLiteNode extends Pojo {
 		availability.setEnabled(1);
 
 		equipment.setTitle(this.getTitle());
-		equipment.setImage(this.getImage(0));
+		equipment.setImage(this.getImage());
 		equipment.setNid(this.getNid());
 		equipment.setBody(Arrays.asList(body));
 		equipment.setPrice(this.getPriceObject());
