@@ -123,21 +123,21 @@ public class Login extends CustomFragment implements DataRetrieve {
 		Common.log("Login updateUI");
 		Boolean userLoggedIn = false;
 		progress.dismiss();
-		if(apiResponseData != null) {
-			try {
+		try {
+			if(apiResponseData != null) {
 				User user = (User) apiResponseData;
 				ApplicationVars.User.id = user.getUid();
 				userLoggedIn = true;
 
 				MainActivity activity = (MainActivity) this.getActivity();
 				activity.goToFragmentAfterLogon();
-			} catch (ClassCastException e) {
-				Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
 			}
-		}
-		if(!userLoggedIn) {
-			Common.displayToast(getResources().getString(R.string.user_login_failed), getActivity().getApplicationContext());
-			ApplicationVars.User.credentials = "";
+			if(!userLoggedIn) {
+				Common.displayToast(getResources().getString(R.string.user_login_failed), getActivity().getApplicationContext());
+				ApplicationVars.User.credentials = "";
+			}
+		} catch (ClassCastException e) {
+			Common.logError("ClassCastException @ Login updateUI:" + e.getMessage());
 		}
 	}
 
