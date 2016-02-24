@@ -17,13 +17,13 @@
             android:layout_height="wrap_content">
         </com.mermix.ui.WrapContentHeightViewPager>
 
-		<!--<ImageView
-			android:id="@+id/img1"
+		<ImageView
+			android:id="@+id/imgPlaceHolder"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_height="300dp"
 			android:adjustViewBounds="true"
 			android:cropToPadding="false"
-			android:src="@drawable/tab_bg"/>-->
+			android:src="@drawable/tab_bg"/>
 
     <LinearLayout
         android:layout_width="match_parent"

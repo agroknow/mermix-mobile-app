@@ -45,20 +45,21 @@ public class CustomPagerAdapter extends PagerAdapter {
     public Object instantiateItem(ViewGroup container, int position) {
         View itemView = mLayoutInflater.inflate(R.layout.pager_item, container, false);
         ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-        if(Common.hasUrlFormat(mResources[position]))
+        Common.log("CustomPagerAdapter instantiateItem pos:" + Integer.toString(position) +
+				", img:" + Common.getFileNameFromUri(mResources[position]));
+		if(Common.hasUrlFormat(mResources[position]))
+		//image url
             imageView.setImageBitmap(new ImageBitmapCacheMap().getBitmap(mResources[position]));
         else{
+		//local image path
             try {
                 imageView.setImageBitmap(ImageUtils.configureBitmapSamplingRotation(mResources[position]));
             } catch (IOException e) {
                 //e.printStackTrace();
-                Common.logError("IOException @ EquipmentDetailActivity.onCreate:" + e.getMessage());
+                Common.logError("IOException @ CustomPagerAdapter.instantiateItem:" + e.getMessage());
             }
         }
-        //imageView.setImageResource(mResources[position]);
-
         container.addView(itemView);
-
         return itemView;
     }
 
