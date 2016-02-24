@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +24,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-
 import com.mermix.ApplicationVars;
 import com.mermix.R;
 import com.mermix.custom.CustomFragment;
@@ -38,18 +36,15 @@ import com.mermix.model.common.Body;
 import com.mermix.model.common.Pojo;
 import com.mermix.model.sqlite.DrupalNodes;
 import com.mermix.ui.DataRetrieve;
+import com.mermix.ui.adapters.CustomPagerAdapter;
 import com.mermix.utils.Common;
 import com.mermix.utils.Constants;
 import com.mermix.utils.ImageBitmapCacheMap;
-import com.mermix.utils.ImageUtils;
 import com.mermix.utils.MainService;
 import com.mermix.utils.net.InfoWindowImageDownload;
 import com.mermix.utils.net.args.NewEquipmentArgs;
 import com.mermix.utils.net.args.UrlArgs;
-import com.mermix.ui.adapters.CustomPagerAdapter;
 
-
-import java.io.IOException;
 import java.util.List;
 
 /**
@@ -161,26 +156,43 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
         }
         String[] imageUrl = equipment.getImage();
         int i ;
+        Boolean ImageDownloadProcessing = false;
         for (i=0; i < equipment.getImage().length; i++){
             if (Common.hasUrlFormat(imageUrl[i])) {
                 Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
                 if (cachedBitmap == null) {
                     //popUpImage.setImageDrawable(null);
                     new InfoWindowImageDownload(null, null, this).execute(imageUrl);
+                    ImageDownloadProcessing = true;
                     break;
                 }
             }
         }
+        if(!ImageDownloadProcessing)
+            imagesDownloaded(v);
         return v;
     }
 
-    public void imagesDownloaded() {
-        CustomPagerAdapter mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
-        ViewPager mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
-        mViewPager.setAdapter(mCustomPagerAdapter);
-    }
+    public void imagesDownloaded(View v) {
+		CustomPagerAdapter mCustomPagerAdapter;
+		ViewPager mViewPager;
+		ImageView img;
+		if(v != null) {
+			mCustomPagerAdapter = new CustomPagerAdapter(v.getContext(), equipment);
+			mViewPager = (ViewPager) v.findViewById(R.id.pager);
+			img = (ImageView) v.findViewById(R.id.imgPlaceHolder);
+		}
+		else{
+			mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
+			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
+			img = (ImageView) getActivity().findViewById(R.id.imgPlaceHolder);
+		}
+		if(img != null)
+			img.setVisibility(View.GONE);
+		mViewPager.setAdapter(mCustomPagerAdapter);
+	}
 
-    @Override
+	@Override
     public void onStart() {
         super.onStart();
         Common.log("EquipmentDetailActivity onStart");

@@ -11,6 +11,7 @@ import com.mermix.custom.CustomFragment;
 import com.mermix.ui.fragments.EquipmentDetail;
 import com.mermix.utils.Common;
 import com.mermix.utils.ImageBitmapCacheMap;
+import com.mermix.utils.ImageUtils;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -43,7 +44,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 				if (imageUrl != null && !imageUrl.isEmpty()) {
 					Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
 					InputStream in = new URL(imageUrl).openStream();
-					mIcon11 = BitmapFactory.decodeStream(in);
+					mIcon11 = ImageUtils.configureBitmapFromInputStream(in);
 					imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
 				}
 			} catch (Exception e) {
@@ -60,7 +61,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 		if(this.fragment != null) {
 			try {
 				EquipmentDetail detailsFragm = (EquipmentDetail) this.fragment;
-				detailsFragm.imagesDownloaded();
+				detailsFragm.imagesDownloaded(null);
 			} catch (ClassCastException e) {
 				Common.logError("ClassCastException @ EquipmentDetailActivity updateUI:" + e.getMessage());
 			}
