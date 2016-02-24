@@ -55,7 +55,7 @@ public class EquipmentInView extends Pojo implements Serializable{
 	}
 
 	public Double[] getCoordinates() {
-		return Common.stringToDoubleArr(coordinates, Constants.CONCATDELIMETER);
+		return (this.coordinates == null) ? new Double[]{0.0,0.0} : Common.stringToDoubleArr(coordinates, Constants.CONCATDELIMETER);
 	}
 
 	public void setCoordinates(String coordinates) {
