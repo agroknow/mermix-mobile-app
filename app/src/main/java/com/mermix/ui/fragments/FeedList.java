@@ -196,7 +196,7 @@ public class FeedList extends CustomFragment implements DataRetrieve
 			startActivity(new Intent(getActivity(), MapViewActivity.class));
 		else if (item.getItemId() == R.id.menu_search)
 			//startActivity(new Intent(getActivity(), SearchResultActivity.class));
-			((MainActivity) getActivity()).launchFragment(1);
+			((MainActivity) getActivity()).launchFragment(2);
 		return super.onOptionsItemSelected(item);
 	}
 

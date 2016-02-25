@@ -11,17 +11,9 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:cropToPadding="false"
+        android:minHeight="300dp"
         android:src="@drawable/ic_launcher"/>
 
-    <LinearLayout
-        android:id="@+id/linLayout"
-        android:orientation="horizontal"
-        android:paddingLeft="4.0dip"
-        android:paddingTop="10.0dip"
-        android:paddingRight="4.0dip"
-        android:paddingBottom="1.0dip"
-        android:layout_width="fill_parent" android:layout_height="wrap_content"
-        >
 
        <!-- <Button
             android:id="@+id/allow"
@@ -34,23 +26,26 @@
             android:layout_width="0.0dip" android:layout_height="fill_parent"
             android:text="Deny"
             android:layout_weight="1.0" />-->
+
         <Button
             android:id="@+id/btnSearch"
             style="@style/red_border_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="@string/search" />
         <Button
             android:id="@+id/btnSubmit"
             style="@style/red_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/submit" />
+            android:text="@string/submit_machine" />
 
-    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
     <Button
         android:id="@+id/btnMapSearch"
         style="@style/red_border_btn"
@@ -60,6 +55,8 @@
         android:paddingRight="30dp"
         android:paddingLeft="15dp"
         android:gravity="center"
-        android:text="@string/login"
+        android:textSize="@dimen/txt_15sp"
+        android:text="@string/find_in_area"
          />
+        </LinearLayout>
 </LinearLayout>

@@ -9,14 +9,17 @@ import android.view.ViewGroup;
 
 import com.mermix.R;
 import com.mermix.custom.CustomFragment;
+import com.mermix.model.common.Pojo;
+import com.mermix.ui.DataRetrieve;
 import com.mermix.ui.activities.MainActivity;
 import com.mermix.utils.Common;
 import com.mermix.utils.net.args.FeedListArgs;
+import com.mermix.utils.net.args.UrlArgs;
 
 /**
  * Created by vasilis on 2/24/16.
  */
-public class Home extends CustomFragment {
+public class Home extends CustomFragment implements DataRetrieve {
 
 
     @Override
@@ -71,13 +74,13 @@ public class Home extends CustomFragment {
     public void onClick(View v) {
         super.onClick(v);
         if (v.getId() == R.id.btnSearch) {
-            ((MainActivity) getActivity()).launchFragment(1);
+            ((MainActivity) getActivity()).launchFragment(2);
         }
         if (v.getId() == R.id.btnSubmit) {
-            ((MainActivity) getActivity()).launchFragment(3);
+            ((MainActivity) getActivity()).launchFragment(4);
         }
         if (v.getId() == R.id.btnMapSearch) {
-            ((MainActivity) getActivity()).launchFragment(2);
+            ((MainActivity) getActivity()).launchFragment(3);
         }
     }
 
@@ -87,5 +90,15 @@ public class Home extends CustomFragment {
         //    getMenuInflater().inflate(R.menu.feed, menu);
         //    menu.findItem(R.id.menu_sort).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void updateUI(Pojo apiResponseData) {
+
+    }
+
+    @Override
+    public void startRequestService(UrlArgs urlArgs) {
+
     }
 }

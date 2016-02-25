@@ -124,7 +124,7 @@ public class MainActivity extends CustomActivity
 		fragment2Launch = getIntent().getExtras() != null ?
 							getIntent().getExtras().getInt(Constants.INTENTVARS.FRAGMENTPOS) :
 							fragment2Launch;
-		fragment2Launch = savedInstanceState == null ? -2 : fragment2Launch;
+		//fragment2Launch = savedInstanceState == null ? -2 : fragment2Launch;
 		launchFragment(fragment2Launch);
 	}
 
@@ -191,6 +191,7 @@ public class MainActivity extends CustomActivity
 	private ArrayList<Data> getLeftNavItems()
 	{
 		ArrayList<Data> al = new ArrayList<Data>();
+		al.add(new Data(getResources().getString(R.string.home), R.drawable.ic_navhome, R.drawable.ic_navhome_sel));
 		al.add(new Data(getResources().getString(R.string.equipment), R.drawable.ic_nav1, R.drawable.ic_nav1_sel));
 		al.add(new Data(getResources().getString(R.string.search), R.drawable.ic_nav2, R.drawable.ic_nav2_sel));
 		al.add(new Data(getResources().getString(R.string.map), R.drawable.ic_nav3, R.drawable.ic_nav3_sel));
@@ -209,27 +210,27 @@ public class MainActivity extends CustomActivity
 	{
 		Fragment f = null;
 		String title = null;
-		if (pos == -2)
+		if (pos == 0)
 		{
 			title = getResources().getString(R.string.app_name);
 			f = new Home();
 		}
-		else if (pos == 0)
+		else if (pos == 1)
 		{
 			title = getResources().getString(R.string.equipment);
 			f = new FeedList();
 		}
-		else if (pos == 1)
+		else if (pos == 2)
 		{
 			title = getResources().getString(R.string.search);
 			f = new Search();
 		}
-		else if (pos == 2)
+		else if (pos == 3)
 		{
 			title = getResources().getString(R.string.map);
 			f = new MapViewer();
 		}
-		else if (pos == 3)
+		else if (pos == 4)
 		{
 			if(!ApplicationVars.User.id.isEmpty()) {
 				title = getResources().getString(R.string.add_new_equipment);
