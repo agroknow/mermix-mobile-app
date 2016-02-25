@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/homeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:src="@drawable/ic_launcher"/>
+
+    <LinearLayout
+        android:id="@+id/linLayout"
+        android:orientation="horizontal"
+        android:paddingLeft="4.0dip"
+        android:paddingTop="10.0dip"
+        android:paddingRight="4.0dip"
+        android:paddingBottom="1.0dip"
+        android:layout_width="fill_parent" android:layout_height="wrap_content"
+        >
+
+       <!-- <Button
+            android:id="@+id/allow"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
+            android:text="Allow"
+            android:layout_weight="1.0" />
+
+        <Button
+            android:id="@+id/deny"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
+            android:text="Deny"
+            android:layout_weight="1.0" />-->
+        <Button
+            android:id="@+id/btnSearch"
+            style="@style/red_border_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/search" />
+        <Button
+            android:id="@+id/btnSubmit"
+            style="@style/red_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/submit" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnMapSearch"
+        style="@style/red_border_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/map_marker"
+        android:paddingRight="30dp"
+        android:paddingLeft="15dp"
+        android:gravity="center"
+        android:text="@string/login"
+         />
+</LinearLayout>

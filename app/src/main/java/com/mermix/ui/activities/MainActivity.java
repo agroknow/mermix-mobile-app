@@ -22,6 +22,7 @@ import com.mermix.model.SQLiteTerm;
 import com.mermix.model.sqlite.DrupalTerms;
 import com.mermix.ui.adapters.LeftNavAdapter;
 import com.mermix.ui.fragments.FeedList;
+import com.mermix.ui.fragments.Home;
 import com.mermix.ui.fragments.Login;
 import com.mermix.ui.fragments.MapViewer;
 import com.mermix.ui.fragments.NewEquipment;
@@ -123,6 +124,7 @@ public class MainActivity extends CustomActivity
 		fragment2Launch = getIntent().getExtras() != null ?
 							getIntent().getExtras().getInt(Constants.INTENTVARS.FRAGMENTPOS) :
 							fragment2Launch;
+		fragment2Launch = savedInstanceState == null ? -2 : fragment2Launch;
 		launchFragment(fragment2Launch);
 	}
 
@@ -207,7 +209,12 @@ public class MainActivity extends CustomActivity
 	{
 		Fragment f = null;
 		String title = null;
-		if (pos == 0)
+		if (pos == -2)
+		{
+			title = getResources().getString(R.string.app_name);
+			f = new Home();
+		}
+		else if (pos == 0)
 		{
 			title = getResources().getString(R.string.equipment);
 			f = new FeedList();
