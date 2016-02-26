@@ -42,10 +42,13 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 			imageUrl = strings[i];
 			try {
 				if (imageUrl != null && !imageUrl.isEmpty()) {
-					Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
-					InputStream in = new URL(imageUrl).openStream();
-					mIcon11 = ImageUtils.configureBitmapFromInputStream(in);
-					imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
+					mIcon11 = imageBitmapCacheMap.getBitmap(imageUrl);
+					if(mIcon11 == null) {
+						Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
+						InputStream in = new URL(imageUrl).openStream();
+						mIcon11 = ImageUtils.configureBitmapFromInputStream(in);
+						imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
+					}
 				}
 			} catch (Exception e) {
 				Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
