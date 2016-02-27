@@ -3,7 +3,9 @@ package com.mermix.ui.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.text.Html;
@@ -14,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +49,7 @@ import com.mermix.utils.net.InfoWindowImageDownload;
 import com.mermix.utils.net.args.NewEquipmentArgs;
 import com.mermix.utils.net.args.UrlArgs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -60,6 +65,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
     /** The map view. */
     private MapView mMapView;
 
+    private List<ImageView> dots;
     /** The Google map. */
     private GoogleMap mMap;
 
@@ -174,23 +180,69 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
     }
 
     public void imagesDownloaded(View v) {
-		CustomPagerAdapter mCustomPagerAdapter;
+		final CustomPagerAdapter mCustomPagerAdapter;
 		ViewPager mViewPager;
-		ImageView img;
+        LinearLayout dotsLayout;
+
+		LinearLayout img;
 		if(v != null) {
 			mCustomPagerAdapter = new CustomPagerAdapter(v.getContext(), equipment);
 			mViewPager = (ViewPager) v.findViewById(R.id.pager);
-			img = (ImageView) v.findViewById(R.id.imgPlaceHolder);
+			img = (LinearLayout) v.findViewById(R.id.progress);
+            dotsLayout = (LinearLayout) v.findViewById(R.id.dots);
+            
 		}
 		else{
 			mCustomPagerAdapter = new CustomPagerAdapter(getActivity(),equipment);
 			mViewPager = (ViewPager) getActivity().findViewById(R.id.pager);
-			img = (ImageView) getActivity().findViewById(R.id.imgPlaceHolder);
+			img = (LinearLayout) getActivity().findViewById(R.id.progress);
+            dotsLayout = (LinearLayout) getActivity().findViewById(R.id.dots);
+
+            dots = new ArrayList<>();
+            for(int i = 0; i < mCustomPagerAdapter.getCount(); i++) {
+                ImageView dot = new ImageView(getActivity());
+                dot.setImageDrawable(getResources().getDrawable(i == 0 ? R.drawable.dot_active : R.drawable.dot_inactive));
+
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                );
+                dotsLayout.addView(dot, params);
+
+                dots.add(dot);
+            }
+
 		}
 		if(img != null)
 			img.setVisibility(View.GONE);
-		mViewPager.setAdapter(mCustomPagerAdapter);
+
+        mViewPager.setAdapter(mCustomPagerAdapter);
+        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                selectDot(position, mCustomPagerAdapter.getCount());
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
 	}
+
+    public void selectDot(int idx,int total) {
+        Resources res = getResources();
+        for(int i = 0; i < total; i++) {
+            int drawableId = (i==idx)?(R.drawable.dot_active):(R.drawable.dot_inactive);
+            Drawable drawable = res.getDrawable(drawableId);
+            dots.get(i).setImageDrawable(drawable);
+        }
+    }
 
 	@Override
     public void onStart() {
@@ -254,7 +306,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
             //AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             // Setting Dialog Title
-            alertDialog.setTitle(R.string.contact_agent);
+            //alertDialog.setTitle(R.string.contact_agent);
             // Setting Dialog Message
             //alertDialog.setMessage(R.string.enter_phone);
             LayoutInflater inflater = getActivity().getLayoutInflater();
@@ -283,6 +335,13 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                         }
                     });
             final AlertDialog dialog = alertDialog.create();
+            /*dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.mermix_red));
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.white));
+                }
+            });*/
             dialog.show();
             //Overriding the handler immediately after show is probably a better approach than OnShowListener as described below
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
