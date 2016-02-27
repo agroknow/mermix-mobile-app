@@ -3,19 +3,38 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/dialogTitle1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:background="@color/mermix_red"
+            android:padding="@dimen/pad_20dp"
+            android:layout_marginBottom="10dp"
+            android:textColor="@color/white"
+            android:textSize="@dimen/txt_25sp"
+            android:text="@string/contact_agent"/>
+    </LinearLayout>
     <TextView
         android:id="@+id/dialogTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="gravity"
-        android:textSize="@dimen/txt_20sp"
+        android:gravity="center"
+        android:textSize="@dimen/txt_18sp"
         android:text="@string/enter_phone"/>
     <TextView
         android:id="@+id/dialogLbl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:textAlignment="center"
-        android:textSize="@dimen/txt_14sp"
+        android:paddingTop="@dimen/pad_10dp"
+        android:textSize="@dimen/txt_12sp"
         android:text="@string/enter_phone_long"/>
     <EditText
         android:id="@+id/phone_number"

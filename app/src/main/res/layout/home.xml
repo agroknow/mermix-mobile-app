@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         android:cropToPadding="false"
         android:minHeight="300dp"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@drawable/landing_logo"/>
 
 
        <!-- <Button
@@ -55,7 +55,7 @@
         android:paddingRight="30dp"
         android:paddingLeft="15dp"
         android:gravity="center"
-        android:textSize="@dimen/txt_15sp"
+        android:textSize="@dimen/txt_12sp"
         android:text="@string/find_in_area"
          />
         </LinearLayout>
