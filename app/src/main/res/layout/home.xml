@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/homeImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:cropToPadding="false"
+        android:minHeight="300dp"
+        android:src="@drawable/landing_logo"/>
+
+
+       <!-- <Button
+            android:id="@+id/allow"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
+            android:text="Allow"
+            android:layout_weight="1.0" />
+
+        <Button
+            android:id="@+id/deny"
+            android:layout_width="0.0dip" android:layout_height="fill_parent"
+            android:text="Deny"
+            android:layout_weight="1.0" />-->
+
+        <Button
+            android:id="@+id/btnSearch"
+            style="@style/red_border_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/search" />
+        <Button
+            android:id="@+id/btnSubmit"
+            style="@style/red_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/submit_machine" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center|bottom"
+        android:orientation="vertical" >
+    <Button
+        android:id="@+id/btnMapSearch"
+        style="@style/red_border_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/map_marker"
+        android:paddingRight="30dp"
+        android:paddingLeft="15dp"
+        android:gravity="center"
+        android:textSize="@dimen/txt_12sp"
+        android:text="@string/find_in_area"
+         />
+        </LinearLayout>
+</LinearLayout>
