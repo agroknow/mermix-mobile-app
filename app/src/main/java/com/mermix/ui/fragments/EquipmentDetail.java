@@ -162,7 +162,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
                 if (cachedBitmap == null) {
                     //popUpImage.setImageDrawable(null);
-                    new InfoWindowImageDownload(null, null, this).execute(imageUrl);
+                    new InfoWindowImageDownload(null, null, this, equipment.getNid()).execute(imageUrl);
                     ImageDownloadProcessing = true;
                     break;
                 }

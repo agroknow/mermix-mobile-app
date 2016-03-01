@@ -26,11 +26,13 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 	private ImageView imageView;
 	private Marker marker;
 	private CustomFragment fragment;
+	private int nid;
 
-	public InfoWindowImageDownload(ImageView imageView, Marker marker, CustomFragment fragment){
+	public InfoWindowImageDownload(ImageView imageView, Marker marker, CustomFragment fragment, int nid){
 		this.imageView = imageView;
 		this.marker = marker;
 		this.fragment = fragment;
+		this.nid = nid;
 	}
 
 	@Override
@@ -47,7 +49,7 @@ public class InfoWindowImageDownload extends AsyncTask<String, Void, Bitmap> {
 						Common.log("ImageDownloadForView doInBackground request image url:" + imageUrl);
 						InputStream in = new URL(imageUrl).openStream();
 						mIcon11 = ImageUtils.configureBitmapFromInputStream(in);
-						imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1);
+						imageBitmapCacheMap.addBitmap(imageUrl, mIcon11, -1, this.nid);
 					}
 				}
 			} catch (Exception e) {

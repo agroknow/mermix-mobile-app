@@ -89,6 +89,7 @@ public class FeedAdapter extends BaseAdapter
 		}
 
 		listViewHolder.viewPos = position;
+		listViewHolder.nid = equipment.getNid();
 		listViewHolder.imageUrl = equipment.getImage();
 
 		listViewHolder.lbl1View.setText(equipment.getTitle());
@@ -162,6 +163,7 @@ public class FeedAdapter extends BaseAdapter
 		Bitmap bitmap;
 		String[] imageUrl;
 		int viewPos;
+		int nid;
 	}
 
 	private class ImageDownload extends AsyncTask<ListViewHolder, Void, ListViewHolder> {
@@ -180,7 +182,7 @@ public class FeedAdapter extends BaseAdapter
 							" (no:" + Integer.toString(ApplicationVars.imageDownloadNo++) + ")");
 					InputStream in = new URL(imageUrl).openStream();
 					bitmap = ImageUtils.configureBitmapFromInputStream(in);
-					imageBitmapCacheMap.addBitmap(imageUrl, bitmap, listViewHolder.viewPos);
+					imageBitmapCacheMap.addBitmap(imageUrl, bitmap, listViewHolder.viewPos, listViewHolder.nid);
 					listViewHolder.bitmap = bitmap;
 				} catch (Exception e) {
 					Common.logError("Exception @ ImageDownload doInBackground:" + e.getMessage());
