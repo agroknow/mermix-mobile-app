@@ -10,6 +10,8 @@ android {
         applicationId "com.mermix"
         minSdkVersion 14
         targetSdkVersion 18
+        versionCode 3
+        versionName "2.1"
     }
 
     buildTypes {
