@@ -221,6 +221,8 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 				mMap.setOnMarkerClickListener(mClusterManager);
 				mMap.setOnInfoWindowClickListener(mClusterManager);
 				mMap.setInfoWindowAdapter(mClusterManager.getMarkerManager());
+				if(Constants.devMode)
+					mMap.getUiSettings().setZoomControlsEnabled(true);
 
 				mClusterManager.setOnClusterClickListener(this);
 				mClusterManager.setOnClusterInfoWindowClickListener(this);
