@@ -70,6 +70,7 @@ public class Constants {
         public static final String EQUIPMENT = "equipment";
 		public static final String EQUIPMENTID = "equipmentId";
 		public static final String INVOKERESTAPI = "invokeRestApi";
+		public static final String VIEWPOS = "viewPos";
 	}
 
 	public class HttpRequestMethods {

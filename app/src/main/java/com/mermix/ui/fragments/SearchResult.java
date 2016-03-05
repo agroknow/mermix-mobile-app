@@ -225,6 +225,7 @@ public class SearchResult extends CustomFragment implements DataRetrieve
 				mBundle.putSerializable(Constants.INTENTVARS.EQUIPMENT, equipment);
 				i.putExtras(mBundle);
 				i.putExtra(Constants.INTENTVARS.INVOKERESTAPI, false);
+				i.putExtra(Constants.INTENTVARS.VIEWPOS, position);
 				startActivity(i);
 			}
 		});
