@@ -70,6 +70,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
     private GoogleMap mMap;
 
     private int equipmentId = -1;
+    private int viewPosition = -1;		//position in ListView (EquipmentDetailActivity initiates from FeedList.onEquipmentClickListener)
     private Equipment equipment = null;
     private final int defaultEquipmentId = -1;
     private Boolean invokeRestApi = false;
@@ -89,6 +90,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
         setupMap(v, savedInstanceState);
         this.invokeRestApi = getActivity().getIntent().getExtras().getBoolean(Constants.INTENTVARS.INVOKERESTAPI);
         this.equipmentId = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.EQUIPMENTID, defaultEquipmentId);
+        this.viewPosition = getActivity().getIntent().getIntExtra(Constants.INTENTVARS.VIEWPOS, viewPosition);
 
         if (this.equipmentId > defaultEquipmentId) {
             DrupalNodes drupalNodes = new DrupalNodes(getActivity().getApplicationContext());
@@ -168,7 +170,7 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
                 Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[i]);
                 if (cachedBitmap == null) {
                     //popUpImage.setImageDrawable(null);
-                    new InfoWindowImageDownload(null, null, this, equipment.getNid()).execute(imageUrl);
+                    new InfoWindowImageDownload(null, null, this, equipment.getNid(), this.viewPosition).execute(imageUrl);
                     ImageDownloadProcessing = true;
                     break;
                 }

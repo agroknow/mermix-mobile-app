@@ -46,8 +46,6 @@ public class ImageBitmapCacheMap {
 			lastUriAccessed = uri;
 			Common.log("ImageBitmapCacheMap addBitmap ADD " + Common.getFileNameFromUri(uri));
 		}
-		else
-			Common.log("ImageBitmapCacheMap addBitmap ALREADY EXISTS " + Common.getFileNameFromUri(uri));
 	}
 
 	public Bitmap getBitmap(String uri){
@@ -58,8 +56,6 @@ public class ImageBitmapCacheMap {
 			imageCacheMap.get(uri).updateAccessedTime();
 			Common.log("ImageBitmapCacheMap getBitmap RETRIEVED " + Common.getFileNameFromUri(uri));
 		}
-		else
-			Common.log("ImageBitmapCacheMap getBitmap NOT FOUND " + Common.getFileNameFromUri(uri));
 		return bitmap;
 	}
 
@@ -121,7 +117,7 @@ public class ImageBitmapCacheMap {
 				lruUri = tempUri;
 		}
 		if(!lruUri.isEmpty())
-			Common.log("ImageBitmapCacheMap LRU is "+lruUri+
+			Common.log("ImageBitmapCacheMap LRU is "+Common.getFileNameFromUri(lruUri)+
 					"(nid:"+Integer.toString(imageCacheMap.get(lruUri).getNid())+")"+
 					"");
 		return lruUri;

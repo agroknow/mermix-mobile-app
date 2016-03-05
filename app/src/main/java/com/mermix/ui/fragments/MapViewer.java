@@ -631,7 +631,7 @@ public class MapViewer extends CustomFragment implements DataRetrieve, LocationL
 				Bitmap cachedBitmap = new ImageBitmapCacheMap().getBitmap(imageUrl[0]);
 				if (cachedBitmap == null) {
 					popUpImage.setImageDrawable(null);
-					new InfoWindowImageDownload(popUpImage, iwMarker, null, node.getNid()).execute(imageUrl[0]);
+					new InfoWindowImageDownload(popUpImage, iwMarker, null, node.getNid(), -1).execute(imageUrl[0]);
 				} else
 					popUpImage.setImageBitmap(cachedBitmap);
 			}
