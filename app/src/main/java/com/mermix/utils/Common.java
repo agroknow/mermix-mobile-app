@@ -21,6 +21,7 @@ import com.mermix.model.common.Pojo;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -205,5 +206,10 @@ public class Common {
 						//" availableMemPercent=" + Long.toString(mi.availMem / mi.totalMem) + "%" +
 						""
 		);
+	}
+
+	public static Timestamp getCurrentTimestamp(){
+		java.util.Date date= new java.util.Date();
+		return (new Timestamp(date.getTime()));
 	}
 }

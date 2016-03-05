@@ -2,6 +2,7 @@ package com.mermix.utils;
 
 import android.graphics.Bitmap;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -18,7 +19,7 @@ import java.util.Iterator;
 public class ImageBitmapCacheMap {
 
 	private static HashMap<String, ImageBitmapCacheItem> imageCacheMap = null;
-	private static final int imageCacheMaxSize = 30;
+	private static final int imageCacheMaxSize = 10;
 	private static String lastUriAccessed = "";
 
 	public ImageBitmapCacheMap() {
@@ -29,14 +30,17 @@ public class ImageBitmapCacheMap {
 
 	public void addBitmap(String uri, Bitmap bitmap, int viewPos, int nid){
 		if(!imageCacheMap.containsKey(uri)){
-			if(imageCacheMap.size() == imageCacheMaxSize){
-				String mostDistantUri = getMostDistant(lastUriAccessed);
-				if(!mostDistantUri.isEmpty()) {
-					imageCacheMap.remove(mostDistantUri);
-					Common.log("ImageBitmapCacheMap addBitmap REMOVE " + Common.getFileNameFromUri(mostDistantUri));
+			if(imageCacheMap.size() >= imageCacheMaxSize){
+				String uri2Remove = getMostDistant(lastUriAccessed);
+				if(uri2Remove.isEmpty())
+					uri2Remove = getLRU(lastUriAccessed);
+
+				if(!uri2Remove.isEmpty()) {
+					imageCacheMap.remove(uri2Remove);
+					Common.log("ImageBitmapCacheMap addBitmap REMOVE " + Common.getFileNameFromUri(uri2Remove));
 				}
 				else
-					Common.logError("ImageBitmapCacheMap is full but NO distant item detected");
+					Common.logError("ImageBitmapCacheMap is full but NO distant OR LRU item detected");
 			}
 			imageCacheMap.put(uri, new ImageBitmapCacheItem(bitmap, viewPos, nid));
 			lastUriAccessed = uri;
@@ -51,6 +55,7 @@ public class ImageBitmapCacheMap {
 		if(imageCacheMap.containsKey(uri)){
 			bitmap = imageCacheMap.get(uri).getBitmap();
 			lastUriAccessed = uri;
+			imageCacheMap.get(uri).updateAccessedTime();
 			Common.log("ImageBitmapCacheMap getBitmap RETRIEVED " + Common.getFileNameFromUri(uri));
 		}
 		else
@@ -69,7 +74,7 @@ public class ImageBitmapCacheMap {
 
 	/**
 	 * get from cache uri of bitmap that is the most distant (in ListView) from provided one
-	 * as long as it has not the same nid with lastUriAccessed
+	 * as long as it has not the same nid with provided uri (lastUriAccessed)
 	 * @param uri
 	 */
 	public String getMostDistant(String uri){
@@ -82,29 +87,57 @@ public class ImageBitmapCacheMap {
 			HashMap.Entry pair = (HashMap.Entry)it.next();
 			ImageBitmapCacheItem item = (ImageBitmapCacheItem) pair.getValue();
 			String tempUri = (String) pair.getKey();
-			//if(Math.abs(item.getViewPos() - uriPos) > Math.abs(uriDistantPos - uriPos) && imageCacheMap.get(uri).getNid() != item.getNid()) {
-			if(Math.abs(item.getViewPos() - uriPos) > Math.abs(uriDistantPos - uriPos)) {
-				Common.log("lastUriAccessed from nid:"+Integer.toString(imageCacheMap.get(uri).getNid()) + ", most distant");
+			if(Math.abs(item.getViewPos() - uriPos) > Math.abs(uriDistantPos - uriPos) && imageCacheMap.get(uri).getNid() != item.getNid()) {
 				uriDistantPos = item.getViewPos();
 				mostDistantUri = tempUri;
 			}
 		}
-		Common.log("ImageBitmapCacheMap most DISTANT from " + Integer.toString(uriPos) +
-					"(nid:"+Integer.toString(imageCacheMap.get(uri).getNid())+") is " +
+		if(!mostDistantUri.isEmpty())
+			Common.log("ImageBitmapCacheMap MOST distant from " + Integer.toString(uriPos) +
+					"(nid:" + Integer.toString(imageCacheMap.get(uri).getNid()) + ") is " +
 					Integer.toString(uriDistantPos) +
-					"(nid:"+Integer.toString(imageCacheMap.get(mostDistantUri).getNid()));
+					"(nid:" + Integer.toString(imageCacheMap.get(mostDistantUri).getNid())+")"+
+					"");
 		return mostDistantUri;
+	}
+
+	/**
+	 * get LRU bitmap from the cache
+	 * as long as it has not the same nid with provided uri (lastUriAccessed)
+	 * @return
+	 */
+	public String getLRU(String uri){
+		String lruUri = uri;
+		Iterator it = imageCacheMap.entrySet().iterator();
+		HashMap.Entry pair;
+		ImageBitmapCacheItem item;
+		String tempUri;
+		while (it.hasNext()) {
+			pair = (HashMap.Entry)it.next();
+			item = (ImageBitmapCacheItem) pair.getValue();
+			tempUri = (String) pair.getKey();
+			if(item.getAccessedTime().compareTo(imageCacheMap.get(lruUri).getAccessedTime()) < 0 && imageCacheMap.get(lruUri).getNid() != item.getNid())
+			//item's timestamp(tempUri) is before lruUri
+				lruUri = tempUri;
+		}
+		if(!lruUri.isEmpty())
+			Common.log("ImageBitmapCacheMap LRU is "+lruUri+
+					"(nid:"+Integer.toString(imageCacheMap.get(lruUri).getNid())+")"+
+					"");
+		return lruUri;
 	}
 
 	public class ImageBitmapCacheItem {
 		private Bitmap bitmap;
 		private int viewPos;
 		private int nid;
+		private Timestamp accessedTime;
 
 		public ImageBitmapCacheItem(Bitmap bitmap, int viewPos, int nid) {
 			this.bitmap = bitmap;
 			this.viewPos = viewPos;
 			this.nid = nid;
+			this.accessedTime = Common.getCurrentTimestamp();
 		}
 
 		public Bitmap getBitmap() { return bitmap; }
@@ -115,6 +148,14 @@ public class ImageBitmapCacheMap {
 
 		public int getNid() {
 			return nid;
+		}
+
+		public Timestamp getAccessedTime() {
+			return accessedTime;
+		}
+
+		public void updateAccessedTime() {
+			this.accessedTime = Common.getCurrentTimestamp();
 		}
 	}
 
