@@ -19,7 +19,7 @@ import java.util.Iterator;
 public class ImageBitmapCacheMap {
 
 	private static HashMap<String, ImageBitmapCacheItem> imageCacheMap = null;
-	private static final int imageCacheMaxSize = 10;
+	private static final int imageCacheMaxSize = 30;
 	private static String lastUriAccessed = "";
 
 	public ImageBitmapCacheMap() {
@@ -112,7 +112,7 @@ public class ImageBitmapCacheMap {
 			pair = (HashMap.Entry)it.next();
 			item = (ImageBitmapCacheItem) pair.getValue();
 			tempUri = (String) pair.getKey();
-			if(item.getAccessedTime().compareTo(imageCacheMap.get(lruUri).getAccessedTime()) < 0 && imageCacheMap.get(lruUri).getNid() != item.getNid())
+			if(item.getAccessedTime().compareTo(imageCacheMap.get(lruUri).getAccessedTime()) < 0 && imageCacheMap.get(uri).getNid() != item.getNid())
 			//item's timestamp(tempUri) is before lruUri
 				lruUri = tempUri;
 		}
