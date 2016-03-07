@@ -1,6 +1,7 @@
 package com.mermix.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mermix.model.common.Location;
 import com.mermix.model.common.Pojo;
 import com.mermix.utils.Common;
 import com.mermix.utils.Constants;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
  *
  */
 public class EquipmentInView extends Pojo implements Serializable{
-	@JsonProperty("node_title")
+	@JsonProperty("title_field_et")
 	private String title;
 	private String nid;
 	private String body;
@@ -29,9 +30,20 @@ public class EquipmentInView extends Pojo implements Serializable{
 	private String multiPriceUnit;
 	@JsonProperty("field_multiprice_field_multiprice_value")
 	private String multiPriceValue;
+	@JsonProperty("field_location")
+	private String location;
 
 	public String getTitle() {
 		return title;
+	}
+
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 
 	public void setTitle(String title) {
