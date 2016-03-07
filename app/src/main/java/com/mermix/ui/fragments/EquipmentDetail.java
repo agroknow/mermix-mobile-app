@@ -152,6 +152,8 @@ public class EquipmentDetail extends CustomFragment implements DataRetrieve {
             TextView location = (TextView) v.findViewById(R.id.lbl_location);
             if (equipment.getLocation() != null)
                 location.setText(equipment.getLocation().getName());
+            else
+                location.setVisibility(View.GONE);
 
             TextView title = (TextView) v.findViewById(R.id.title);
             title.setText(equipment.getTitle());
